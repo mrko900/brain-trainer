@@ -1,0 +1,16 @@
+/*
+
+!/LICENSE
+
+!/.gitignore
+!/.gitattributes
+
+!/build.gradle
+!/settings.gradle
+!/gradle.properties
+
+!/app
+/app/*
+!/app/build.gradle
+!/app/proguard-rules.pro
+!/app/src
