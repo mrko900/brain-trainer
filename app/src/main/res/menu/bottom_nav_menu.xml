@@ -4,7 +4,11 @@
         android:title="@string/title_home"
         android:icon="@drawable/ic_baseline_home_24"
         android:enabled="true" />
-    <item android:id="@+id/options"
+    <item android:id="@+id/exercises"
+        android:title="@string/title_exercises"
+        android:icon="@drawable/ic_baseline_psychology_alt_24"
+        android:enabled="true" />
+    <item android:id="@+id/profile"
             android:title="@string/title_options"
             android:icon="@drawable/ic_baseline_settings_24"
             android:enabled="true" />

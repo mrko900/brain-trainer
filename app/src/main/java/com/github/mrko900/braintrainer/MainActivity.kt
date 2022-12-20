@@ -15,7 +15,8 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private fun getFragmentId(navId: Int): Int = when (navId) {
             R.id.home -> R.id.fragment_home
-            R.id.options -> R.id.fragment_options
+            R.id.exercises -> R.id.fragment_exercise_list
+            R.id.profile -> R.id.fragment_profile
             else -> throw IllegalArgumentException("unknown fragment")
         }
     }

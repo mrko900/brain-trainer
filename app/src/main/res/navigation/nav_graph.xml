@@ -5,8 +5,11 @@
         app:startDestination="@id/fragment_home">
     <fragment
         android:id="@+id/fragment_home"
-        android:name="com.github.mrko900.braintrainer.HomeFragment" />
+        android:name="com.github.mrko900.braintrainer.ProfileFragment" />
     <fragment
-        android:id="@+id/fragment_options"
-        android:name="com.github.mrko900.braintrainer.OptionsFragment" />
+        android:id="@+id/fragment_exercise_list"
+        android:name="com.github.mrko900.braintrainer.ExerciseListFragment" />
+    <fragment
+        android:id="@+id/fragment_profile"
+        android:name="com.github.mrko900.braintrainer.ProfileFragment" />
 </navigation>
