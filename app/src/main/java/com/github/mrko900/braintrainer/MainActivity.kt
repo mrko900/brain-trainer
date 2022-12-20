@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
         private fun getFragmentId(navId: Int): Int = when (navId) {
             R.id.home -> R.id.fragment_home
             R.id.exercises -> R.id.fragment_exercise_list
+            R.id.stats -> R.id.fragment_stats
             R.id.profile -> R.id.fragment_profile
             else -> throw IllegalArgumentException("unknown fragment")
         }
@@ -60,8 +61,10 @@ class MainActivity : AppCompatActivity() {
             if (!clickable || binding.navView.selectedItemId == it.itemId)
                 return@setOnItemSelectedListener false
             val slideLeft = menuIndices.getValue(it.itemId) > menuIndices.getValue(binding.navView.selectedItemId)
-            navigation.navigate(getFragmentId(it.itemId),
-                navOptions = if (slideLeft) animLeft else animRight, args = null)
+            navigation.navigate(
+                getFragmentId(it.itemId),
+                navOptions = if (slideLeft) animLeft else animRight, args = null
+            )
             clickable = false
             handler.postDelayed({
                 clickable = true
