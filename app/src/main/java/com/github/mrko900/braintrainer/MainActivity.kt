@@ -1,6 +1,8 @@
 package com.github.mrko900.braintrainer
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.iterator
@@ -11,9 +13,6 @@ import com.github.mrko900.braintrainer.databinding.MainBinding
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        @JvmField
-        val LOGGING_TAG = MainActivity::class.java.name
-
         private fun getFragmentId(navId: Int): Int = when (navId) {
             R.id.home -> R.id.fragment_home
             R.id.options -> R.id.fragment_options
@@ -24,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: MainBinding
     private lateinit var navigation: NavController
 
-    fun getMenuIndices(menu: Menu): Map<Int, Int> {
+    private fun getMenuIndices(menu: Menu): Map<Int, Int> {
         val res = HashMap<Int, Int>()
         var i = 0
         for (item in menu) {
@@ -51,13 +50,21 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val menuIndices = getMenuIndices(binding.navView.menu)
+        val animDuration: Long = resources.getInteger(R.integer.anim_duration).toLong()
+        val handler = Handler(Looper.getMainLooper())
+
+        var clickable = true
 
         binding.navView.setOnItemSelectedListener {
-            if (binding.navView.selectedItemId == it.itemId)
+            if (!clickable || binding.navView.selectedItemId == it.itemId)
                 return@setOnItemSelectedListener false
             val slideLeft = menuIndices.getValue(it.itemId) > menuIndices.getValue(binding.navView.selectedItemId)
             navigation.navigate(getFragmentId(it.itemId),
                 navOptions = if (slideLeft) animLeft else animRight, args = null)
+            clickable = false
+            handler.postDelayed({
+                clickable = true
+            }, animDuration)
             return@setOnItemSelectedListener true
         }
     }
