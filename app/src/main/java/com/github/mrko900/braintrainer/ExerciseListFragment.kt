@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mrko900.braintrainer.databinding.ExerciseListBinding
 
 class ExerciseListFragment : Fragment() {
@@ -17,5 +19,11 @@ class ExerciseListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initListView(binding.exerciseListView)
+    }
+
+    private fun initListView(listView: RecyclerView) {
+        listView.layoutManager = LinearLayoutManager(context)
+        listView.adapter = ExerciseListViewAdapter(layoutInflater)
     }
 }
