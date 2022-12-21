@@ -1,18 +1,20 @@
 package com.github.mrko900.braintrainer
 
+import android.content.res.Resources
 import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mrko900.braintrainer.databinding.ExerciseListItemBinding
+import kotlin.math.roundToInt
 
-class ExerciseListViewAdapter(private val layoutInflater: LayoutInflater) :
+class ExerciseListViewAdapter(private val layoutInflater: LayoutInflater, private val res: Resources) :
     RecyclerView.Adapter<ExerciseListViewAdapterViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseListViewAdapterViewHolder {
         val viewHolder = ExerciseListViewAdapterViewHolder(layoutInflater, parent)
-        viewHolder.itemView.layoutParams.height = 400
+        viewHolder.itemView.layoutParams.height = res.getDimension(R.dimen.exercise_list_item_height).roundToInt()
         return viewHolder
     }
 
