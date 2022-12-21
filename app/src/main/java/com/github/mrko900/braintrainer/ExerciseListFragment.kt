@@ -1,7 +1,6 @@
 package com.github.mrko900.braintrainer
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,11 +29,7 @@ class ExerciseListFragment : Fragment() {
         listView.adapter = ExerciseListViewAdapter(layoutInflater)
         listView.addItemDecoration(
             ExerciseListViewItemDecoration(
-                TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    resources.getInteger(R.integer.exercise_list_spacing_dp).toFloat(),
-                    resources.displayMetrics
-                ).roundToInt(), spanCount
+                resources.getDimension(R.dimen.exercise_list_spacing).roundToInt(), spanCount
             )
         )
     }
