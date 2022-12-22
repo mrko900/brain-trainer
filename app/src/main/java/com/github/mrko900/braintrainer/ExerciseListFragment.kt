@@ -26,11 +26,15 @@ class ExerciseListFragment : Fragment() {
     private fun initListView(listView: RecyclerView) {
         val spanCount = resources.getInteger(R.integer.exercise_list_span_count)
         listView.layoutManager = GridLayoutManager(context, spanCount)
-        listView.adapter = ExerciseListViewAdapter(layoutInflater, resources)
+        val adapter = ExerciseListViewAdapter(layoutInflater, resources)
+        listView.adapter = adapter
         listView.addItemDecoration(
             ExerciseListViewItemDecoration(
                 resources.getDimension(R.dimen.exercise_list_spacing).roundToInt(), spanCount
             )
         )
+
+        for (item in exerciseListItems())
+            adapter.addItem(item)
     }
 }

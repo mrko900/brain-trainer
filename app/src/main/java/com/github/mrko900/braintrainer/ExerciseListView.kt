@@ -11,6 +11,7 @@ import kotlin.math.roundToInt
 
 class ExerciseListViewAdapter(private val layoutInflater: LayoutInflater, private val res: Resources) :
     RecyclerView.Adapter<ExerciseListViewAdapterViewHolder>() {
+    private val items: MutableList<ExerciseListViewItemParams> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseListViewAdapterViewHolder {
         val viewHolder = ExerciseListViewAdapterViewHolder(layoutInflater, parent)
@@ -19,11 +20,18 @@ class ExerciseListViewAdapter(private val layoutInflater: LayoutInflater, privat
     }
 
     override fun onBindViewHolder(holder: ExerciseListViewAdapterViewHolder, position: Int) {
+        holder.binding.title.setText(items[position].titleResId)
     }
 
     override fun getItemCount(): Int {
-        return 3
+        return items.size
     }
+
+    fun addItem(item: ExerciseListViewItemParams) {
+        items.add(item)
+    }
+
+    // todo remove item
 }
 
 class ExerciseListViewAdapterViewHolder : RecyclerView.ViewHolder {
@@ -48,3 +56,5 @@ class ExerciseListViewItemDecoration(private val space: Int, private val columns
         outRect.bottom = if (parent.getChildLayoutPosition(view) >= nItems - columns) space * 2 else space
     }
 }
+
+data class ExerciseListViewItemParams(val titleResId: Int)

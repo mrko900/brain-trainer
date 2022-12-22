@@ -4,4 +4,6 @@
     <string name="title_exercises">Exercises</string>
     <string name="title_stats">Stats</string>
     <string name="title_profile">Profile</string>
+
+    <string name="exercise_title_math">MATH</string>
 </resources>
