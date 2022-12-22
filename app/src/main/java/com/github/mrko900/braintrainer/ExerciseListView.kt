@@ -17,14 +17,12 @@ class ExerciseListViewAdapter(private val layoutInflater: LayoutInflater, privat
     private val items: MutableList<ExerciseListViewItemParams> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseListViewAdapterViewHolder {
-        Log.d(LOGGING_TAG, "CREATE")
         val viewHolder = ExerciseListViewAdapterViewHolder(layoutInflater, parent)
         viewHolder.itemView.layoutParams.height = res.getDimension(R.dimen.exercise_list_item_height).roundToInt()
         return viewHolder
     }
 
     override fun onBindViewHolder(holder: ExerciseListViewAdapterViewHolder, position: Int) {
-        Log.d(LOGGING_TAG, "BIND")
         val item = items[position]
         holder.binding.title.setText(item.titleResId)
         holder.binding.cardViewRoot.background = ColorDrawable(item.primaryColor)
@@ -43,6 +41,7 @@ class ExerciseListViewAdapter(private val layoutInflater: LayoutInflater, privat
     // todo remove item
 }
 
+// todo don't inflate inside a constructor
 class ExerciseListViewAdapterViewHolder : RecyclerView.ViewHolder {
     val binding: ExerciseListItemBinding
 

@@ -5,7 +5,7 @@ import android.graphics.Color
 fun exerciseListItems(): List<ExerciseListViewItemParams> {
     val list = ArrayList<ExerciseListViewItemParams>()
     list.add(exerciseListItemMath())
-    for (i in 1..1) {
+    for (i in 1..3) {
         list.add(exerciseListItemTest1())
         list.add(exerciseListItemTest2())
         list.add(exerciseListItemTest3())

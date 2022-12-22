@@ -2,8 +2,8 @@
 <resources>
     <!-- anim_duration >= anim_alpha_duration -->
     <!-- anim_alpha_in_offset + anim_alpha_duration = anim_duration -->
-    <integer name="anim_duration">4000</integer>
-    <integer name="anim_alpha_duration">2000</integer>
-    <integer name="anim_alpha_in_offset">2000</integer>
+    <integer name="anim_duration">200</integer>
+    <integer name="anim_alpha_duration">100</integer>
+    <integer name="anim_alpha_in_offset">100</integer>
     <integer name="exercise_list_span_count">2</integer>
 </resources>
