@@ -3,5 +3,6 @@
     <dimen name="exercise_list_item_corner_radius">16dp</dimen>
     <dimen name="exercise_list_item_height">280dp</dimen>
     <dimen name="exercise_list_item_title_text_size">20sp</dimen>
-    <dimen name="exercise_list_item_play_btn_size">64dp</dimen>
+    <dimen name="exercise_list_item_play_btn_size">80dp</dimen>
+    <dimen name="exercise_list_item_extra_btn_size">40dp</dimen>
 </resources>
