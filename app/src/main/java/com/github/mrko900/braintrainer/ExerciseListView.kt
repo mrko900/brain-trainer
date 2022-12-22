@@ -4,7 +4,6 @@ import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +11,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.mrko900.braintrainer.databinding.ExerciseListItemBinding
 import kotlin.math.roundToInt
 
-class ExerciseListViewAdapter(private val layoutInflater: LayoutInflater, private val res: Resources) :
-    RecyclerView.Adapter<ExerciseListViewAdapterViewHolder>() {
+class ExerciseListViewAdapter(
+    private val layoutInflater: LayoutInflater,
+    private val res: Resources,
+    private var onInitCallback: Runnable? = null,
+    private val maxItemsVisible: Int = -1
+) : RecyclerView.Adapter<ExerciseListViewAdapterViewHolder>() {
     private val items: MutableList<ExerciseListViewItemParams> = ArrayList()
+    private var initCnt = 0
+
+    init {
+        if (onInitCallback != null && maxItemsVisible <= 0)
+            throw IllegalArgumentException("maxItemsVisible must be >0 when onInitCallback is specified")
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseListViewAdapterViewHolder {
         val viewHolder = ExerciseListViewAdapterViewHolder(layoutInflater, parent)
@@ -28,6 +37,14 @@ class ExerciseListViewAdapter(private val layoutInflater: LayoutInflater, privat
         holder.binding.cardViewRoot.background = ColorDrawable(item.primaryColor)
         holder.binding.cardViewBottom.background = ColorDrawable(item.secondaryColor)
         holder.binding.playButton.backgroundTintList = ColorStateList.valueOf(item.secondaryColor)
+
+        if (onInitCallback != null) {
+            ++initCnt
+            if (initCnt == maxItemsVisible) {
+                onInitCallback!!.run()
+                onInitCallback = null
+            }
+        }
     }
 
     override fun getItemCount(): Int {

@@ -21,19 +21,21 @@ class ExerciseListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListView(binding.exerciseListView)
+        postponeEnterTransition()
     }
 
     private fun initListView(listView: RecyclerView) {
         val spanCount = resources.getInteger(R.integer.exercise_list_span_count)
         listView.layoutManager = GridLayoutManager(context, spanCount)
-        val adapter = ExerciseListViewAdapter(layoutInflater, resources)
+        val adapter = ExerciseListViewAdapter(layoutInflater, resources, {
+            startPostponedEnterTransition()
+        }, 6) // todo calc maxItemsVisible
         listView.adapter = adapter
         listView.addItemDecoration(
             ExerciseListViewItemDecoration(
                 resources.getDimension(R.dimen.exercise_list_spacing).roundToInt(), spanCount
             )
         )
-
         for (item in exerciseListItems())
             adapter.addItem(item)
     }
