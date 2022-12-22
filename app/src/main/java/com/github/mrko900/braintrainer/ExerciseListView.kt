@@ -1,7 +1,10 @@
 package com.github.mrko900.braintrainer
 
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +17,19 @@ class ExerciseListViewAdapter(private val layoutInflater: LayoutInflater, privat
     private val items: MutableList<ExerciseListViewItemParams> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseListViewAdapterViewHolder {
+        Log.d(LOGGING_TAG, "CREATE")
         val viewHolder = ExerciseListViewAdapterViewHolder(layoutInflater, parent)
         viewHolder.itemView.layoutParams.height = res.getDimension(R.dimen.exercise_list_item_height).roundToInt()
         return viewHolder
     }
 
     override fun onBindViewHolder(holder: ExerciseListViewAdapterViewHolder, position: Int) {
-        holder.binding.title.setText(items[position].titleResId)
+        Log.d(LOGGING_TAG, "BIND")
+        val item = items[position]
+        holder.binding.title.setText(item.titleResId)
+        holder.binding.cardViewRoot.background = ColorDrawable(item.primaryColor)
+        holder.binding.cardViewBottom.background = ColorDrawable(item.secondaryColor)
+        holder.binding.playButton.backgroundTintList = ColorStateList.valueOf(item.secondaryColor)
     }
 
     override fun getItemCount(): Int {
@@ -57,4 +66,4 @@ class ExerciseListViewItemDecoration(private val space: Int, private val columns
     }
 }
 
-data class ExerciseListViewItemParams(val titleResId: Int)
+data class ExerciseListViewItemParams(val titleResId: Int, val primaryColor: Int, val secondaryColor: Int)

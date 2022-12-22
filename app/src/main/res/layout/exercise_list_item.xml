@@ -7,8 +7,10 @@
     app:cardCornerRadius="@dimen/exercise_list_item_corner_radius">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cardViewRoot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#E1F5FE"
         android:padding="0dp">
 
         <TextView
@@ -21,15 +23,16 @@
             android:textColor="@color/black"
             android:textSize="@dimen/exercise_list_item_title_text_size"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/imageView"
+            app:layout_constraintBottom_toTopOf="@+id/playButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardViewBottom"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/white"
+            android:background="#E8F5E9"
             android:elevation="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -93,10 +96,11 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/playButton"
             android:layout_width="@dimen/exercise_list_item_play_btn_size"
             android:layout_height="@dimen/exercise_list_item_play_btn_size"
             android:background="@drawable/round_button"
+            android:backgroundTint="#E8F5E9"
             android:clickable="true"
             android:elevation="10dp"
             android:focusable="auto"
@@ -107,7 +111,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_play_circle_24" />
+            app:srcCompat="@drawable/play_circle_filled" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline2"
