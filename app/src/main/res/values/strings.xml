@@ -5,5 +5,6 @@
     <string name="title_stats">Stats</string>
     <string name="title_profile">Profile</string>
 
-    <string name="exercise_title_math">TEST</string>
+    <string name="exercise_title_math">MATH</string>
+    <string name="exercise_title_shape_fusion">Shape fusion</string>
 </resources>

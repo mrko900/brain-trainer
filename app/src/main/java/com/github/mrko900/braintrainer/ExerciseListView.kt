@@ -11,23 +11,37 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.mrko900.braintrainer.databinding.ExerciseListItemBinding
 import kotlin.math.roundToInt
 
+typealias VH = ExerciseListViewAdapterViewHolder
+
 class ExerciseListViewAdapter(
+    private val recyclerView: RecyclerView,
     private val layoutInflater: LayoutInflater,
     private val res: Resources,
+    private val preCreateViews: Int,
     private var onInitCallback: Runnable? = null,
-    private val maxItemsVisible: Int = -1
+    private val maxItemsVisibleAtFirst: Int = -1
 ) : RecyclerView.Adapter<ExerciseListViewAdapterViewHolder>() {
     private val items: MutableList<ExerciseListViewItemParams> = ArrayList()
+    private var createdCnt = 0
     private var initCnt = 0
+    private val viewHolders: MutableList<VH> = ArrayList()
 
     init {
-        if (onInitCallback != null && maxItemsVisible <= 0)
-            throw IllegalArgumentException("maxItemsVisible must be >0 when onInitCallback is specified")
+        if (preCreateViews <= 0)
+            throw IllegalArgumentException("preCreateViews must be >= 0")
+        if (onInitCallback != null && maxItemsVisibleAtFirst <= 0)
+            throw IllegalArgumentException("maxItemsVisibleAtFirst must be >0 when onInitCallback is specified")
+    }
+
+    fun preCreateViewHolders() {
+        for (i in 1..preCreateViews)
+            viewHolders.add(VH(layoutInflater, recyclerView))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseListViewAdapterViewHolder {
-        val viewHolder = ExerciseListViewAdapterViewHolder(layoutInflater, parent)
+        val viewHolder = viewHolders[createdCnt]
         viewHolder.itemView.layoutParams.height = res.getDimension(R.dimen.exercise_list_item_height).roundToInt()
+        ++createdCnt
         return viewHolder
     }
 
@@ -40,7 +54,7 @@ class ExerciseListViewAdapter(
 
         if (onInitCallback != null) {
             ++initCnt
-            if (initCnt == maxItemsVisible) {
+            if (initCnt == maxItemsVisibleAtFirst) {
                 onInitCallback!!.run()
                 onInitCallback = null
             }

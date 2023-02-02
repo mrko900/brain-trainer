@@ -27,9 +27,10 @@ class ExerciseListFragment : Fragment() {
     private fun initListView(listView: RecyclerView) {
         val spanCount = resources.getInteger(R.integer.exercise_list_span_count)
         listView.layoutManager = GridLayoutManager(context, spanCount)
-        val adapter = ExerciseListViewAdapter(layoutInflater, resources, {
+        val adapter = ExerciseListViewAdapter(listView, layoutInflater, resources, 12, {
             startPostponedEnterTransition()
-        }, 6) // todo calc maxItemsVisible
+        }, 6) // todo calc maxItemsVisibleAtFirst and preCreateViews
+        adapter.preCreateViewHolders()
         listView.adapter = adapter
         listView.addItemDecoration(
             ExerciseListViewItemDecoration(
