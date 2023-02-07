@@ -7,3 +7,4 @@ Todo:
 * Exercise list sections
 * Form fusion exercise
 * Do todos (probably make a custom layout manager for RecyclerView for that)
+* Server communication (basic)
