@@ -15,4 +15,10 @@
     <fragment
         android:id="@+id/fragment_profile"
         android:name="com.github.mrko900.braintrainer.ProfileFragment" />
+    <fragment
+        android:id="@+id/fragment_exercise_details"
+        android:name="com.github.mrko900.braintrainer.ExerciseDetailsFragment" />
+    <fragment
+        android:id="@+id/fragment_exercise"
+        android:name="com.github.mrko900.braintrainer.ExerciseFragment" />
 </navigation>

@@ -1,10 +1,12 @@
 package com.github.mrko900.braintrainer
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mrko900.braintrainer.databinding.ExerciseListBinding
@@ -14,6 +16,10 @@ class ExerciseListFragment : Fragment() {
     private lateinit var binding: ExerciseListBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if (activity == null) {
+            Log.e(LOGGING_TAG, "activity must be non-null")
+            throw IllegalStateException("activity must be non-null")
+        }
         binding = ExerciseListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -27,7 +33,9 @@ class ExerciseListFragment : Fragment() {
     private fun initListView(listView: RecyclerView) {
         val spanCount = resources.getInteger(R.integer.exercise_list_span_count)
         listView.layoutManager = GridLayoutManager(context, spanCount)
-        val adapter = ExerciseListViewAdapter(listView, layoutInflater, resources, 12, {
+        val nav = (activity!!.supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
+            .navController
+        val adapter = ExerciseListViewAdapter(listView, layoutInflater, resources, nav, 12, {
             startPostponedEnterTransition()
         }, 6) // todo calc maxItemsVisibleAtFirst and preCreateViews
         adapter.preCreateViewHolders()

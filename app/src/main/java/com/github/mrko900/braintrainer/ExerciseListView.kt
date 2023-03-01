@@ -4,9 +4,12 @@ import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mrko900.braintrainer.databinding.ExerciseListItemBinding
 import kotlin.math.roundToInt
@@ -17,6 +20,7 @@ class ExerciseListViewAdapter(
     private val recyclerView: RecyclerView,
     private val layoutInflater: LayoutInflater,
     private val res: Resources,
+    private val nav: NavController,
     private val preCreateViews: Int,
     private var onInitCallback: Runnable? = null,
     private val maxItemsVisibleAtFirst: Int = -1
@@ -35,7 +39,7 @@ class ExerciseListViewAdapter(
 
     fun preCreateViewHolders() {
         for (i in 1..preCreateViews)
-            viewHolders.add(VH(layoutInflater, recyclerView))
+            viewHolders.add(VH(layoutInflater, recyclerView, nav))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseListViewAdapterViewHolder {
@@ -75,13 +79,30 @@ class ExerciseListViewAdapter(
 // todo don't inflate inside a constructor
 class ExerciseListViewAdapterViewHolder : RecyclerView.ViewHolder {
     val binding: ExerciseListItemBinding
+    val nav: NavController
 
-    constructor(layoutInflater: LayoutInflater, parent: ViewGroup?) :
-            this(ExerciseListItemBinding.inflate(layoutInflater, parent, false))
+    constructor(layoutInflater: LayoutInflater, parent: ViewGroup?, nav: NavController) :
+            this(ExerciseListItemBinding.inflate(layoutInflater, parent, false), nav)
 
-    private constructor(binding: ExerciseListItemBinding) :
+    private constructor(binding: ExerciseListItemBinding, nav: NavController) :
             super(binding.root) {
         this.binding = binding
+        this.nav = nav
+        initListItem(binding)
+    }
+
+    private fun initListItem(binding: ExerciseListItemBinding) {
+        binding.playButton.setOnClickListener {
+            Log.d(LOGGING_TAG, "Exercise selected")
+            nav.navigate(
+                R.id.fragment_exercise_details,
+                navOptions = NavOptions.Builder()
+                    .setEnterAnim(R.anim.slide_in_left_fade_in)
+                    .setExitAnim(R.anim.slide_out_left_fade_out)
+                    .build(),
+                args = null
+            )
+        }
     }
 }
 
