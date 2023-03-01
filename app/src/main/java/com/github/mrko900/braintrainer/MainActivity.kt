@@ -23,7 +23,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: MainBinding
-    private lateinit var navigation: NavController
+    public lateinit var navigation: NavController
+
+    public var currentExercise: ExerciseParams? = null
 
     private fun getMenuIndices(menu: Menu): Map<Int, Int> {
         val res = HashMap<Int, Int>()
