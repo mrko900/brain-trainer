@@ -27,7 +27,7 @@ class ExerciseDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.button7.setOnClickListener {
-            Log.d(LOGGING_TAG, "Begin exercise.")
+            Log.d(LOGGING_TAG, "Begin exercise: ") // todo exercise name
             mainActivity.navigation.navigate(
                 R.id.fragment_exercise,
                 navOptions = NavOptions.Builder()

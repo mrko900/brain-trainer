@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.util.Consumer
 import androidx.core.view.iterator
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: MainBinding
     public lateinit var navigation: NavController
 
-    public var currentExercise: ExerciseParams? = null
+    var currentExercise: ExerciseParams? = ExerciseParams(ExerciseType.SHAPE_FUSION)
 
     private fun getMenuIndices(menu: Menu): Map<Int, Int> {
         val res = HashMap<Int, Int>()
@@ -72,6 +73,23 @@ class MainActivity : AppCompatActivity() {
                 clickable = true
             }, animDuration)
             return@setOnItemSelectedListener true
+        }
+    }
+
+    fun createExercise(onFinishedCallback: Consumer<ExerciseResult>): Exercise {
+        if (currentExercise == null) {
+            throw IllegalStateException("can't create exercise")
+        }
+        when (currentExercise!!.type) {
+            ExerciseType.MATH -> {
+                throw UnsupportedOperationException()
+            }
+            ExerciseType.SHAPE_FUSION -> {
+                return ShapeFusionExercise(onFinishedCallback)
+            }
+            else -> {
+                throw AssertionError()
+            }
         }
     }
 }
