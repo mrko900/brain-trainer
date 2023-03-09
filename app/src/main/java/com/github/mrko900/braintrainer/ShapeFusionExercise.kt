@@ -27,16 +27,13 @@ data class ShapeFusionExerciseQuestion(private val choices: List<Shape>, val ans
     }
 }
 
-class ShapeFusionExercise(onFinishedCallback: Consumer<ExerciseResult>) : AbstractExercise(onFinishedCallback) {
-    override fun init(surface: SurfaceView) {
+class ShapeFusionExercise(onFinishedCallback: Consumer<ExerciseResult>, private val surface: SurfaceView) :
+    AbstractExercise(onFinishedCallback) {
+    private lateinit var currentQuestion: ShapeFusionExerciseQuestion
+
+    override fun init() {
         surface.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
-//                val canvas = holder.lockCanvas()
-//                val paint = Paint()
-//                paint.color = Color.GREEN
-//                paint.style = Paint.Style.FILL
-//                canvas.drawCircle(300f, 200f, 170f, paint)
-//                holder.unlockCanvasAndPost(canvas)
             }
 
             override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
@@ -48,7 +45,8 @@ class ShapeFusionExercise(onFinishedCallback: Consumer<ExerciseResult>) : Abstra
     }
 
     override fun start() {
-
+        nextQuestion()
+        render()
     }
 
     override fun pause() {
@@ -57,5 +55,15 @@ class ShapeFusionExercise(onFinishedCallback: Consumer<ExerciseResult>) : Abstra
 
     override fun resume() {
 
+    }
+
+    private fun nextQuestion() {
+        val choice1 = Shape(listOf(listOf(true, false), listOf(true, true)), 2, 2)
+        val choice2 = Shape(listOf(listOf(true, false), listOf(true, false)), 2, 2)
+        currentQuestion = ShapeFusionExerciseQuestion(listOf(choice1, choice2), 1)
+    }
+
+    private fun render() {
+        
     }
 }
