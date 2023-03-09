@@ -3,7 +3,10 @@ package com.github.mrko900.braintrainer
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.Space
 import androidx.core.util.Consumer
+import java.util.*
 
 data class Shape(private val matrix: List<List<Boolean>>, private val width: Int, private val height: Int) {
     fun getHeight(): Int {
@@ -21,7 +24,12 @@ data class Shape(private val matrix: List<List<Boolean>>, private val width: Int
     }
 }
 
-data class ShapeFusionExerciseQuestion(private val choices: List<Shape>, val answer: Int) {
+class ShapeFusionExerciseQuestion(choices: List<Shape>, val answer: Int) {
+    val choices: List<Shape> = choices
+        get() {
+            return Collections.unmodifiableList(field)
+        }
+
     init {
         if (!(answer >= 0 && answer < choices.size))
             throw IllegalArgumentException("answer out of bounds")
@@ -34,11 +42,15 @@ class ShapeFusionExercise(
     private val inflater: LayoutInflater
 ) : AbstractExercise(onFinishedCallback) {
     private lateinit var currentQuestion: ShapeFusionExerciseQuestion
-    private lateinit var frame: FrameLayout
+    private lateinit var rootFrame: FrameLayout
+    private lateinit var frame: ViewGroup
+    private lateinit var choiceListView: LinearLayout
+    private var newQuestion = false
 
     override fun init() {
-        frame = group.findViewById(R.id.frame)
-        inflater.inflate(R.layout.shape_fusion_exercise_frame, frame, true)
+        rootFrame = group.findViewById(R.id.frame)
+        frame = inflater.inflate(R.layout.shape_fusion_exercise_frame, rootFrame, true) as ViewGroup
+        choiceListView = frame.findViewById(R.id.choices)
     }
 
     override fun start() {
@@ -58,9 +70,23 @@ class ShapeFusionExercise(
         val choice1 = Shape(listOf(listOf(true, false), listOf(true, true)), 2, 2)
         val choice2 = Shape(listOf(listOf(true, false), listOf(true, false)), 2, 2)
         currentQuestion = ShapeFusionExerciseQuestion(listOf(choice1, choice2), 1)
+        newQuestion = true
     }
 
     private fun render() {
-
+        if (newQuestion) {
+            newQuestion = false
+            var space = Space(choiceListView.context)
+            choiceListView.addView(space)
+            (space.layoutParams as LinearLayout.LayoutParams).weight = 1F
+            for (choice in currentQuestion.choices) {
+                val view = inflater.inflate(R.layout.choice_card, choiceListView, false)
+                choiceListView.addView(view)
+                choiceListView.addView(Space(choiceListView.context))
+                space = Space(choiceListView.context)
+                choiceListView.addView(space)
+                (space.layoutParams as LinearLayout.LayoutParams).weight = 1F
+            }
+        }
     }
 }
