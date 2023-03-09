@@ -1,5 +1,10 @@
 package com.github.mrko900.braintrainer
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -21,7 +26,7 @@ data class Shape(private val matrix: List<List<Boolean>>, private val width: Int
     fun isSet(x: Int, y: Int): Boolean {
         if (x < 0 || x >= width || y < 0 || y >= height)
             throw IllegalArgumentException("coords not in range")
-        return matrix[x][y]
+        return matrix[y][x]
     }
 }
 
@@ -69,9 +74,37 @@ class ShapeFusionExercise(
 
     private fun nextQuestion() {
         val choice1 = Shape(listOf(listOf(true, false), listOf(true, true)), 2, 2)
-        val choice2 = Shape(listOf(listOf(true, false), listOf(true, false)), 2, 2)
+        val choice2 = Shape(
+            listOf(listOf(true, false, false), listOf(false, true, false), listOf(true, true, false)), 3, 3
+        )
         currentQuestion = ShapeFusionExerciseQuestion(listOf(choice1, choice2), 1)
         newQuestion = true
+    }
+
+    private fun getImage(shape: Shape): Bitmap {
+        // todo comply with actual image view w/h
+        val w = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80f, frame.resources.displayMetrics)
+        val h = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80f, frame.resources.displayMetrics)
+
+        val bitmap = Bitmap.createBitmap(w.toInt(), h.toInt(), Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = Paint()
+        paint.style = Paint.Style.FILL
+        paint.color = Color.RED
+
+        val xStep = w / shape.getWidth()
+        val yStep = h / shape.getHeight()
+        for (j in 1..shape.getWidth()) {
+            for (i in shape.getHeight() downTo 1) {
+                if (!shape.isSet(j - 1, i - 1))
+                    continue
+                val x = (j - 1) * xStep
+                val y = (i - 1) * yStep
+                canvas.drawRect(x, y, x + xStep, y + yStep, paint)
+            }
+        }
+
+        return bitmap
     }
 
     private fun render() {
@@ -84,7 +117,7 @@ class ShapeFusionExercise(
                 val view = inflater.inflate(R.layout.choice_card, choiceListView, false)
                 choiceListView.addView(view)
                 choiceListView.addView(Space(choiceListView.context))
-                
+                view.findViewById<ImageView>(R.id.imageView2).setImageBitmap(getImage(choice))
                 space = Space(choiceListView.context)
                 choiceListView.addView(space)
                 (space.layoutParams as LinearLayout.LayoutParams).weight = 1F
