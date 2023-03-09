@@ -1,5 +1,7 @@
 package com.github.mrko900.braintrainer
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.util.Consumer
 
@@ -26,11 +28,17 @@ data class ShapeFusionExerciseQuestion(private val choices: List<Shape>, val ans
     }
 }
 
-class ShapeFusionExercise(onFinishedCallback: Consumer<ExerciseResult>, private val frame: FrameLayout) :
-    AbstractExercise(onFinishedCallback) {
+class ShapeFusionExercise(
+    onFinishedCallback: Consumer<ExerciseResult>,
+    private val group: ViewGroup,
+    private val inflater: LayoutInflater
+) : AbstractExercise(onFinishedCallback) {
     private lateinit var currentQuestion: ShapeFusionExerciseQuestion
+    private lateinit var frame: FrameLayout
 
     override fun init() {
+        frame = group.findViewById(R.id.frame)
+        inflater.inflate(R.layout.shape_fusion_exercise_frame, frame, true)
     }
 
     override fun start() {
