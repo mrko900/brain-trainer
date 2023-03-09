@@ -3,6 +3,7 @@ package com.github.mrko900.braintrainer
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Space
 import androidx.core.util.Consumer
@@ -83,6 +84,7 @@ class ShapeFusionExercise(
                 val view = inflater.inflate(R.layout.choice_card, choiceListView, false)
                 choiceListView.addView(view)
                 choiceListView.addView(Space(choiceListView.context))
+                
                 space = Space(choiceListView.context)
                 choiceListView.addView(space)
                 (space.layoutParams as LinearLayout.LayoutParams).weight = 1F
