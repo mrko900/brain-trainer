@@ -1,6 +1,5 @@
 package com.github.mrko900.braintrainer
 
-import android.graphics.PixelFormat
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -29,10 +28,8 @@ class ExerciseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.surface.setZOrderOnTop(true)
-        binding.surface.holder.setFormat(PixelFormat.TRANSPARENT)
-        exercise = mainActivity.createExercise { }
-        exercise.init(binding.surface)
+        exercise = mainActivity.createExercise(binding.frame) { }
+        exercise.init()
         exercise.start()
     }
 }

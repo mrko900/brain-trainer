@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Menu
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
 import androidx.core.view.iterator
@@ -76,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun createExercise(onFinishedCallback: Consumer<ExerciseResult>): Exercise {
+    fun createExercise(frame: FrameLayout, onFinishedCallback: Consumer<ExerciseResult>): Exercise {
         if (currentExercise == null) {
             throw IllegalStateException("can't create exercise")
         }
@@ -85,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                 throw UnsupportedOperationException()
             }
             ExerciseType.SHAPE_FUSION -> {
-                return ShapeFusionExercise(onFinishedCallback)
+                return ShapeFusionExercise(onFinishedCallback, frame)
             }
             else -> {
                 throw AssertionError()

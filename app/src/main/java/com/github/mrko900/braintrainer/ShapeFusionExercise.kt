@@ -1,7 +1,6 @@
 package com.github.mrko900.braintrainer
 
-import android.view.SurfaceHolder
-import android.view.SurfaceView
+import android.widget.FrameLayout
 import androidx.core.util.Consumer
 
 data class Shape(private val matrix: List<List<Boolean>>, private val width: Int, private val height: Int) {
@@ -27,21 +26,11 @@ data class ShapeFusionExerciseQuestion(private val choices: List<Shape>, val ans
     }
 }
 
-class ShapeFusionExercise(onFinishedCallback: Consumer<ExerciseResult>, private val surface: SurfaceView) :
+class ShapeFusionExercise(onFinishedCallback: Consumer<ExerciseResult>, private val frame: FrameLayout) :
     AbstractExercise(onFinishedCallback) {
     private lateinit var currentQuestion: ShapeFusionExerciseQuestion
 
     override fun init() {
-        surface.holder.addCallback(object : SurfaceHolder.Callback {
-            override fun surfaceCreated(holder: SurfaceHolder) {
-            }
-
-            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-            }
-
-            override fun surfaceDestroyed(holder: SurfaceHolder) {
-            }
-        })
     }
 
     override fun start() {
@@ -64,6 +53,6 @@ class ShapeFusionExercise(onFinishedCallback: Consumer<ExerciseResult>, private 
     }
 
     private fun render() {
-        
+
     }
 }
