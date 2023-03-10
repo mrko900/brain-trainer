@@ -240,8 +240,12 @@ class ShapeFusionExercise(
             if (i != 0) {
                 val operatorView = inflater.inflate(R.layout.expr_operator, start, false)
                 start.addView(operatorView)
-                operatorView.findViewById<ImageView>(R.id.imageView3)
-                    .setImageBitmap(getImage(currentQuestion.expression.operands[i]))
+                operatorView.findViewById<ImageView>(R.id.imageView3).setImageResource(
+                    if (currentQuestion.expression.operators[i - 1] == ShapeFusionExerciseQuestion.Operator.ADDITION)
+                        R.drawable.ic_baseline_add_circle_24
+                    else
+                        R.drawable.ic_baseline_remove_circle_24
+                )
                 val operatorViewLayoutParams = operatorView.layoutParams as FrameLayout.LayoutParams
                 operatorViewLayoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
             }
