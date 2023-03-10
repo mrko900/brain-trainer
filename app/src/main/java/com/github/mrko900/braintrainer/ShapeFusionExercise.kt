@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -82,9 +81,9 @@ class ShapeFusionExercise(
     }
 
     private fun getImage(shape: Shape): Bitmap {
-        // todo comply with actual image view w/h
-        val w = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80f, frame.resources.displayMetrics)
-        val h = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80f, frame.resources.displayMetrics)
+        val w = frame.resources.getDimension(R.dimen.choice_card_image_size)
+        val h = w
+        val gap = frame.resources.getDimension(R.dimen.shape_fusion_gap)
 
         val bitmap = Bitmap.createBitmap(w.toInt(), h.toInt(), Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
@@ -92,14 +91,14 @@ class ShapeFusionExercise(
         paint.style = Paint.Style.FILL
         paint.color = Color.RED
 
-        val xStep = w / shape.getWidth()
-        val yStep = h / shape.getHeight()
+        val xStep = (w - gap * (shape.getWidth() - 1)) / shape.getWidth()
+        val yStep = (h - gap * (shape.getHeight() - 1)) / shape.getHeight()
         for (j in 1..shape.getWidth()) {
             for (i in shape.getHeight() downTo 1) {
                 if (!shape.isSet(j - 1, i - 1))
                     continue
-                val x = (j - 1) * xStep
-                val y = (i - 1) * yStep
+                val x = (j - 1) * (xStep + gap)
+                val y = (i - 1) * (yStep + gap)
                 canvas.drawRect(x, y, x + xStep, y + yStep, paint)
             }
         }
