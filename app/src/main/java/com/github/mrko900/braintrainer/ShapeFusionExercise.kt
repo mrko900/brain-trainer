@@ -14,7 +14,24 @@ import androidx.core.util.Consumer
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 
-data class Shape(private val matrix: List<List<Boolean>>, private val width: Int, private val height: Int) {
+data class Shape(private val matrix: List<MutableList<Boolean>>, private val width: Int, private val height: Int) {
+    companion object {
+        private fun emptyMatrix(w: Int, h: Int): List<MutableList<Boolean>> {
+            val mat = ArrayList<MutableList<Boolean>>(h)
+            for (i in 1..h) {
+                val row = ArrayList<Boolean>(h)
+                for (j in 1..w)
+                    row.add(false)
+                mat.add(row)
+            }
+            return mat
+        }
+    }
+
+    constructor(width: Int, height: Int) : this(emptyMatrix(width, height), width, height)
+
+    constructor(other: Shape) : this(other.matrix, other.width, other.height)
+
     fun getHeight(): Int {
         return height
     }
@@ -23,14 +40,26 @@ data class Shape(private val matrix: List<List<Boolean>>, private val width: Int
         return width
     }
 
-    fun isSet(x: Int, y: Int): Boolean {
+    fun get(x: Int, y: Int): Boolean {
+        if (x < 0 || x >= width || y < 0 || y >= height)
+            throw IllegalArgumentException("coords not in range: whxy $width,$height,$x,$y")
+        return matrix[y][x]
+    }
+
+    fun set(x: Int, y: Int, value: Boolean) {
         if (x < 0 || x >= width || y < 0 || y >= height)
             throw IllegalArgumentException("coords not in range")
-        return matrix[y][x]
+        matrix[y][x] = value
     }
 }
 
-class ShapeFusionExerciseQuestion(choices: List<Shape>, val answer: Int) {
+class ShapeFusionExerciseQuestion(val expression: Expression, choices: List<Shape>, val answer: Int) {
+    data class Expression(val operands: List<Shape>, val operators: List<Operator>)
+
+    enum class Operator {
+        ADDITION, SUBTRACTION
+    }
+
     val choices: List<Shape> = choices
         get() {
             return Collections.unmodifiableList(field)
@@ -51,16 +80,18 @@ class ShapeFusionExercise(
     private lateinit var rootFrame: FrameLayout
     private lateinit var frame: ViewGroup
     private lateinit var choiceListView: LinearLayout
+    private lateinit var exprFrameView: LinearLayout
     private var newQuestion = false
 
     private val shapeSide = 3
     private val nChoices = 4
+    private val nOperands = 2
 
     override fun init() {
         rootFrame = group.findViewById(R.id.frame)
         frame = inflater.inflate(R.layout.shape_fusion_exercise_frame, rootFrame, true) as ViewGroup
         choiceListView = frame.findViewById(R.id.choices)
-
+        exprFrameView = frame.findViewById(R.id.exprFrame)
     }
 
     override fun start() {
@@ -69,27 +100,72 @@ class ShapeFusionExercise(
     }
 
     override fun pause() {
-
     }
 
     override fun resume() {
+    }
 
+    private fun randomShape(): Shape {
+        val shapeData = ArrayList<ArrayList<Boolean>>()
+        for (y in 1..shapeSide) {
+            val row = ArrayList<Boolean>()
+            shapeData.add(row)
+            for (x in 1..shapeSide) {
+                row.add(ThreadLocalRandom.current().nextInt(2) == 1)
+            }
+        }
+        return Shape(shapeData, shapeSide, shapeSide)
+    }
+
+    private fun randomOperator(): ShapeFusionExerciseQuestion.Operator {
+        return if (ThreadLocalRandom.current().nextInt(2) == 1)
+            ShapeFusionExerciseQuestion.Operator.ADDITION else ShapeFusionExerciseQuestion.Operator.SUBTRACTION
+    }
+
+    private data class Choices(val arr: ArrayList<Shape>, val ans: Int)
+
+    private fun genChoices(expr: FullExpr): Choices {
+        val choices = ArrayList<Shape>()
+        val ansPos = ThreadLocalRandom.current().nextInt(nChoices)
+        for (i in 0 until nChoices) {
+            if (i == ansPos)
+                choices.add(expr.answer)
+            else
+                choices.add(randomShape())
+        }
+        return Choices(choices, ansPos)
+    }
+
+    private data class FullExpr(val expression: ShapeFusionExerciseQuestion.Expression, val answer: Shape)
+
+    private fun performOperation(operand: Shape, argument: Shape, operator: ShapeFusionExerciseQuestion.Operator) {
+        val v = operator == ShapeFusionExerciseQuestion.Operator.ADDITION
+        for (x in 0 until argument.getWidth()) {
+            for (y in 0 until argument.getHeight()) {
+                if (argument.get(x, y))
+                    operand.set(x, y, v)
+            }
+        }
+    }
+
+    private fun genExpression(): FullExpr {
+        val operands = ArrayList<Shape>()
+        val operators = ArrayList<ShapeFusionExerciseQuestion.Operator>()
+        for (i in 1..nOperands) {
+            operands.add(randomShape())
+            operators.add(randomOperator())
+        }
+        val answ = Shape(operands[0])
+        for (i in 2..nOperands) {
+            performOperation(answ, operands[i - 1], operators[i - 2])
+        }
+        return FullExpr(ShapeFusionExerciseQuestion.Expression(operands, operators), answ)
     }
 
     private fun nextQuestion() {
-        val choices = ArrayList<Shape>()
-        for (i in 1..nChoices) {
-            val shapeData = ArrayList<ArrayList<Boolean>>()
-            for (y in 1..shapeSide) {
-                val row = ArrayList<Boolean>()
-                shapeData.add(row)
-                for (x in 1..shapeSide) {
-                    row.add(ThreadLocalRandom.current().nextInt(2) == 1)
-                }
-            }
-            choices.add(Shape(shapeData, shapeSide, shapeSide))
-        }
-        currentQuestion = ShapeFusionExerciseQuestion(choices, ThreadLocalRandom.current().nextInt(nChoices))
+        val expr = genExpression()
+        val choices = genChoices(expr)
+        currentQuestion = ShapeFusionExerciseQuestion(expr.expression, choices.arr, choices.ans)
         newQuestion = true
     }
 
@@ -108,7 +184,7 @@ class ShapeFusionExercise(
         val yStep = (h - gap * (shape.getHeight() - 1)) / shape.getHeight()
         for (j in 1..shape.getWidth()) {
             for (i in shape.getHeight() downTo 1) {
-                if (!shape.isSet(j - 1, i - 1))
+                if (!shape.get(j - 1, i - 1))
                     continue
                 val x = (j - 1) * (xStep + gap)
                 val y = (i - 1) * (yStep + gap)
@@ -122,18 +198,30 @@ class ShapeFusionExercise(
     private fun render() {
         if (newQuestion) {
             newQuestion = false
-            var space = Space(choiceListView.context)
+            renderChoices()
+            renderExpression()
+        }
+    }
+
+    private fun renderChoices() {
+        var space = Space(choiceListView.context)
+        choiceListView.addView(space)
+        (space.layoutParams as LinearLayout.LayoutParams).weight = 1F
+        for (choice in currentQuestion.choices) {
+            val view = inflater.inflate(R.layout.choice_card, choiceListView, false)
+            choiceListView.addView(view)
+            choiceListView.addView(Space(choiceListView.context))
+            view.findViewById<ImageView>(R.id.imageView2).setImageBitmap(getImage(choice))
+            space = Space(choiceListView.context)
             choiceListView.addView(space)
             (space.layoutParams as LinearLayout.LayoutParams).weight = 1F
-            for (choice in currentQuestion.choices) {
-                val view = inflater.inflate(R.layout.choice_card, choiceListView, false)
-                choiceListView.addView(view)
-                choiceListView.addView(Space(choiceListView.context))
-                view.findViewById<ImageView>(R.id.imageView2).setImageBitmap(getImage(choice))
-                space = Space(choiceListView.context)
-                choiceListView.addView(space)
-                (space.layoutParams as LinearLayout.LayoutParams).weight = 1F
-            }
         }
+    }
+
+    private fun renderExpression() {
+        val view = inflater.inflate(R.layout.choice_card, exprFrameView, false)
+        exprFrameView.addView(view)
+        view.findViewById<ImageView>(R.id.imageView2)
+            .setImageBitmap(getImage(currentQuestion.choices[currentQuestion.answer]))
     }
 }
