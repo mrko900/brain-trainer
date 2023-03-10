@@ -1,9 +1,11 @@
 package com.github.mrko900.braintrainer
 
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -240,12 +242,22 @@ class ShapeFusionExercise(
             if (i != 0) {
                 val operatorView = inflater.inflate(R.layout.expr_operator, start, false)
                 start.addView(operatorView)
-                operatorView.findViewById<ImageView>(R.id.imageView3).setImageResource(
+                val img: ImageView = operatorView.findViewById(R.id.imageView3)
+                img.setImageResource(
                     if (currentQuestion.expression.operators[i - 1] == ShapeFusionExerciseQuestion.Operator.ADDITION)
                         R.drawable.ic_baseline_add_circle_24
                     else
                         R.drawable.ic_baseline_remove_circle_24
                 )
+                val color = TypedValue()
+                img.context.theme.resolveAttribute(
+                    if (currentQuestion.expression.operators[i - 1] == ShapeFusionExerciseQuestion.Operator.ADDITION)
+                        R.attr.colorAdd
+                    else
+                        R.attr.colorSubtract,
+                    color, true
+                )
+                img.imageTintList = ColorStateList.valueOf(color.data)
                 val operatorViewLayoutParams = operatorView.layoutParams as FrameLayout.LayoutParams
                 operatorViewLayoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
             }
