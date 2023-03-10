@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.Space
 import androidx.core.util.Consumer
 import java.util.*
+import java.util.concurrent.ThreadLocalRandom
 
 data class Shape(private val matrix: List<List<Boolean>>, private val width: Int, private val height: Int) {
     fun getHeight(): Int {
@@ -52,10 +53,14 @@ class ShapeFusionExercise(
     private lateinit var choiceListView: LinearLayout
     private var newQuestion = false
 
+    private val shapeSide = 3
+    private val nChoices = 4
+
     override fun init() {
         rootFrame = group.findViewById(R.id.frame)
         frame = inflater.inflate(R.layout.shape_fusion_exercise_frame, rootFrame, true) as ViewGroup
         choiceListView = frame.findViewById(R.id.choices)
+
     }
 
     override fun start() {
@@ -72,11 +77,19 @@ class ShapeFusionExercise(
     }
 
     private fun nextQuestion() {
-        val choice1 = Shape(listOf(listOf(true, false), listOf(true, true)), 2, 2)
-        val choice2 = Shape(
-            listOf(listOf(true, false, false), listOf(false, true, false), listOf(true, true, false)), 3, 3
-        )
-        currentQuestion = ShapeFusionExerciseQuestion(listOf(choice1, choice2), 1)
+        val choices = ArrayList<Shape>()
+        for (i in 1..nChoices) {
+            val shapeData = ArrayList<ArrayList<Boolean>>()
+            for (y in 1..shapeSide) {
+                val row = ArrayList<Boolean>()
+                shapeData.add(row)
+                for (x in 1..shapeSide) {
+                    row.add(ThreadLocalRandom.current().nextInt(2) == 1)
+                }
+            }
+            choices.add(Shape(shapeData, shapeSide, shapeSide))
+        }
+        currentQuestion = ShapeFusionExerciseQuestion(choices, ThreadLocalRandom.current().nextInt(nChoices))
         newQuestion = true
     }
 
