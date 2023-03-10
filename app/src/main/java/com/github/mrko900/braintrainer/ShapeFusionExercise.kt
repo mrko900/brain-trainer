@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -12,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.util.Consumer
 import java.util.*
-import java.util.concurrent.ThreadLocalRandom
 
 data class Shape(private val matrix: List<MutableList<Boolean>>, private val width: Int, private val height: Int) {
     companion object {
@@ -26,11 +26,19 @@ data class Shape(private val matrix: List<MutableList<Boolean>>, private val wid
             }
             return mat
         }
+
+        private fun deepCopy(mat: List<MutableList<Boolean>>, h: Int): List<MutableList<Boolean>> {
+            val res = ArrayList<MutableList<Boolean>>()
+            for (i in 0 until h) {
+                res.add(ArrayList(mat[i]))
+            }
+            return res
+        }
     }
 
     constructor(width: Int, height: Int) : this(emptyMatrix(width, height), width, height)
 
-    constructor(other: Shape) : this(other.matrix, other.width, other.height)
+    constructor(other: Shape) : this(ArrayList(deepCopy(other.matrix, other.height)), other.width, other.height)
 
     fun getHeight(): Int {
         return height
@@ -87,6 +95,8 @@ class ShapeFusionExercise(
     private val nChoices = 4
     private val nOperands = 2
 
+    private val random = Random()
+
     override fun init() {
         rootFrame = group.findViewById(R.id.frame)
         frame = inflater.inflate(R.layout.shape_fusion_exercise_frame, rootFrame, true) as ViewGroup
@@ -111,14 +121,14 @@ class ShapeFusionExercise(
             val row = ArrayList<Boolean>()
             shapeData.add(row)
             for (x in 1..shapeSide) {
-                row.add(ThreadLocalRandom.current().nextInt(2) == 1)
+                row.add(random.nextInt(2) == 1)
             }
         }
         return Shape(shapeData, shapeSide, shapeSide)
     }
 
     private fun randomOperator(): ShapeFusionExerciseQuestion.Operator {
-        return if (ThreadLocalRandom.current().nextInt(2) == 1)
+        return if (random.nextInt(2) == 1)
             ShapeFusionExerciseQuestion.Operator.ADDITION else ShapeFusionExerciseQuestion.Operator.SUBTRACTION
     }
 
@@ -126,7 +136,7 @@ class ShapeFusionExercise(
 
     private fun genChoices(expr: FullExpr): Choices {
         val choices = ArrayList<Shape>()
-        val ansPos = ThreadLocalRandom.current().nextInt(nChoices)
+        val ansPos = random.nextInt(nChoices)
         for (i in 0 until nChoices) {
             if (i == ansPos)
                 choices.add(expr.answer)
@@ -144,6 +154,7 @@ class ShapeFusionExercise(
             for (y in 0 until argument.getHeight()) {
                 if (argument.get(x, y))
                     operand.set(x, y, v)
+                Log.d(LOGGING_TAG, "x y " + x + " " + y + " " + operand.get(x, y))
             }
         }
     }
