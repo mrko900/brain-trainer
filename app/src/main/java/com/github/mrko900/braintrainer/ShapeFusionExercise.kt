@@ -219,9 +219,19 @@ class ShapeFusionExercise(
     }
 
     private fun renderExpression() {
-        val view = inflater.inflate(R.layout.choice_card, exprFrameView, false)
-        exprFrameView.addView(view)
-        view.findViewById<ImageView>(R.id.imageView2)
-            .setImageBitmap(getImage(currentQuestion.choices[currentQuestion.answer]))
+        for (i in 0 until currentQuestion.expression.operands.size) {
+            val operandView = inflater.inflate(R.layout.choice_card, exprFrameView, false)
+            val operandImg: ImageView = operandView.findViewById(R.id.imageView2)
+            operandImg.layoutParams.width = operandView.resources.getDimension(R.dimen.expr_card_image_size).toInt()
+            operandImg.layoutParams.height = operandView.resources.getDimension(R.dimen.expr_card_image_size).toInt()
+            operandImg.setImageBitmap(getImage(currentQuestion.expression.operands[i]))
+            exprFrameView.addView(operandView)
+            if (i != currentQuestion.expression.operands.size - 1) {
+                val operatorView = inflater.inflate(R.layout.expr_operator, exprFrameView, false)
+                exprFrameView.addView(operatorView)
+                operatorView.findViewById<ImageView>(R.id.imageView3)
+                    .setImageBitmap(getImage(currentQuestion.expression.operands[i]))
+            }
+        }
     }
 }
