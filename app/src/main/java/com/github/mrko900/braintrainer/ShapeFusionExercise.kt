@@ -1,10 +1,13 @@
 package com.github.mrko900.braintrainer
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
@@ -12,8 +15,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.view.animation.Animation
-import android.view.animation.TranslateAnimation
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -303,9 +304,9 @@ class ShapeFusionExercise(
         val finalLocation = IntArray(2)
         operandViews.last().getLocationOnScreen(finalLocation)
 
-        val animQueue = ArrayList<Animation>()
-        var it: Iterator<Animation>? = null
-        var current: Animation?
+        val animQueue = ArrayList<Animator>()
+        var it: Iterator<Animator>? = null
+        var current: Animator?
         var curi = 0
         val last = operandViews.last()
         for (i in 1 until operandViews.size) {
@@ -313,26 +314,37 @@ class ShapeFusionExercise(
             operandViews[i - 1].getLocationOnScreen(prevLocation)
             val currentLocation = IntArray(2)
             operandViews[i].getLocationOnScreen(currentLocation)
-            val anim = TranslateAnimation(
-                0f,
-                0f,
+            val path = Path()
+            
+            val anim = ObjectAnimator.ofFloat(
+                last,
+                "translationY",
                 (prevLocation[1] - finalLocation[1]).toFloat(),
                 (currentLocation[1] - finalLocation[1]).toFloat()
             )
-            anim.duration = 1000
-            anim.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationEnd(animation: Animation?) {
+//            val anim = TranslateAnimation(
+//                0f,
+//                0f,
+//                (prevLocation[1] - finalLocation[1]).toFloat(),
+//                (currentLocation[1] - finalLocation[1]).toFloat()
+//            )
+            anim.duration = 2000
+            anim.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationEnd(animator: Animator?) {
                     if (it!!.hasNext()) {
                         current = it!!.next()
-                        last.startAnimation(current)
+                        current!!.start()
                     }
                 }
 
-                override fun onAnimationStart(animation: Animation?) {
+                override fun onAnimationStart(animator: Animator?) {
                     operandViews[curi++].visibility = View.VISIBLE
                 }
 
-                override fun onAnimationRepeat(animation: Animation?) {
+                override fun onAnimationRepeat(animator: Animator?) {
+                }
+
+                override fun onAnimationCancel(animation: Animator?) {
                 }
             })
             animQueue.add(anim)
@@ -343,7 +355,7 @@ class ShapeFusionExercise(
         if (animQueue.isNotEmpty()) {
             it = animQueue.iterator()
             current = it.next()
-            last.startAnimation(current)
+            current!!.start()
         }
     }
 }
