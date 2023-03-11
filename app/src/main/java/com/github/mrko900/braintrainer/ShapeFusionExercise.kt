@@ -298,43 +298,52 @@ class ShapeFusionExercise(
         if (operandViews.isEmpty())
             return
 
-        val animQueue = ArrayList<Pair<View, Animation>>()
-        var it: Iterator<Pair<View, Animation>>? = null
-        var current: Pair<View, Animation>? = null
+        val initialLocation = IntArray(2)
+        operandViews.first().getLocationOnScreen(initialLocation)
+        val finalLocation = IntArray(2)
+        operandViews.last().getLocationOnScreen(finalLocation)
+
+        val animQueue = ArrayList<Animation>()
+        var it: Iterator<Animation>? = null
+        var current: Animation?
+        var curi = 0
+        val last = operandViews.last()
         for (i in 1 until operandViews.size) {
-            Log.d(LOGGING_TAG, " yy " + operandViews[i].y + " " + operandViews[i - 1].y)
             val prevLocation = IntArray(2)
             operandViews[i - 1].getLocationOnScreen(prevLocation)
             val currentLocation = IntArray(2)
             operandViews[i].getLocationOnScreen(currentLocation)
-            val anim = TranslateAnimation(0f, 0f, (prevLocation[1] - currentLocation[1]).toFloat(), 0f)
-            anim.duration = 5000
+            val anim = TranslateAnimation(
+                0f,
+                0f,
+                (prevLocation[1] - finalLocation[1]).toFloat(),
+                (currentLocation[1] - finalLocation[1]).toFloat()
+            )
+            anim.duration = 1000
             anim.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationEnd(animation: Animation?) {
                     if (it!!.hasNext()) {
                         current = it!!.next()
-                        current!!.first.translationY = 0f
-                        current!!.first.startAnimation(current!!.second)
+                        last.startAnimation(current)
                     }
                 }
+
                 override fun onAnimationStart(animation: Animation?) {
+                    operandViews[curi++].visibility = View.VISIBLE
                 }
+
                 override fun onAnimationRepeat(animation: Animation?) {
                 }
             })
-            animQueue.add(Pair(operandViews[i], anim))
+            animQueue.add(anim)
         }
-        val initialLocation = IntArray(2)
-        operandViews[0].getLocationOnScreen(initialLocation)
-        for (i in 2 until operandViews.size) {
-            val currentLocation = IntArray(2)
-            operandViews[i].getLocationOnScreen(currentLocation)
-            operandViews[i].translationY = (initialLocation[1] - currentLocation[1]).toFloat()
+        for (v in operandViews.subList(1, nOperands - 1)) {
+            v.visibility = View.INVISIBLE
         }
         if (animQueue.isNotEmpty()) {
             it = animQueue.iterator()
             current = it.next()
-            current!!.first.startAnimation(current!!.second)
+            last.startAnimation(current)
         }
     }
 }
