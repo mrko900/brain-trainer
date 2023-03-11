@@ -1,9 +1,15 @@
 package com.github.mrko900.braintrainer
 
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Menu
+import android.view.SurfaceHolder
+import android.view.SurfaceView
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
@@ -75,6 +81,29 @@ class MainActivity : AppCompatActivity() {
             }, animDuration)
             return@setOnItemSelectedListener true
         }
+
+        binding.root.findViewById<SurfaceView>(R.id.surfaceView).holder.addCallback(object : SurfaceHolder.Callback {
+            override fun surfaceCreated(holder: SurfaceHolder) {
+                val canvas = holder.lockCanvas()
+                val paint = Paint()
+                paint.color = Color.WHITE
+                paint.style = Paint.Style.STROKE
+                paint.strokeWidth = 10f
+                val path = Path()
+                path.arcTo(100f, 100f, 200f, 200f, -90f, 180f, false)
+                canvas.drawPath(path, paint)
+                holder.unlockCanvasAndPost(canvas)
+            }
+
+            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+
+            }
+
+            override fun surfaceDestroyed(holder: SurfaceHolder) {
+
+            }
+
+        })
     }
 
     fun createExercise(group: ViewGroup, onFinishedCallback: Consumer<ExerciseResult>): Exercise {

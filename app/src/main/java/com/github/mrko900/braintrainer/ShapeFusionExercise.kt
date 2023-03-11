@@ -315,12 +315,27 @@ class ShapeFusionExercise(
             val currentLocation = IntArray(2)
             operandViews[i].getLocationOnScreen(currentLocation)
             val path = Path()
-            
+//            path.moveTo(0f, (prevLocation[1] - finalLocation[1]).toFloat())
+//            path.arcTo(
+//                RectF(
+//                    -100f, (prevLocation[1] - finalLocation[1]).toFloat(),
+//                    100f, (currentLocation[1] - finalLocation[1]).toFloat()
+//                ), 0f, 6f, false
+//            )
+            val diff = (currentLocation[1] - finalLocation[1]) - (prevLocation[1] - finalLocation[1])
+            path.arcTo(
+                -0.4f * diff,
+                (prevLocation[1] - finalLocation[1]).toFloat(),
+                0.4f * diff,
+                (currentLocation[1] - finalLocation[1]).toFloat(),
+                -90f,
+                180f,
+                false
+            )
             val anim = ObjectAnimator.ofFloat(
                 last,
-                "translationY",
-                (prevLocation[1] - finalLocation[1]).toFloat(),
-                (currentLocation[1] - finalLocation[1]).toFloat()
+                "translationX", "translationY",
+                path
             )
 //            val anim = TranslateAnimation(
 //                0f,
@@ -334,6 +349,11 @@ class ShapeFusionExercise(
                     if (it!!.hasNext()) {
                         current = it!!.next()
                         current!!.start()
+                    } else {
+                        for (v in operandViews) {
+                            v.translationX = 0f
+                            v.translationY = 0f
+                        }
                     }
                 }
 
