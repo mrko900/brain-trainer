@@ -8,6 +8,8 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
@@ -15,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.animation.AlphaAnimation
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -99,6 +102,7 @@ class ShapeFusionExercise(
     private lateinit var frame: ViewGroup
     private lateinit var choiceListView: LinearLayout
     private lateinit var exprFrameView: TableLayout
+    private val res = group.resources
     private var newQuestion = false
 
     private val shapeSide = 3
@@ -241,6 +245,7 @@ class ShapeFusionExercise(
 
     private fun renderExpression() {
         val operandViews = ArrayList<View>()
+        val operatorViews = ArrayList<View>()
         for (i in 0 until currentQuestion.expression.operands.size) {
             val row = inflater.inflate(R.layout.expr_row, exprFrameView, false)
             val center: FrameLayout = row.findViewById(R.id.center)
@@ -264,6 +269,7 @@ class ShapeFusionExercise(
             // operator
             if (i != 0) {
                 val operatorView = inflater.inflate(R.layout.expr_operator, start, false)
+                operatorViews.add(operatorView)
                 start.addView(operatorView)
                 val img: ImageView = operatorView.findViewById(R.id.imageView3)
                 img.setImageResource(
@@ -290,12 +296,12 @@ class ShapeFusionExercise(
         exprFrameView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 exprFrameView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                expressionFadeIn(operandViews)
+                expressionFadeIn(operandViews, operatorViews)
             }
         })
     }
 
-    private fun expressionFadeIn(operandViews: ArrayList<View>) {
+    private fun expressionFadeIn(operandViews: ArrayList<View>, operatorViews: ArrayList<View>) {
         if (operandViews.isEmpty())
             return
 
@@ -303,6 +309,9 @@ class ShapeFusionExercise(
         operandViews.first().getLocationOnScreen(initialLocation)
         val finalLocation = IntArray(2)
         operandViews.last().getLocationOnScreen(finalLocation)
+
+        val alphaAnim = AlphaAnimation(0f, 1f)
+        alphaAnim.duration = res.getInteger(R.integer.shape_fusion_exercise_fade_in_duration_operator).toLong()
 
         val animQueue = ArrayList<Animator>()
         var it: Iterator<Animator>? = null
@@ -315,13 +324,6 @@ class ShapeFusionExercise(
             val currentLocation = IntArray(2)
             operandViews[i].getLocationOnScreen(currentLocation)
             val path = Path()
-//            path.moveTo(0f, (prevLocation[1] - finalLocation[1]).toFloat())
-//            path.arcTo(
-//                RectF(
-//                    -100f, (prevLocation[1] - finalLocation[1]).toFloat(),
-//                    100f, (currentLocation[1] - finalLocation[1]).toFloat()
-//                ), 0f, 6f, false
-//            )
             val diff = (currentLocation[1] - finalLocation[1]) - (prevLocation[1] - finalLocation[1])
             path.arcTo(
                 -0.4f * diff,
@@ -337,13 +339,7 @@ class ShapeFusionExercise(
                 "translationX", "translationY",
                 path
             )
-//            val anim = TranslateAnimation(
-//                0f,
-//                0f,
-//                (prevLocation[1] - finalLocation[1]).toFloat(),
-//                (currentLocation[1] - finalLocation[1]).toFloat()
-//            )
-            anim.duration = 2000
+            anim.duration = res.getInteger(R.integer.shape_fusion_exercise_fade_in_duration_operand).toLong()
             anim.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationEnd(animator: Animator?) {
                     if (it!!.hasNext()) {
@@ -358,7 +354,13 @@ class ShapeFusionExercise(
                 }
 
                 override fun onAnimationStart(animator: Animator?) {
-                    operandViews[curi++].visibility = View.VISIBLE
+                    operandViews[curi].visibility = View.VISIBLE
+                    val j = curi
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        operatorViews[j].visibility = View.VISIBLE
+                        operatorViews[j].startAnimation(alphaAnim)
+                    }, res.getInteger(R.integer.shape_fusion_exercise_fade_in_delay_operator).toLong())
+                    ++curi
                 }
 
                 override fun onAnimationRepeat(animator: Animator?) {
@@ -370,6 +372,9 @@ class ShapeFusionExercise(
             animQueue.add(anim)
         }
         for (v in operandViews.subList(1, nOperands - 1)) {
+            v.visibility = View.INVISIBLE
+        }
+        for (v in operatorViews) {
             v.visibility = View.INVISIBLE
         }
         if (animQueue.isNotEmpty()) {
