@@ -11,10 +11,17 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.Space
+import android.widget.TableLayout
 import androidx.core.util.Consumer
-import java.util.*
+import java.util.Collections
+import java.util.Random
 
 data class Shape(private val matrix: List<MutableList<Boolean>>, private val width: Int, private val height: Int) {
     companion object {
@@ -95,7 +102,7 @@ class ShapeFusionExercise(
 
     private val shapeSide = 3
     private val nChoices = 4
-    private val nOperands = 2
+    private val nOperands = 3
 
     private val random = Random()
 
@@ -279,12 +286,55 @@ class ShapeFusionExercise(
 
             exprFrameView.addView(row)
         }
+        exprFrameView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                exprFrameView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                expressionFadeIn(operandViews)
+            }
+        })
+    }
 
-        // animation
-        for (v in operandViews) {
-            val anim = TranslateAnimation(0f, 0f, -300f, 0f)
+    private fun expressionFadeIn(operandViews: ArrayList<View>) {
+        if (operandViews.isEmpty())
+            return
+
+        val animQueue = ArrayList<Pair<View, Animation>>()
+        var it: Iterator<Pair<View, Animation>>? = null
+        var current: Pair<View, Animation>? = null
+        for (i in 1 until operandViews.size) {
+            Log.d(LOGGING_TAG, " yy " + operandViews[i].y + " " + operandViews[i - 1].y)
+            val prevLocation = IntArray(2)
+            operandViews[i - 1].getLocationOnScreen(prevLocation)
+            val currentLocation = IntArray(2)
+            operandViews[i].getLocationOnScreen(currentLocation)
+            val anim = TranslateAnimation(0f, 0f, (prevLocation[1] - currentLocation[1]).toFloat(), 0f)
             anim.duration = 5000
-            v.startAnimation(anim)
+            anim.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationEnd(animation: Animation?) {
+                    if (it!!.hasNext()) {
+                        current = it!!.next()
+                        current!!.first.translationY = 0f
+                        current!!.first.startAnimation(current!!.second)
+                    }
+                }
+                override fun onAnimationStart(animation: Animation?) {
+                }
+                override fun onAnimationRepeat(animation: Animation?) {
+                }
+            })
+            animQueue.add(Pair(operandViews[i], anim))
+        }
+        val initialLocation = IntArray(2)
+        operandViews[0].getLocationOnScreen(initialLocation)
+        for (i in 2 until operandViews.size) {
+            val currentLocation = IntArray(2)
+            operandViews[i].getLocationOnScreen(currentLocation)
+            operandViews[i].translationY = (initialLocation[1] - currentLocation[1]).toFloat()
+        }
+        if (animQueue.isNotEmpty()) {
+            it = animQueue.iterator()
+            current = it.next()
+            current!!.first.startAnimation(current!!.second)
         }
     }
 }
