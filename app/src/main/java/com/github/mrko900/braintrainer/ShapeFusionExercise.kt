@@ -127,7 +127,7 @@ class ShapeFusionExercise(
     private val res = group.resources
     private var newQuestion = false
 
-    private val shapeSide = 3
+    private val shapeSide = 4
     private val nChoices = 4
     private val nOperands = 3
 
