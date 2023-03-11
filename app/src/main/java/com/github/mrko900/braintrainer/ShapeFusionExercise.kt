@@ -9,7 +9,9 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.view.animation.TranslateAnimation
 import android.widget.*
 import androidx.core.util.Consumer
 import java.util.*
@@ -230,6 +232,7 @@ class ShapeFusionExercise(
     }
 
     private fun renderExpression() {
+        val operandViews = ArrayList<View>()
         for (i in 0 until currentQuestion.expression.operands.size) {
             val row = inflater.inflate(R.layout.expr_row, exprFrameView, false)
             val center: FrameLayout = row.findViewById(R.id.center)
@@ -237,6 +240,7 @@ class ShapeFusionExercise(
 
             // operand
             val operandView = inflater.inflate(R.layout.choice_card, center, false)
+            operandViews.add(operandView)
             val operandImg: ImageView = operandView.findViewById(R.id.imageView2)
             operandImg.layoutParams.width = operandView.resources.getDimension(R.dimen.expr_card_image_size).toInt()
             operandImg.layoutParams.height = operandView.resources.getDimension(R.dimen.expr_card_image_size).toInt()
@@ -274,6 +278,13 @@ class ShapeFusionExercise(
             }
 
             exprFrameView.addView(row)
+        }
+
+        // animation
+        for (v in operandViews) {
+            val anim = TranslateAnimation(0f, 0f, -300f, 0f)
+            anim.duration = 5000
+            v.startAnimation(anim)
         }
     }
 }
