@@ -23,6 +23,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Space
 import android.widget.TableLayout
+import androidx.annotation.ColorInt
 import androidx.core.util.Consumer
 import java.util.Collections
 import java.util.Random
@@ -72,9 +73,29 @@ data class Shape(private val matrix: List<MutableList<Boolean>>, private val wid
             throw IllegalArgumentException("coords not in range")
         matrix[y][x] = value
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other)
+            return true
+        if (other !is Shape)
+            return false
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                if (get(x, y) != other.get(x, y))
+                    return false
+            }
+        }
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return matrix.hashCode()
+    }
 }
 
-class ShapeFusionExerciseQuestion(val expression: Expression, choices: List<Shape>, val answer: Int) {
+class ShapeFusionExerciseQuestion(val expression: Expression, choices: List<Shape>, val answerIndex: Int) {
+    val answer = choices[answerIndex]
+
     data class Expression(val operands: List<Shape>, val operators: List<Operator>)
 
     enum class Operator {
@@ -87,7 +108,7 @@ class ShapeFusionExerciseQuestion(val expression: Expression, choices: List<Shap
         }
 
     init {
-        if (!(answer >= 0 && answer < choices.size))
+        if (!(answerIndex >= 0 && answerIndex < choices.size))
             throw IllegalArgumentException("answer out of bounds")
     }
 }
@@ -98,6 +119,7 @@ class ShapeFusionExercise(
     private val inflater: LayoutInflater
 ) : AbstractExercise(onFinishedCallback) {
     private lateinit var currentQuestion: ShapeFusionExerciseQuestion
+    private lateinit var currentQuestionParams: QuestionParams
     private lateinit var rootFrame: FrameLayout
     private lateinit var frame: ViewGroup
     private lateinit var choiceListView: LinearLayout
@@ -110,6 +132,8 @@ class ShapeFusionExercise(
     private val nOperands = 3
 
     private val random = Random()
+
+    private data class QuestionParams(@ColorInt val color: Int)
 
     override fun init() {
         rootFrame = group.findViewById(R.id.frame)
@@ -187,10 +211,19 @@ class ShapeFusionExercise(
         return FullExpr(ShapeFusionExerciseQuestion.Expression(operands, operators), answ)
     }
 
+    @ColorInt
+    private fun randomColor(): Int {
+        val palette = intArrayOf(
+            Color.RED, Color.GREEN, Color.BLUE, Color.MAGENTA, Color.BLACK, Color.parseColor("#FFA500")
+        )
+        return palette[random.nextInt(palette.size)]
+    }
+
     private fun nextQuestion() {
         val expr = genExpression()
         val choices = genChoices(expr)
         currentQuestion = ShapeFusionExerciseQuestion(expr.expression, choices.arr, choices.ans)
+        currentQuestionParams = QuestionParams(color = randomColor())
         newQuestion = true
     }
 
@@ -203,7 +236,7 @@ class ShapeFusionExercise(
         val canvas = Canvas(bitmap)
         val paint = Paint()
         paint.style = Paint.Style.FILL
-        paint.color = Color.RED
+        paint.color = currentQuestionParams.color
 
         val xStep = (w - gap * (shape.getWidth() - 1)) / shape.getWidth()
         val yStep = (h - gap * (shape.getHeight() - 1)) / shape.getHeight()
@@ -228,6 +261,24 @@ class ShapeFusionExercise(
         }
     }
 
+    private fun handleCorrectChoice() {
+        Log.d(LOGGING_TAG, "Correct choice")
+    }
+
+    private fun handleIncorrectChoice() {
+        Log.d(LOGGING_TAG, "Incorrect choice")
+    }
+
+    private inner class ChoiceListener(val correct: Boolean) : View.OnClickListener {
+        override fun onClick(v: View) {
+            Log.v(LOGGING_TAG, "Click!")
+            if (correct)
+                handleCorrectChoice()
+            else
+                handleIncorrectChoice()
+        }
+    }
+
     private fun renderChoices() {
         var space = Space(choiceListView.context)
         choiceListView.addView(space)
@@ -237,6 +288,7 @@ class ShapeFusionExercise(
             choiceListView.addView(view)
             choiceListView.addView(Space(choiceListView.context))
             view.findViewById<ImageView>(R.id.imageView2).setImageBitmap(getImage(choice))
+            view.setOnClickListener(ChoiceListener(choice === currentQuestion.answer || choice == currentQuestion.answer))
             space = Space(choiceListView.context)
             choiceListView.addView(space)
             (space.layoutParams as LinearLayout.LayoutParams).weight = 1F
