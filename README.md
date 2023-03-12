@@ -1,7 +1,5 @@
 # brain-trainer
 
-Development plan needed! ASAP!
-
 Todo:
 * Exercise start window
 * Exercise list sections
