@@ -7,6 +7,8 @@
     <integer name="anim_alpha_in_offset">100</integer>
     <integer name="exercise_list_span_count">2</integer>
     <integer name="shape_fusion_exercise_fade_in_duration_operand">1000</integer>
+    <integer name="shape_fusion_exercise_fade_out_duration_operand">1000</integer>
     <integer name="shape_fusion_exercise_fade_in_delay_operator">500</integer>
     <integer name="shape_fusion_exercise_fade_in_duration_operator">700</integer>
+    <integer name="shape_fusion_exercise_fade_out_duration_operator">700</integer>
 </resources>
