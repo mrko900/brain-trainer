@@ -3,6 +3,7 @@
 For present:
 * Form fusion: score, time
 * Nicer screens, maybe add some nice design for impression
+* Presentation pptx (~10 slides)
 
 Todo:
 * Form fusion exercise finish
