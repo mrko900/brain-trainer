@@ -139,6 +139,12 @@ class ShapeFusionExercise(
 
     private data class QuestionParams(@ColorInt val color: Int)
 
+    private var state = State.TRANSITION
+
+    enum class State {
+        QUESTION_ACTIVE, TRANSITION
+    }
+
     override fun init() {
         rootFrame = group.findViewById(R.id.frame)
         frame = inflater.inflate(R.layout.shape_fusion_exercise_frame, rootFrame, true) as ViewGroup
@@ -148,7 +154,6 @@ class ShapeFusionExercise(
 
     override fun start() {
         nextQuestion()
-        render()
     }
 
     override fun pause() {
@@ -228,6 +233,7 @@ class ShapeFusionExercise(
         currentQuestion = ShapeFusionExerciseQuestion(expr.expression, choices.arr, choices.ans)
         currentQuestionParams = QuestionParams(color = randomColor())
         newQuestion = true
+        render()
     }
 
     private fun getImage(shape: Shape): Bitmap {
@@ -408,6 +414,7 @@ class ShapeFusionExercise(
                             v.translationX = 0f
                             v.translationY = 0f
                         }
+                        state = State.QUESTION_ACTIVE
                     }
                 }
 
@@ -501,6 +508,8 @@ class ShapeFusionExercise(
                             v.translationX = 0f
                             v.translationY = 0f
                         }
+                        state = State.TRANSITION
+                        nextQuestion()
                     }
                 }
 
