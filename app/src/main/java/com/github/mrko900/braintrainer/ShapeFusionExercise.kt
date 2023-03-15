@@ -491,9 +491,9 @@ class ShapeFusionExercise(
             anim.duration = res.getInteger(R.integer.shape_fusion_exercise_fade_out_duration_operand).toLong()
             anim.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationEnd(animator: Animator?) {
+                    operandViews[nOperands - curi - 2].visibility = View.INVISIBLE
+                    ++curi
                     if (it!!.hasNext()) {
-                        operandViews[nOperands - curi - 2].visibility = View.INVISIBLE
-                        ++curi
                         current = it!!.next()
                         current!!.start()
                     } else {
@@ -505,7 +505,6 @@ class ShapeFusionExercise(
                 }
 
                 override fun onAnimationStart(animator: Animator?) {
-                    operandViews[curi].visibility = View.VISIBLE
                     operatorViews[nOperands - curi - 2].startAnimation(alphaAnim)
                 }
 
