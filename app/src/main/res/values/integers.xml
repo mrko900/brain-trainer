@@ -12,4 +12,6 @@
     <integer name="shape_fusion_exercise_fade_in_duration_operator">700</integer>
     <integer name="shape_fusion_exercise_fade_out_duration_operator">700</integer>
     <integer name="shape_fusion_exercise_delay_between_questions">1000</integer>
+    <integer name="shape_fusion_exercise_choice_fade_in_duration">500</integer>
+    <integer name="shape_fusion_exercise_choice_fade_out_duration">500</integer>
 </resources>

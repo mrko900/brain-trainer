@@ -264,6 +264,9 @@ class ShapeFusionExercise(
     private fun clear() {
         for (choiceView in choiceViews) {
             choiceView.visibility = View.INVISIBLE
+            val fadeOut = AlphaAnimation(1f, 0f)
+            fadeOut.duration = res.getInteger(R.integer.shape_fusion_exercise_choice_fade_out_duration).toLong()
+            choiceView.startAnimation(fadeOut)
         }
         for (operatorView in operatorViews) {
             operatorView.visibility = View.INVISIBLE
@@ -349,6 +352,9 @@ class ShapeFusionExercise(
             val choice = currentQuestion.choices[i]
             val view = choiceViews[i]
             view.visibility = View.VISIBLE
+            val fadeIn = AlphaAnimation(0f, 1f)
+            fadeIn.duration = res.getInteger(R.integer.shape_fusion_exercise_choice_fade_in_duration).toLong()
+            view.startAnimation(fadeIn)
             view.findViewById<ImageView>(R.id.imageView2).setImageBitmap(getImage(choice))
             view.setOnClickListener(ChoiceListener(choice === currentQuestion.answer || choice == currentQuestion.answer))
         }
