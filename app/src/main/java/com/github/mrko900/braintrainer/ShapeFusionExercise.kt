@@ -139,6 +139,7 @@ class ShapeFusionExercise(
     private val random = Random()
 
     private var firstExprFadeIn = true
+    private var firstQuestion = true
 
     private data class QuestionParams(@ColorInt val color: Int)
 
@@ -262,21 +263,27 @@ class ShapeFusionExercise(
     }
 
     private fun clear() {
+        if (!firstQuestion) {
+            operandViews.first().visibility = View.VISIBLE
+
+            val fadeOut = AlphaAnimation(1f, 0f)
+            fadeOut.duration = res.getInteger(R.integer.shape_fusion_exercise_first_bitmap_fade_out_duration).toLong()
+            val img: ImageView = operandViews.last().findViewById(R.id.imageView2)
+            img.startAnimation(fadeOut)
+            img.visibility = View.INVISIBLE
+        }
+
         for (choiceView in choiceViews) {
             choiceView.visibility = View.INVISIBLE
-            val fadeOut = AlphaAnimation(1f, 0f)
-            fadeOut.duration = res.getInteger(R.integer.shape_fusion_exercise_choice_fade_out_duration).toLong()
-            choiceView.startAnimation(fadeOut)
+            if (!firstQuestion) {
+                val fadeOut = AlphaAnimation(1f, 0f)
+                fadeOut.duration = res.getInteger(R.integer.shape_fusion_exercise_choice_fade_out_duration).toLong()
+                choiceView.startAnimation(fadeOut)
+            }
         }
         for (operatorView in operatorViews) {
             operatorView.visibility = View.INVISIBLE
         }
-        operandViews.first().visibility = View.VISIBLE
-        val fadeOut = AlphaAnimation(1f, 0f)
-        fadeOut.duration = res.getInteger(R.integer.shape_fusion_exercise_first_bitmap_fade_out_duration).toLong()
-        val img: ImageView = operandViews.last().findViewById(R.id.imageView2)
-        img.startAnimation(fadeOut)
-        img.visibility = View.INVISIBLE
         for (operandView in operandViews.subList(0, nOperands - 1)) {
             operandView.visibility = View.INVISIBLE
         }
@@ -292,10 +299,25 @@ class ShapeFusionExercise(
     }
 
     private fun nextQuestion() {
+        if (firstQuestion) {
+            exprFrameView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val first = IntArray(2)
+                    operandViews.first().getLocationOnScreen(first)
+                    val last = IntArray(2)
+                    operandViews.last().getLocationOnScreen(last)
+                    operandViews.last().translationY = (first[1] - last[1]).toFloat()
+                }
+            })
+        }
+
         clear()
         Handler(Looper.getMainLooper()).postDelayed({
             setupNextQuestion()
         }, res.getInteger(R.integer.shape_fusion_exercise_delay_between_questions).toLong())
+
+        if (firstQuestion)
+            firstQuestion = false
     }
 
     private fun getImage(shape: Shape): Bitmap {
@@ -395,7 +417,6 @@ class ShapeFusionExercise(
             if (i == nOperands - 1) {
                 val fadeIn = AlphaAnimation(0f, 1f)
                 fadeIn.duration = res.getInteger(R.integer.shape_fusion_exercise_first_bitmap_fade_in_duration).toLong()
-                Log.d(LOGGING_TAG, "lamo lol ")
                 operandImg.startAnimation(fadeIn)
             }
 
