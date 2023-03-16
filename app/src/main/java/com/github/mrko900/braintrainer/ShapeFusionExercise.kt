@@ -387,13 +387,17 @@ class ShapeFusionExercise(
 
     private fun renderExpression() {
         for (i in 0 until currentQuestion.expression.operands.size) {
-            val row = operandViews[i]
-
             // configure operand
             operandViews[i].visibility = View.VISIBLE
             val operandImg: ImageView = operandViews[i].findViewById(R.id.imageView2)
             operandImg.setImageBitmap(getImage(currentQuestion.expression.operands[i]))
             operandImg.visibility = View.VISIBLE
+            if (i == nOperands - 1) {
+                val fadeIn = AlphaAnimation(0f, 1f)
+                fadeIn.duration = res.getInteger(R.integer.shape_fusion_exercise_first_bitmap_fade_in_duration).toLong()
+                Log.d(LOGGING_TAG, "lamo lol ")
+                operandImg.startAnimation(fadeIn)
+            }
 
             // operator
             if (i != 0) {

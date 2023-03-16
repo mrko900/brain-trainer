@@ -15,4 +15,5 @@
     <integer name="shape_fusion_exercise_choice_fade_in_duration">500</integer>
     <integer name="shape_fusion_exercise_choice_fade_out_duration">500</integer>
     <integer name="shape_fusion_exercise_first_bitmap_fade_out_duration">200</integer>
+    <integer name="shape_fusion_exercise_first_bitmap_fade_in_duration">400</integer>
 </resources>
