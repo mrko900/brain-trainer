@@ -138,6 +138,8 @@ class ShapeFusionExercise(
 
     private val random = Random()
 
+    private var firstExprFadeIn = true
+
     private data class QuestionParams(@ColorInt val color: Int)
 
     private var state = State.TRANSITION
@@ -390,12 +392,17 @@ class ShapeFusionExercise(
                 img.imageTintList = ColorStateList.valueOf(color.data)
             }
         }
-        exprFrameView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                exprFrameView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                expressionFadeIn()
-            }
-        })
+        if (firstExprFadeIn) {
+            firstExprFadeIn = false
+            exprFrameView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    exprFrameView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    expressionFadeIn()
+                }
+            })
+        } else {
+            expressionFadeIn()
+        }
     }
 
     private fun expressionFadeIn() {
