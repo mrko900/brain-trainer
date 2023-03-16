@@ -130,6 +130,7 @@ class ShapeFusionExercise(
 
     private val operandViews: MutableList<View> = ArrayList()
     private val operatorViews: MutableList<View> = ArrayList()
+    private val choiceViews: MutableList<View> = ArrayList()
 
     private val shapeSide = 4
     private val nChoices = 4
@@ -153,6 +154,7 @@ class ShapeFusionExercise(
     }
 
     override fun start() {
+        initViews()
         nextQuestion()
     }
 
@@ -160,6 +162,36 @@ class ShapeFusionExercise(
     }
 
     override fun resume() {
+    }
+
+    private fun initViews() {
+        // init operands and operators
+        for (i in 0 until nOperands) {
+            val row = addOperand()
+            val start: FrameLayout = row.findViewById(R.id.start)
+            // operator
+            if (i != 0) {
+                val operatorView = inflater.inflate(R.layout.expr_operator, start, false)
+                operatorViews.add(operatorView)
+                start.addView(operatorView)
+                val operatorViewLayoutParams = operatorView.layoutParams as FrameLayout.LayoutParams
+                operatorViewLayoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+            }
+        }
+
+        // init choices
+        var space = Space(choiceListView.context)
+        choiceListView.addView(space)
+        (space.layoutParams as LinearLayout.LayoutParams).weight = 1F
+        for (i in 0 until nChoices) {
+            val view = inflater.inflate(R.layout.choice_card, choiceListView, false)
+            choiceViews.add(view)
+            choiceListView.addView(view)
+            choiceListView.addView(Space(choiceListView.context))
+            space = Space(choiceListView.context)
+            choiceListView.addView(space)
+            (space.layoutParams as LinearLayout.LayoutParams).weight = 1F
+        }
     }
 
     private fun randomShape(): Shape {
@@ -228,20 +260,22 @@ class ShapeFusionExercise(
     }
 
     private fun clear() {
-        exprFrameView.removeAllViews()
-        choiceListView.removeAllViews()
-        operandViews.clear()
-        operatorViews.clear()
     }
 
-    private fun nextQuestion() {
-        clear()
+    private fun setupNextQuestion() {
         val expr = genExpression()
         val choices = genChoices(expr)
         currentQuestion = ShapeFusionExerciseQuestion(expr.expression, choices.arr, choices.ans)
         currentQuestionParams = QuestionParams(color = randomColor())
         newQuestion = true
         render()
+    }
+
+    private fun nextQuestion() {
+        clear()
+        Handler(Looper.getMainLooper()).postDelayed({
+            setupNextQuestion()
+        }, res.getInteger(R.integer.shape_fusion_exercise_delay_between_questions).toLong())
     }
 
     private fun getImage(shape: Shape): Bitmap {
@@ -298,47 +332,46 @@ class ShapeFusionExercise(
     }
 
     private fun renderChoices() {
-        var space = Space(choiceListView.context)
-        choiceListView.addView(space)
-        (space.layoutParams as LinearLayout.LayoutParams).weight = 1F
-        for (choice in currentQuestion.choices) {
-            val view = inflater.inflate(R.layout.choice_card, choiceListView, false)
-            choiceListView.addView(view)
-            choiceListView.addView(Space(choiceListView.context))
+        for (i in 0 until currentQuestion.choices.size) {
+            val choice = currentQuestion.choices[i]
+            val view = choiceViews[i]
             view.findViewById<ImageView>(R.id.imageView2).setImageBitmap(getImage(choice))
             view.setOnClickListener(ChoiceListener(choice === currentQuestion.answer || choice == currentQuestion.answer))
-            space = Space(choiceListView.context)
-            choiceListView.addView(space)
-            (space.layoutParams as LinearLayout.LayoutParams).weight = 1F
         }
+    }
+
+    private fun addOperand(): View {
+        val row = inflater.inflate(R.layout.expr_row, exprFrameView, false)
+        val center: FrameLayout = row.findViewById(R.id.center)
+
+        val operandView = inflater.inflate(R.layout.choice_card, center, false)
+        operandViews.add(operandView)
+        val operandImg: ImageView = operandView.findViewById(R.id.imageView2)
+        operandImg.layoutParams.width = operandView.resources.getDimension(R.dimen.expr_card_image_size).toInt()
+        operandImg.layoutParams.height = operandView.resources.getDimension(R.dimen.expr_card_image_size).toInt()
+        center.addView(operandView)
+        val operandViewLayoutParams = operandView.layoutParams as FrameLayout.LayoutParams
+        operandViewLayoutParams.gravity = Gravity.CENTER
+        operandViewLayoutParams.leftMargin = 0
+        operandViewLayoutParams.rightMargin = 0
+        operandViewLayoutParams.topMargin = 0
+        operandViewLayoutParams.bottomMargin = 0
+
+        exprFrameView.addView(row)
+        return row
     }
 
     private fun renderExpression() {
         for (i in 0 until currentQuestion.expression.operands.size) {
-            val row = inflater.inflate(R.layout.expr_row, exprFrameView, false)
-            val center: FrameLayout = row.findViewById(R.id.center)
-            val start: FrameLayout = row.findViewById(R.id.start)
+            val row = operandViews[i]
 
-            // operand
-            val operandView = inflater.inflate(R.layout.choice_card, center, false)
-            operandViews.add(operandView)
-            val operandImg: ImageView = operandView.findViewById(R.id.imageView2)
-            operandImg.layoutParams.width = operandView.resources.getDimension(R.dimen.expr_card_image_size).toInt()
-            operandImg.layoutParams.height = operandView.resources.getDimension(R.dimen.expr_card_image_size).toInt()
-            operandImg.setImageBitmap(getImage(currentQuestion.expression.operands[i]))
-            center.addView(operandView)
-            val operandViewLayoutParams = operandView.layoutParams as FrameLayout.LayoutParams
-            operandViewLayoutParams.gravity = Gravity.CENTER
-            operandViewLayoutParams.leftMargin = 0
-            operandViewLayoutParams.rightMargin = 0
-            operandViewLayoutParams.topMargin = 0
-            operandViewLayoutParams.bottomMargin = 0
+            // configure operand
+            row.findViewById<ImageView>(R.id.imageView2)
+                .setImageBitmap(getImage(currentQuestion.expression.operands[i]))
 
             // operator
             if (i != 0) {
-                val operatorView = inflater.inflate(R.layout.expr_operator, start, false)
-                operatorViews.add(operatorView)
-                start.addView(operatorView)
+                val operatorView = operatorViews[i - 1]
                 val img: ImageView = operatorView.findViewById(R.id.imageView3)
                 img.setImageResource(
                     if (currentQuestion.expression.operators[i - 1] == ShapeFusionExerciseQuestion.Operator.ADDITION)
@@ -355,11 +388,7 @@ class ShapeFusionExercise(
                     color, true
                 )
                 img.imageTintList = ColorStateList.valueOf(color.data)
-                val operatorViewLayoutParams = operatorView.layoutParams as FrameLayout.LayoutParams
-                operatorViewLayoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
             }
-
-            exprFrameView.addView(row)
         }
         exprFrameView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {

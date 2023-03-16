@@ -8,6 +8,5 @@
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="@dimen/expr_card_operator_image_size"
-        android:layout_height="@dimen/expr_card_operator_image_size"
-        app:srcCompat="@drawable/ic_baseline_play_circle_24" />
+        android:layout_height="@dimen/expr_card_operator_image_size" />
 </androidx.cardview.widget.CardView>

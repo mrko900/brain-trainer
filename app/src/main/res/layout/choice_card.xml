@@ -15,6 +15,5 @@
         android:id="@+id/imageView2"
         android:layout_width="@dimen/choice_card_image_size"
         android:layout_height="@dimen/choice_card_image_size"
-        android:layout_margin="@dimen/choice_card_image_margin"
-        app:srcCompat="@drawable/ic_baseline_play_circle_24" />
+        android:layout_margin="@dimen/choice_card_image_margin" />
 </androidx.cardview.widget.CardView>
