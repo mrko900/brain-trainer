@@ -262,6 +262,17 @@ class ShapeFusionExercise(
     }
 
     private fun clear() {
+        for (choiceView in choiceViews) {
+            choiceView.visibility = View.INVISIBLE
+        }
+        for (operatorView in operatorViews) {
+            operatorView.visibility = View.INVISIBLE
+        }
+        operandViews.first().visibility = View.VISIBLE
+        operandViews.first().findViewById<ImageView>(R.id.imageView2).setImageDrawable(null)
+        for (operandView in operandViews.subList(1, nOperands)) {
+            operandView.visibility = View.INVISIBLE
+        }
     }
 
     private fun setupNextQuestion() {
@@ -337,6 +348,7 @@ class ShapeFusionExercise(
         for (i in 0 until currentQuestion.choices.size) {
             val choice = currentQuestion.choices[i]
             val view = choiceViews[i]
+            view.visibility = View.VISIBLE
             view.findViewById<ImageView>(R.id.imageView2).setImageBitmap(getImage(choice))
             view.setOnClickListener(ChoiceListener(choice === currentQuestion.answer || choice == currentQuestion.answer))
         }
@@ -368,12 +380,14 @@ class ShapeFusionExercise(
             val row = operandViews[i]
 
             // configure operand
+            operandViews[i].visibility = View.VISIBLE
             row.findViewById<ImageView>(R.id.imageView2)
                 .setImageBitmap(getImage(currentQuestion.expression.operands[i]))
 
             // operator
             if (i != 0) {
                 val operatorView = operatorViews[i - 1]
+                operatorView.visibility = View.VISIBLE
                 val img: ImageView = operatorView.findViewById(R.id.imageView3)
                 img.setImageResource(
                     if (currentQuestion.expression.operators[i - 1] == ShapeFusionExerciseQuestion.Operator.ADDITION)
