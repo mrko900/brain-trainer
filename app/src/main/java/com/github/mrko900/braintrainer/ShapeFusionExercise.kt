@@ -302,6 +302,7 @@ class ShapeFusionExercise(
         if (firstQuestion) {
             exprFrameView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
+                    exprFrameView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     val first = IntArray(2)
                     operandViews.first().getLocationOnScreen(first)
                     val last = IntArray(2)
