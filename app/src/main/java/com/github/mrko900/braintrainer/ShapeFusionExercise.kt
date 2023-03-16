@@ -272,8 +272,12 @@ class ShapeFusionExercise(
             operatorView.visibility = View.INVISIBLE
         }
         operandViews.first().visibility = View.VISIBLE
-        operandViews.first().findViewById<ImageView>(R.id.imageView2).setImageDrawable(null)
-        for (operandView in operandViews.subList(1, nOperands)) {
+        val fadeOut = AlphaAnimation(1f, 0f)
+        fadeOut.duration = res.getInteger(R.integer.shape_fusion_exercise_first_bitmap_fade_out_duration).toLong()
+        val img: ImageView = operandViews.last().findViewById(R.id.imageView2)
+        img.startAnimation(fadeOut)
+        img.visibility = View.INVISIBLE
+        for (operandView in operandViews.subList(0, nOperands - 1)) {
             operandView.visibility = View.INVISIBLE
         }
     }
@@ -387,8 +391,9 @@ class ShapeFusionExercise(
 
             // configure operand
             operandViews[i].visibility = View.VISIBLE
-            row.findViewById<ImageView>(R.id.imageView2)
-                .setImageBitmap(getImage(currentQuestion.expression.operands[i]))
+            val operandImg: ImageView = operandViews[i].findViewById(R.id.imageView2)
+            operandImg.setImageBitmap(getImage(currentQuestion.expression.operands[i]))
+            operandImg.visibility = View.VISIBLE
 
             // operator
             if (i != 0) {
@@ -429,11 +434,6 @@ class ShapeFusionExercise(
         if (operandViews.isEmpty())
             return
 
-        val initialLocation = IntArray(2)
-        operandViews.first().getLocationOnScreen(initialLocation)
-        val finalLocation = IntArray(2)
-        operandViews.last().getLocationOnScreen(finalLocation)
-
         val alphaAnim = AlphaAnimation(0f, 1f)
         alphaAnim.duration = res.getInteger(R.integer.shape_fusion_exercise_fade_in_duration_operator).toLong()
 
@@ -442,6 +442,14 @@ class ShapeFusionExercise(
         var current: Animator?
         var curi = 0
         val last = operandViews.last()
+        last.translationX = 0f
+        last.translationY = 0f
+
+        val initialLocation = IntArray(2)
+        operandViews.first().getLocationOnScreen(initialLocation)
+        val finalLocation = IntArray(2)
+        last.getLocationOnScreen(finalLocation)
+
         for (i in 1 until operandViews.size) {
             val prevLocation = IntArray(2)
             operandViews[i - 1].getLocationOnScreen(prevLocation)
@@ -470,10 +478,8 @@ class ShapeFusionExercise(
                         current = it!!.next()
                         current!!.start()
                     } else {
-                        for (v in operandViews) {
-                            v.translationX = 0f
-                            v.translationY = 0f
-                        }
+                        last.translationX = 0f
+                        last.translationY = 0f
                         state = State.QUESTION_ACTIVE
                     }
                 }
@@ -564,10 +570,6 @@ class ShapeFusionExercise(
                         current = it!!.next()
                         current!!.start()
                     } else {
-                        for (v in operandViews) {
-                            v.translationX = 0f
-                            v.translationY = 0f
-                        }
                         state = State.TRANSITION
                         nextQuestion()
                     }
