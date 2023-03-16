@@ -128,8 +128,8 @@ class ShapeFusionExercise(
     private val res = group.resources
     private var newQuestion = false
 
-    private lateinit var operandViews: ArrayList<View>
-    private lateinit var operatorViews: ArrayList<View>
+    private val operandViews: MutableList<View> = ArrayList()
+    private val operatorViews: MutableList<View> = ArrayList()
 
     private val shapeSide = 4
     private val nChoices = 4
@@ -227,7 +227,15 @@ class ShapeFusionExercise(
         return palette[random.nextInt(palette.size)]
     }
 
+    private fun clear() {
+        exprFrameView.removeAllViews()
+        choiceListView.removeAllViews()
+        operandViews.clear()
+        operatorViews.clear()
+    }
+
     private fun nextQuestion() {
+        clear()
         val expr = genExpression()
         val choices = genChoices(expr)
         currentQuestion = ShapeFusionExerciseQuestion(expr.expression, choices.arr, choices.ans)
@@ -306,8 +314,6 @@ class ShapeFusionExercise(
     }
 
     private fun renderExpression() {
-        val operandViews = ArrayList<View>()
-        val operatorViews = ArrayList<View>()
         for (i in 0 until currentQuestion.expression.operands.size) {
             val row = inflater.inflate(R.layout.expr_row, exprFrameView, false)
             val center: FrameLayout = row.findViewById(R.id.center)
@@ -355,8 +361,6 @@ class ShapeFusionExercise(
 
             exprFrameView.addView(row)
         }
-        this.operandViews = operandViews
-        this.operatorViews = operatorViews
         exprFrameView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 exprFrameView.viewTreeObserver.removeOnGlobalLayoutListener(this)
