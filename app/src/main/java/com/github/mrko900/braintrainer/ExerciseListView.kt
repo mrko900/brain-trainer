@@ -76,7 +76,7 @@ class ExerciseListViewAdapter(
     // todo remove item
 }
 
-// todo don't inflate inside a constructor
+// todo don't inflate inside the constructor
 class ExerciseListViewAdapterViewHolder : RecyclerView.ViewHolder {
     val binding: ExerciseListItemBinding
     val nav: NavController

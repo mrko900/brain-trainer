@@ -132,9 +132,9 @@ class ShapeFusionExercise(
     private val operatorViews: MutableList<View> = ArrayList()
     private val choiceViews: MutableList<View> = ArrayList()
 
-    private val shapeSide = 4
-    private val nChoices = 4
-    private val nOperands = 3
+    private val shapeSide = 2
+    private val nChoices = 3
+    private val nOperands = 4
 
     private val random = Random()
 
