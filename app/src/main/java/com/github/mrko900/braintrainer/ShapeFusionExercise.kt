@@ -132,9 +132,9 @@ class ShapeFusionExercise(
     private val operatorViews: MutableList<View> = ArrayList()
     private val choiceViews: MutableList<View> = ArrayList()
 
-    private val shapeSide = 2
-    private val nChoices = 3
-    private val nOperands = 4
+    private val shapeSide = 4
+    private val nChoices = 4
+    private val nOperands = 3
 
     private val random = Random()
 
@@ -355,9 +355,18 @@ class ShapeFusionExercise(
         }
     }
 
+    private fun questionUnloaded() {
+        nextQuestion()
+    }
+
+    private fun endQuestion() {
+        state = State.TRANSITION
+        expressionFadeOut()
+    }
+
     private fun handleCorrectChoice() {
         Log.d(LOGGING_TAG, "Correct choice")
-        expressionFadeOut()
+        endQuestion()
     }
 
     private fun handleIncorrectChoice() {
@@ -366,6 +375,8 @@ class ShapeFusionExercise(
 
     private inner class ChoiceListener(val correct: Boolean) : View.OnClickListener {
         override fun onClick(v: View) {
+            if (state != State.QUESTION_ACTIVE)
+                return
             Log.v(LOGGING_TAG, "Click!")
             if (correct)
                 handleCorrectChoice()
@@ -456,6 +467,10 @@ class ShapeFusionExercise(
         }
     }
 
+    private fun questionLoaded() {
+        state = State.QUESTION_ACTIVE
+    }
+
     private fun expressionFadeIn() {
         if (operandViews.isEmpty())
             return
@@ -506,7 +521,7 @@ class ShapeFusionExercise(
                     } else {
                         last.translationX = 0f
                         last.translationY = 0f
-                        state = State.QUESTION_ACTIVE
+                        questionLoaded()
                     }
                 }
 
@@ -596,8 +611,7 @@ class ShapeFusionExercise(
                         current = it!!.next()
                         current!!.start()
                     } else {
-                        state = State.TRANSITION
-                        nextQuestion()
+                        questionUnloaded()
                     }
                 }
 
