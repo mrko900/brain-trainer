@@ -125,7 +125,7 @@
             app:layout_constraintTop_toTopOf="@+id/timerStatusBar" />
 
         <TextView
-            android:id="@+id/scoreStatusBar2"
+            android:id="@+id/roundStatusBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
@@ -140,7 +140,7 @@
             app:layout_constraintTop_toTopOf="@+id/timerStatusBar" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/scoreStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
@@ -155,7 +155,7 @@
             app:layout_constraintTop_toBottomOf="@+id/scoreStatusBar" />
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/roundStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
@@ -165,8 +165,8 @@
             android:textSize="20dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/scoreStatusBar2"
-            app:layout_constraintStart_toStartOf="@+id/scoreStatusBar2"
+            app:layout_constraintEnd_toEndOf="@+id/roundStatusBar"
+            app:layout_constraintStart_toStartOf="@+id/roundStatusBar"
             app:layout_constraintTop_toBottomOf="@+id/scoreStatusBar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

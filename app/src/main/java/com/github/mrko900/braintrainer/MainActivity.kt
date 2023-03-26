@@ -50,10 +50,12 @@ class MainActivity : AppCompatActivity() {
         test.percentage = 0.7f
         val animator = ValueAnimator.ofFloat(0f, 1f)
         animator.duration = 4000
-        animator.addUpdateListener { anim -> run {
-            test.percentage = anim.animatedValue as Float
-            test.invalidate()
-        } }
+        animator.addUpdateListener { anim ->
+            run {
+                test.percentage = anim.animatedValue as Float
+                test.invalidate()
+            }
+        }
         animator.start()
 
         navigation = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
@@ -99,7 +101,12 @@ class MainActivity : AppCompatActivity() {
             }
             ExerciseType.SHAPE_FUSION -> {
                 return ShapeFusionExercise(
-                    ExerciseControl(group.findViewById(R.id.timer), group.findViewById(R.id.timerProgressBar)),
+                    ExerciseControl(
+                        group.findViewById(R.id.timer),
+                        group.findViewById(R.id.timerProgressBar),
+                        group.findViewById(R.id.scoreStatus),
+                        group.findViewById(R.id.roundStatus)
+                    ),
                     onFinishedCallback,
                     group,
                     layoutInflater
