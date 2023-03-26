@@ -138,6 +138,8 @@ class ShapeFusionExercise(
     private val nOperands = 3
     private val secondsPerQuestion = 8
 
+    private var targetNextTimerUpd: Long = 0
+
     private val random = Random()
 
     private var firstExprFadeIn = true
@@ -373,7 +375,7 @@ class ShapeFusionExercise(
     }
 
     private fun handleIncorrectChoice() {
-        Log.d(LOGGING_TAG, "Incorrect choice")
+        Log.d(LOGGING_TAG, "Question failed")
     }
 
     private inner class ChoiceListener(val correct: Boolean) : View.OnClickListener {
@@ -470,7 +472,9 @@ class ShapeFusionExercise(
         }
     }
 
-    private var targetNextTimerUpd: Long = 0
+    private fun timedOut() {
+        handleIncorrectChoice()
+    }
 
     private fun questionLoaded() {
         state = State.QUESTION_ACTIVE
@@ -478,6 +482,10 @@ class ShapeFusionExercise(
         val runnable = object : Runnable {
             override fun run() {
                 exerciseControl.timer -= 1
+                if (exerciseControl.timer == 0) {
+                    timedOut()
+                    return
+                }
                 if (state != State.QUESTION_ACTIVE)
                     return
                 targetNextTimerUpd += 1000L
