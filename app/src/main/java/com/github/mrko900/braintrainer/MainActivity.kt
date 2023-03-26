@@ -44,6 +44,9 @@ class MainActivity : AppCompatActivity() {
         binding = MainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val test: CircularProgressBar = binding.root.findViewById(R.id.circle)
+        test.percentage = 0.7f
+
         navigation = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
 
         val animRight: NavOptions = NavOptions.Builder()

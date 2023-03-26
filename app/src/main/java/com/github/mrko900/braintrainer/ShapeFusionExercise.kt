@@ -481,13 +481,13 @@ class ShapeFusionExercise(
         val handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {
             override fun run() {
+                if (state != State.QUESTION_ACTIVE)
+                    return
                 exerciseControl.timer -= 1
                 if (exerciseControl.timer == 0) {
                     timedOut()
                     return
                 }
-                if (state != State.QUESTION_ACTIVE)
-                    return
                 targetNextTimerUpd += 1000L
                 handler.postDelayed(this, targetNextTimerUpd - System.currentTimeMillis())
             }
