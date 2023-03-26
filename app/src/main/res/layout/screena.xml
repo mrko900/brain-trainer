@@ -7,8 +7,8 @@
 
     <com.github.mrko900.braintrainer.CircularProgressBar
         android:id="@+id/circle"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:background="@android:color/holo_red_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

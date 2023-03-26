@@ -37,7 +37,7 @@ class CircularProgressBar : View {
 
     init {
         paint.style = Paint.Style.STROKE
-        strokeWidth = 40f
+        strokeWidth = 30f
     }
 
     override fun onDraw(canvas: Canvas?) {
