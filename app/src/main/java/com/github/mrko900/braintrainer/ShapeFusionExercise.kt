@@ -2,6 +2,7 @@ package com.github.mrko900.braintrainer
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -19,6 +20,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -304,6 +306,7 @@ class ShapeFusionExercise(
 
     private fun nextQuestion() {
         exerciseControl.timer = secondsPerQuestion
+        exerciseControl.progress = 1f
         if (firstQuestion) {
             exprFrameView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
@@ -476,6 +479,8 @@ class ShapeFusionExercise(
         handleIncorrectChoice()
     }
 
+    private val progressAnim = ValueAnimator.ofFloat(1f, 0f)
+
     private fun questionLoaded() {
         state = State.QUESTION_ACTIVE
         val handler = Handler(Looper.getMainLooper())
@@ -494,6 +499,11 @@ class ShapeFusionExercise(
         }
         targetNextTimerUpd = System.currentTimeMillis() + 1000L
         handler.postDelayed(runnable, 1000L)
+
+        progressAnim.addUpdateListener { anim -> exerciseControl.progress = anim.animatedValue as Float }
+        progressAnim.duration = secondsPerQuestion * 1000L
+        progressAnim.interpolator = LinearInterpolator()
+        progressAnim.start()
     }
 
     private fun expressionFadeIn() {

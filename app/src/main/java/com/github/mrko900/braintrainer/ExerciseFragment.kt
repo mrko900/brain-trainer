@@ -28,6 +28,9 @@ class ExerciseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.timerProgressBar.strokeWidth = 12f
+
         exercise = mainActivity.createExercise(binding.root) { }
         exercise.init()
         exercise.start()

@@ -37,6 +37,7 @@ class CircularProgressBar : View {
 
     init {
         paint.style = Paint.Style.STROKE
+        paint.isAntiAlias = true
         strokeWidth = 30f
     }
 
@@ -52,7 +53,7 @@ class CircularProgressBar : View {
             width.toFloat() - sw,
             height.toFloat() - sw,
             -90f,
-            percentage * 360f,
+            -percentage * 360f,
             false,
             paint
         )
@@ -62,8 +63,8 @@ class CircularProgressBar : View {
             sw,
             width.toFloat() - sw,
             height.toFloat() - sw,
-            percentage * 360f - 90f,
-            (1 - percentage) * 360f,
+            -percentage * 360f - 90f,
+            -(1 - percentage) * 360f,
             false,
             paint
         )

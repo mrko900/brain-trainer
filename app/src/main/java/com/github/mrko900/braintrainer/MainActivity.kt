@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         binding = MainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // todo remove
         val test: CircularProgressBar = binding.root.findViewById(R.id.circle)
         test.percentage = 0.7f
         val animator = ValueAnimator.ofFloat(0f, 1f)
@@ -98,7 +99,7 @@ class MainActivity : AppCompatActivity() {
             }
             ExerciseType.SHAPE_FUSION -> {
                 return ShapeFusionExercise(
-                    ExerciseControl(group.findViewById(R.id.timer)),
+                    ExerciseControl(group.findViewById(R.id.timer), group.findViewById(R.id.timerProgressBar)),
                     onFinishedCallback,
                     group,
                     layoutInflater
