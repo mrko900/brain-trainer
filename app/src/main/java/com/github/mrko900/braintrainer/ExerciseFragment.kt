@@ -1,5 +1,6 @@
 package com.github.mrko900.braintrainer
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,6 +31,7 @@ class ExerciseFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.timerProgressBar.strokeWidth = 12f
+        binding.timerProgressBar.filledColor = Color.parseColor("#222222")
 
         exercise = mainActivity.createExercise(binding.root) { }
         exercise.init()

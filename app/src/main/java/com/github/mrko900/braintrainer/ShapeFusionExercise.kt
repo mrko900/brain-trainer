@@ -370,6 +370,9 @@ class ShapeFusionExercise(
     private fun endQuestion() {
         state = State.TRANSITION
         expressionFadeOut()
+        val valCopy = progressAnim.animatedValue as Float
+        progressAnim.end()
+        exerciseControl.progress = valCopy
     }
 
     private fun handleCorrectChoice() {

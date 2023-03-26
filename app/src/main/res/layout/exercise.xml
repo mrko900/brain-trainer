@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:elevation="30dp">
+        android:elevation="@dimen/exercise_top_bar_elevation">
 
         <Button
             android:id="@+id/pauseButton"
@@ -46,7 +46,7 @@
         android:layout_height="64dp"
         android:layout_marginTop="-32dp"
         android:background="@drawable/round_button"
-        android:elevation="30dp"
+        android:elevation="@dimen/exercise_top_bar_elevation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">

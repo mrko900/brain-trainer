@@ -12,4 +12,5 @@
     <dimen name="expr_card_image_size">80dp</dimen>
     <dimen name="expr_card_operator_image_size">40dp</dimen>
     <dimen name="shape_fusion_gap">3dp</dimen>
+    <dimen name="exercise_top_bar_elevation">10dp</dimen>
 </resources>
