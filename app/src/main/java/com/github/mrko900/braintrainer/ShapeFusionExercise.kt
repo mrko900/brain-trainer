@@ -115,10 +115,11 @@ class ShapeFusionExerciseQuestion(val expression: Expression, choices: List<Shap
 }
 
 class ShapeFusionExercise(
+    exerciseControl: ExerciseControl,
     onFinishedCallback: Consumer<ExerciseResult>,
     private val group: ViewGroup,
     private val inflater: LayoutInflater
-) : AbstractExercise(onFinishedCallback) {
+) : AbstractExercise(exerciseControl, onFinishedCallback) {
     private lateinit var currentQuestion: ShapeFusionExerciseQuestion
     private lateinit var currentQuestionParams: QuestionParams
     private lateinit var rootFrame: FrameLayout
@@ -135,6 +136,7 @@ class ShapeFusionExercise(
     private val shapeSide = 4
     private val nChoices = 4
     private val nOperands = 3
+    private val secondsPerQuestion = 8
 
     private val random = Random()
 
@@ -299,6 +301,7 @@ class ShapeFusionExercise(
     }
 
     private fun nextQuestion() {
+        exerciseControl.timer = secondsPerQuestion
         if (firstQuestion) {
             exprFrameView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
@@ -467,8 +470,22 @@ class ShapeFusionExercise(
         }
     }
 
+    private var targetNextTimerUpd: Long = 0
+
     private fun questionLoaded() {
         state = State.QUESTION_ACTIVE
+        val handler = Handler(Looper.getMainLooper())
+        val runnable = object : Runnable {
+            override fun run() {
+                exerciseControl.timer -= 1
+                if (state != State.QUESTION_ACTIVE)
+                    return
+                targetNextTimerUpd += 1000L
+                handler.postDelayed(this, targetNextTimerUpd - System.currentTimeMillis())
+            }
+        }
+        targetNextTimerUpd = System.currentTimeMillis() + 1000L
+        handler.postDelayed(runnable, 1000L)
     }
 
     private fun expressionFadeIn() {

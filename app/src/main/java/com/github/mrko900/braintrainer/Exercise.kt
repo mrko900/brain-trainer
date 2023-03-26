@@ -11,7 +11,10 @@ interface Exercise {
     fun resume()
 }
 
-abstract class AbstractExercise(private val onFinishedCallback: Consumer<ExerciseResult>) : Exercise {
+abstract class AbstractExercise(
+    protected val exerciseControl: ExerciseControl,
+    private val onFinishedCallback: Consumer<ExerciseResult>
+) : Exercise {
     protected fun finish(result: ExerciseResult) {
         onFinishedCallback.accept(result)
     }

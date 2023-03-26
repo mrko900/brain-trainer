@@ -28,7 +28,7 @@ class ExerciseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        exercise = mainActivity.createExercise(binding.frame) { }
+        exercise = mainActivity.createExercise(binding.root) { }
         exercise.init()
         exercise.start()
     }

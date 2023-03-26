@@ -86,7 +86,12 @@ class MainActivity : AppCompatActivity() {
                 throw UnsupportedOperationException()
             }
             ExerciseType.SHAPE_FUSION -> {
-                return ShapeFusionExercise(onFinishedCallback, group, layoutInflater)
+                return ShapeFusionExercise(
+                    ExerciseControl(group.findViewById(R.id.timer)),
+                    onFinishedCallback,
+                    group,
+                    layoutInflater
+                )
             }
             else -> {
                 throw AssertionError()
