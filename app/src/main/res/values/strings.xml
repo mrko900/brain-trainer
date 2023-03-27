@@ -13,4 +13,7 @@
     <string name="status_timed_out">Timed out</string>
 
     <string name="exercise_completed">Exercise completed</string>
+
+    <string name="personal_best">Personal best:</string>
+    <string name="exercise_config">Configuration:</string>
 </resources>
