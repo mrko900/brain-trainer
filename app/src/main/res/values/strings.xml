@@ -11,4 +11,6 @@
     <string name="status_correct_guess">Correct</string>
     <string name="status_wrong_guess">Wrong</string>
     <string name="status_timed_out">Timed out</string>
+
+    <string name="exercise_completed">Exercise completed</string>
 </resources>

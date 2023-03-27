@@ -102,6 +102,7 @@ class MainActivity : AppCompatActivity() {
             ExerciseType.SHAPE_FUSION -> {
                 return ShapeFusionExercise(
                     ExerciseControl(
+                        this,
                         group.findViewById(R.id.timer),
                         group.findViewById(R.id.timerProgressBar),
                         group.findViewById(R.id.scoreStatus),

@@ -139,7 +139,7 @@ class ShapeFusionExercise(
     private val nChoices = 4
     private val nOperands = 3
     private val secondsPerQuestion = 8
-    private val totalRounds = 11
+    private val totalRounds = 1
 
     private var targetNextTimerUpd: Long = 0
 
@@ -169,6 +169,11 @@ class ShapeFusionExercise(
         exerciseControl.score = 0
         initViews()
         nextQuestion()
+    }
+
+    private fun endExercise() {
+        Log.d(LOGGING_TAG, "Exercise completed")
+        exerciseControl.endExercise()
     }
 
     override fun pause() {
@@ -309,6 +314,10 @@ class ShapeFusionExercise(
     }
 
     private fun nextQuestion() {
+        if (exerciseControl.round == totalRounds) {
+            endExercise()
+            return
+        }
         exerciseControl.round++
         exerciseControl.timer = secondsPerQuestion
         exerciseControl.progress = 1f

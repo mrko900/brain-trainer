@@ -5,8 +5,10 @@ import android.os.Looper
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 import android.widget.TextView
+import androidx.navigation.NavOptions
 
 class ExerciseControl(
+    private val activity: MainActivity,
     private val timerView: TextView,
     private val progressBar: CircularProgressBar,
     private val scoreView: TextView,
@@ -68,5 +70,16 @@ class ExerciseControl(
         handler.postDelayed({
             statusView.startAnimation(scaleOut)
         }, fadeIn + duration)
+    }
+
+    fun endExercise() {
+        activity.navigation.navigate(
+            R.id.fragment_exercise_completed,
+            navOptions = NavOptions.Builder()
+                .setEnterAnim(R.anim.slide_in_left_fade_in)
+                .setExitAnim(R.anim.slide_out_left_fade_out)
+                .build(),
+            args = null
+        )
     }
 }
