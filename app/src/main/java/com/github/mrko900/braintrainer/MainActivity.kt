@@ -105,7 +105,8 @@ class MainActivity : AppCompatActivity() {
                         group.findViewById(R.id.timer),
                         group.findViewById(R.id.timerProgressBar),
                         group.findViewById(R.id.scoreStatus),
-                        group.findViewById(R.id.roundStatus)
+                        group.findViewById(R.id.roundStatus),
+                        group.findViewById(R.id.status)
                     ),
                     onFinishedCallback,
                     group,

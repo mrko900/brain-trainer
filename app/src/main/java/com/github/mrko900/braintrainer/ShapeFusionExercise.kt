@@ -384,10 +384,26 @@ class ShapeFusionExercise(
         Log.d(LOGGING_TAG, "Correct choice")
         endQuestion()
         exerciseControl.score += exerciseControl.timer
+        exerciseControl.setStatus(
+            res.getString(R.string.status_correct_guess),
+            res.getInteger(R.integer.status_fade_in).toLong(),
+            res.getInteger(R.integer.status_fade_out).toLong(),
+            res.getInteger(R.integer.status_duration_default).toLong()
+        )
+    }
+
+    private fun questionFailed() {
+        Log.d(LOGGING_TAG, "Question failed")
     }
 
     private fun handleIncorrectChoice() {
-        Log.d(LOGGING_TAG, "Question failed")
+        questionFailed()
+        exerciseControl.setStatus(
+            res.getString(R.string.status_wrong_guess),
+            res.getInteger(R.integer.status_fade_in).toLong(),
+            res.getInteger(R.integer.status_fade_out).toLong(),
+            res.getInteger(R.integer.status_duration_default).toLong()
+        )
     }
 
     private inner class ChoiceListener(val correct: Boolean) : View.OnClickListener {
@@ -485,7 +501,13 @@ class ShapeFusionExercise(
     }
 
     private fun timedOut() {
-        handleIncorrectChoice()
+        questionFailed()
+        exerciseControl.setStatus(
+            res.getString(R.string.status_timed_out),
+            res.getInteger(R.integer.status_fade_in).toLong(),
+            res.getInteger(R.integer.status_fade_out).toLong(),
+            res.getInteger(R.integer.status_duration_default).toLong()
+        )
     }
 
     private val progressAnim = ValueAnimator.ofFloat(1f, 0f)
