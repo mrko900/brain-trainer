@@ -19,4 +19,5 @@
     <integer name="status_fade_in">200</integer>
     <integer name="status_fade_out">200</integer>
     <integer name="status_duration_default">2500</integer>
+    <integer name="exercise_completed_progress_anim_duration">1500</integer>
 </resources>

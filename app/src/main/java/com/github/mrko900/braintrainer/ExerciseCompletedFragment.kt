@@ -1,5 +1,6 @@
 package com.github.mrko900.braintrainer
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,6 +26,17 @@ class ExerciseCompletedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        val anim = ValueAnimator.ofFloat(1f, 0f)
+        val tmp = binding.circularProgressBar.filledColor
+        binding.circularProgressBar.filledColor = binding.circularProgressBar.blankColor
+        binding.circularProgressBar.blankColor = tmp
+        anim.addUpdateListener { v ->
+            run {
+                binding.circularProgressBar.percentage = v.animatedValue as Float
+                binding.circularProgressBar.invalidate()
+            }
+        }
+        anim.duration = mainActivity.resources.getInteger(R.integer.exercise_completed_progress_anim_duration).toLong()
+        anim.start()
     }
 }
