@@ -1,6 +1,7 @@
 # brain-trainer
 
 Todo:
+* Leave exercise properly
 * FOLLOW YOUR PLAN IN THE PRESENTATION!
 * Exercise start window
 * Exercise list sections
