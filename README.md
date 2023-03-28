@@ -2,6 +2,7 @@
 
 Todo:
 * Leave exercise properly
+* Progress tab on exercise completed
 * FOLLOW YOUR PLAN IN THE PRESENTATION!
 * Exercise start window
 * Exercise list sections
