@@ -39,6 +39,8 @@ class ExerciseCompletedFragment : Fragment() {
         anim.duration = mainActivity.resources.getInteger(R.integer.exercise_completed_progress_anim_duration).toLong()
         anim.start()
 
+        binding.score.text = mainActivity.currentExerciseResult!!.score.toString()
+
         binding.mode.text = getExerciseName(mainActivity.currentExerciseResult!!.mode, mainActivity.resources)
         mainActivity.currentExerciseResultManager!!.out(mainActivity, binding, mainActivity.currentExerciseResult!!)
     }
