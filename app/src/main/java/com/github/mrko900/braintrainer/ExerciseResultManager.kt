@@ -19,11 +19,15 @@ class ShapeFusionExerciseResultManager : ExerciseResultManager {
         val stats = result.stats as ShapeFusionExerciseStats
         var avgTime = 0f
         for (q in stats.questions) {
-            avgTime += q.seconds
+            if (q.result != QuestionResult.TIMEOUT)
+                avgTime += q.seconds
         }
         avgTime /= stats.questions.size
         key.text = res.getString(R.string.avg_time_per_question)
-        value.text = res.getString(R.string.seconds_placeholder, String.format("%.2f", avgTime))
+        value.text = if (avgTime != 0f) res.getString(
+            R.string.seconds_placeholder,
+            String.format("%.2f", avgTime)
+        ) else "-"
     }
 
     private fun initResultCounterRow(
