@@ -173,7 +173,10 @@ class ShapeFusionExercise(
 
     private fun endExercise() {
         Log.d(LOGGING_TAG, "Exercise completed")
-        exerciseControl.endExercise(ExerciseResult(ExerciseMode.SHAPE_FUSION))
+        exerciseControl.endExercise(
+            ExerciseResult(ExerciseMode.SHAPE_FUSION, exerciseControl.score),
+            ShapeFusionExerciseResultManager()
+        )
     }
 
     override fun pause() {

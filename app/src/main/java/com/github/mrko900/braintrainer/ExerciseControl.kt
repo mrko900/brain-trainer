@@ -72,7 +72,8 @@ class ExerciseControl(
         }, fadeIn + duration)
     }
 
-    fun endExercise(result: ExerciseResult) {
+    fun endExercise(result: ExerciseResult, resultManager: ExerciseResultManager) {
+        activity.currentExerciseResultManager = resultManager
         activity.currentExerciseResult = result
         activity.navigation.navigate(
             R.id.fragment_exercise_completed,

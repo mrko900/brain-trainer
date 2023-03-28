@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     var currentExercise: ExerciseParams? = ExerciseParams(ExerciseMode.SHAPE_FUSION)
 
     var currentExerciseResult: ExerciseResult? = null
+    var currentExerciseResultManager: ExerciseResultManager? = null
 
     private fun getMenuIndices(menu: Menu): Map<Int, Int> {
         val res = HashMap<Int, Int>()

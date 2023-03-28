@@ -19,4 +19,9 @@
     <string name="exercise_mode">Mode:</string>
 
     <string name="exercise_shape_fusion">shape fusion</string>
+
+    <string name="info">Info</string>
+    <string name="stats">Stats</string>
+
+    <string name="score">Score:</string>
 </resources>

@@ -40,5 +40,6 @@ class ExerciseCompletedFragment : Fragment() {
         anim.start()
 
         binding.mode.text = getExerciseName(mainActivity.currentExerciseResult!!.mode, mainActivity.resources)
+        mainActivity.currentExerciseResultManager!!.out(mainActivity, binding, mainActivity.currentExerciseResult!!)
     }
 }
