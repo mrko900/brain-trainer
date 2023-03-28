@@ -15,9 +15,21 @@ class ShapeFusionExerciseResultManager : ExerciseResultManager {
         value.text = result.score.toString()
     }
 
+    private fun initAvgTimeRow(key: TextView, value: TextView, res: Resources, result: ExerciseResult) {
+        val stats = result.stats as ShapeFusionExerciseStats
+        var avgTime = 0f
+        for (q in stats.questions) {
+            avgTime += q.seconds
+        }
+        avgTime /= stats.questions.size
+        key.text = res.getString(R.string.avg_time_per_question)
+        value.text = res.getString(R.string.seconds_placeholder, String.format("%.2f", avgTime))
+    }
+
     override fun out(activity: MainActivity, binding: ExerciseCompletedBinding, result: ExerciseResult) {
         val rows = listOf<(TextView, TextView, Resources, ExerciseResult) -> Unit>(
-            { a0, a1, a2, a3 -> initScoreRow(a0, a1, a2, a3) }
+            { a0, a1, a2, a3 -> initScoreRow(a0, a1, a2, a3) },
+            { a0, a1, a2, a3 -> initAvgTimeRow(a0, a1, a2, a3) }
         )
         for (f in rows) {
             val row: LinearLayout = activity.layoutInflater.inflate(

@@ -24,4 +24,7 @@
     <string name="stats">Stats</string>
 
     <string name="score">Score:</string>
+    <string name="avg_time_per_question">Avg. time per question:</string>
+
+    <string name="seconds_placeholder">%1$s s</string>
 </resources>

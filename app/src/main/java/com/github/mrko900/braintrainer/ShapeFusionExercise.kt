@@ -116,6 +116,13 @@ class ShapeFusionExerciseQuestion(val expression: Expression, choices: List<Shap
     }
 }
 
+data class ShapeFusionExerciseQuestionStats(val correct: Boolean, val seconds: Float) {
+}
+
+class ShapeFusionExerciseStats {
+    val questions = ArrayList<ShapeFusionExerciseQuestionStats>()
+}
+
 class ShapeFusionExercise(
     exerciseControl: ExerciseControl,
     onFinishedCallback: Consumer<ExerciseResult>,
@@ -152,6 +159,9 @@ class ShapeFusionExercise(
 
     private var state = State.TRANSITION
 
+    private val stats = ShapeFusionExerciseStats()
+    private var currentQuestionTimeStarted: Long = 0
+
     enum class State {
         QUESTION_ACTIVE, TRANSITION
     }
@@ -174,7 +184,7 @@ class ShapeFusionExercise(
     private fun endExercise() {
         Log.d(LOGGING_TAG, "Exercise completed")
         exerciseControl.endExercise(
-            ExerciseResult(ExerciseMode.SHAPE_FUSION, exerciseControl.score),
+            ExerciseResult(ExerciseMode.SHAPE_FUSION, exerciseControl.score, stats),
             ShapeFusionExerciseResultManager()
         )
     }
@@ -384,17 +394,23 @@ class ShapeFusionExercise(
         nextQuestion()
     }
 
-    private fun endQuestion() {
+    private fun endQuestion(success: Boolean) {
         state = State.TRANSITION
         expressionFadeOut()
         val valCopy = progressAnim.animatedValue as Float
         progressAnim.end()
         exerciseControl.progress = valCopy
+        stats.questions.add(
+            ShapeFusionExerciseQuestionStats(
+                success,
+                (System.currentTimeMillis() - currentQuestionTimeStarted) / 1000f
+            )
+        )
     }
 
     private fun handleCorrectChoice() {
         Log.d(LOGGING_TAG, "Correct choice")
-        endQuestion()
+        endQuestion(true)
         exerciseControl.score += exerciseControl.timer
         exerciseControl.setStatus(
             res.getString(R.string.status_correct_guess),
@@ -406,7 +422,7 @@ class ShapeFusionExercise(
 
     private fun questionFailed() {
         Log.d(LOGGING_TAG, "Question failed")
-        endQuestion()
+        endQuestion(false)
     }
 
     private fun handleIncorrectChoice() {
@@ -545,7 +561,8 @@ class ShapeFusionExercise(
                 handler.postDelayed(this, targetNextTimerUpd - System.currentTimeMillis())
             }
         }
-        targetNextTimerUpd = System.currentTimeMillis() + 1000L
+        currentQuestionTimeStarted = System.currentTimeMillis()
+        targetNextTimerUpd = currentQuestionTimeStarted + 1000L
         handler.postDelayed(runnable, 1000L)
 
         progressAnim.addUpdateListener { anim -> exerciseControl.progress = anim.animatedValue as Float }
