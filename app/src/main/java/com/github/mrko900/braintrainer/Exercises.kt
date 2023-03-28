@@ -1,5 +1,6 @@
 package com.github.mrko900.braintrainer
 
+import android.content.res.Resources
 import android.graphics.Color
 
 fun exerciseListItems(): List<ExerciseListViewItemParams> {
@@ -52,4 +53,11 @@ fun exerciseListItemTest4(): ExerciseListViewItemParams {
         Color.parseColor("#FF81D4FA"),
         Color.parseColor("#FFE1F5FE")
     )
+}
+
+fun getExerciseName(mode: ExerciseMode, res: Resources): String {
+    return res.getString(when (mode) {
+        ExerciseMode.SHAPE_FUSION -> R.string.exercise_shape_fusion
+        else -> throw UnsupportedOperationException()
+    })
 }

@@ -2,8 +2,6 @@ package com.github.mrko900.braintrainer
 
 import androidx.core.util.Consumer
 
-data class ExerciseResult(val score: Int)
-
 interface Exercise {
     fun init()
     fun start()

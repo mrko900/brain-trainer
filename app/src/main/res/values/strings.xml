@@ -16,4 +16,7 @@
 
     <string name="personal_best">Personal best:</string>
     <string name="exercise_config">Configuration:</string>
+    <string name="exercise_mode">Mode:</string>
+
+    <string name="exercise_shape_fusion">shape fusion</string>
 </resources>

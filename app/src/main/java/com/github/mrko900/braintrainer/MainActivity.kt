@@ -26,9 +26,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: MainBinding
-    public lateinit var navigation: NavController
+    lateinit var navigation: NavController
 
-    var currentExercise: ExerciseParams? = ExerciseParams(ExerciseType.SHAPE_FUSION)
+    var currentExercise: ExerciseParams? = ExerciseParams(ExerciseMode.SHAPE_FUSION)
+
+    var currentExerciseResult: ExerciseResult? = null
 
     private fun getMenuIndices(menu: Menu): Map<Int, Int> {
         val res = HashMap<Int, Int>()
@@ -95,11 +97,11 @@ class MainActivity : AppCompatActivity() {
         if (currentExercise == null) {
             throw IllegalStateException("can't create exercise")
         }
-        when (currentExercise!!.type) {
-            ExerciseType.MATH -> {
+        when (currentExercise!!.mode) {
+            ExerciseMode.MATH -> {
                 throw UnsupportedOperationException()
             }
-            ExerciseType.SHAPE_FUSION -> {
+            ExerciseMode.SHAPE_FUSION -> {
                 return ShapeFusionExercise(
                     ExerciseControl(
                         this,
