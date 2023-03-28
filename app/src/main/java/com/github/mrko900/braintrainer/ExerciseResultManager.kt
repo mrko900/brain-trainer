@@ -26,10 +26,37 @@ class ShapeFusionExerciseResultManager : ExerciseResultManager {
         value.text = res.getString(R.string.seconds_placeholder, String.format("%.2f", avgTime))
     }
 
+    private fun initResultCounterRow(
+        key: TextView,
+        value: TextView,
+        res: Resources,
+        result: ExerciseResult,
+        qr: QuestionResult,
+        resId: Int
+    ) {
+        val stats = result.stats as ShapeFusionExerciseStats
+        var cnt = 0
+        for (q in stats.questions) {
+            if (q.result == qr)
+                ++cnt
+        }
+        key.text = res.getString(resId)
+        value.text = cnt.toString()
+    }
+
     override fun out(activity: MainActivity, binding: ExerciseCompletedBinding, result: ExerciseResult) {
         val rows = listOf<(TextView, TextView, Resources, ExerciseResult) -> Unit>(
             { a0, a1, a2, a3 -> initScoreRow(a0, a1, a2, a3) },
-            { a0, a1, a2, a3 -> initAvgTimeRow(a0, a1, a2, a3) }
+            { a0, a1, a2, a3 -> initAvgTimeRow(a0, a1, a2, a3) },
+            { a0, a1, a2, a3 ->
+                initResultCounterRow(a0, a1, a2, a3, QuestionResult.CORRECT, R.string.correct_choices)
+            },
+            { a0, a1, a2, a3 ->
+                initResultCounterRow(a0, a1, a2, a3, QuestionResult.WRONG, R.string.wrong_choices)
+            },
+            { a0, a1, a2, a3 ->
+                initResultCounterRow(a0, a1, a2, a3, QuestionResult.TIMEOUT, R.string.timeouts)
+            }
         )
         for (f in rows) {
             val row: LinearLayout = activity.layoutInflater.inflate(

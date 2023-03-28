@@ -27,4 +27,7 @@
     <string name="avg_time_per_question">Avg. time per question:</string>
 
     <string name="seconds_placeholder">%1$s s</string>
+    <string name="correct_choices">Correct choices:</string>
+    <string name="wrong_choices">Wrong choices:</string>
+    <string name="timeouts">Timeouts:</string>
 </resources>

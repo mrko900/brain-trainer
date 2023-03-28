@@ -116,7 +116,11 @@ class ShapeFusionExerciseQuestion(val expression: Expression, choices: List<Shap
     }
 }
 
-data class ShapeFusionExerciseQuestionStats(val correct: Boolean, val seconds: Float) {
+enum class QuestionResult {
+    CORRECT, WRONG, TIMEOUT
+}
+
+data class ShapeFusionExerciseQuestionStats(val result: QuestionResult, val seconds: Float) {
 }
 
 class ShapeFusionExerciseStats {
@@ -146,7 +150,7 @@ class ShapeFusionExercise(
     private val nChoices = 4
     private val nOperands = 3
     private val secondsPerQuestion = 8
-    private val totalRounds = 1
+    private val totalRounds = 11
 
     private var targetNextTimerUpd: Long = 0
 
@@ -394,7 +398,7 @@ class ShapeFusionExercise(
         nextQuestion()
     }
 
-    private fun endQuestion(success: Boolean) {
+    private fun endQuestion(result: QuestionResult) {
         state = State.TRANSITION
         expressionFadeOut()
         val valCopy = progressAnim.animatedValue as Float
@@ -402,7 +406,7 @@ class ShapeFusionExercise(
         exerciseControl.progress = valCopy
         stats.questions.add(
             ShapeFusionExerciseQuestionStats(
-                success,
+                result,
                 (System.currentTimeMillis() - currentQuestionTimeStarted) / 1000f
             )
         )
@@ -410,7 +414,7 @@ class ShapeFusionExercise(
 
     private fun handleCorrectChoice() {
         Log.d(LOGGING_TAG, "Correct choice")
-        endQuestion(true)
+        endQuestion(QuestionResult.CORRECT)
         exerciseControl.score += exerciseControl.timer
         exerciseControl.setStatus(
             res.getString(R.string.status_correct_guess),
@@ -420,13 +424,13 @@ class ShapeFusionExercise(
         )
     }
 
-    private fun questionFailed() {
+    private fun questionFailed(result: QuestionResult) {
         Log.d(LOGGING_TAG, "Question failed")
-        endQuestion(false)
+        endQuestion(result)
     }
 
     private fun handleIncorrectChoice() {
-        questionFailed()
+        questionFailed(QuestionResult.WRONG)
         exerciseControl.setStatus(
             res.getString(R.string.status_wrong_guess),
             res.getInteger(R.integer.status_fade_in).toLong(),
@@ -532,7 +536,7 @@ class ShapeFusionExercise(
     }
 
     private fun timedOut() {
-        questionFailed()
+        questionFailed(QuestionResult.TIMEOUT)
         exerciseControl.setStatus(
             res.getString(R.string.status_timed_out),
             res.getInteger(R.integer.status_fade_in).toLong(),
