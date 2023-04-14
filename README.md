@@ -1,5 +1,7 @@
 # brain-trainer
 
+Follow your sprints!
+
 Todo:
 * Leave exercise properly
 * Progress tab on exercise completed
