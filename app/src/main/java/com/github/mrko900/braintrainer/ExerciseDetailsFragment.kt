@@ -46,12 +46,29 @@ class ExerciseDetailsFragment : Fragment() {
         )
 
         binding.config.setAdapter(adapter)
-        binding.config.setText(adapter.getItem(0), false)
         binding.config.setOnItemClickListener { parent, view, position, id ->
+            changeConfigFragment(when (position) {
+                0 -> ConfigFragment.DEFAULT
+                1 -> ConfigFragment.CUSTOM
+                else -> throw IllegalArgumentException()
+            })
+        }
 
+        binding.config.setText(adapter.getItem(0), false)
+        changeConfigFragment(ConfigFragment.DEFAULT)
+    }
+
+    enum class ConfigFragment {
+        DEFAULT, CUSTOM
+    }
+
+    private fun changeConfigFragment(configFragment: ConfigFragment) {
+        val fragment = when (configFragment) {
+            ConfigFragment.DEFAULT -> DefaultExerciseConfigFragment()
+            ConfigFragment.CUSTOM -> DefaultExerciseConfigFragment()
         }
         val transaction = mainActivity.supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.config_fragment_container, DefaultExerciseConfigFragment())
+        transaction.replace(R.id.config_fragment_container, fragment)
         transaction.commit()
     }
 }
