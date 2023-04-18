@@ -28,7 +28,7 @@ class ExerciseDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.button9.setOnClickListener {
-            Log.d(LOGGING_TAG, "Begin exercise: ") // todo exercise name
+            Log.d(LOGGING_TAG, "Begin exercise: " + mainActivity.currentExercise!!.mode)
             mainActivity.navigation.navigate(
                 R.id.fragment_exercise,
                 navOptions = NavOptions.Builder()
@@ -62,10 +62,15 @@ class ExerciseDetailsFragment : Fragment() {
         DEFAULT, CUSTOM
     }
 
+    private fun getCustomConfigFragment(): Fragment = when (mainActivity.currentExercise!!.mode) {
+        ExerciseMode.SHAPE_FUSION -> CustomShapeFusionExerciseConfig()
+        else -> throw UnsupportedOperationException()
+    }
+
     private fun changeConfigFragment(configFragment: ConfigFragment) {
         val fragment = when (configFragment) {
             ConfigFragment.DEFAULT -> DefaultExerciseConfigFragment()
-            ConfigFragment.CUSTOM -> DefaultExerciseConfigFragment()
+            ConfigFragment.CUSTOM -> getCustomConfigFragment()
         }
         val transaction = mainActivity.supportFragmentManager.beginTransaction()
         transaction.replace(R.id.config_fragment_container, fragment)

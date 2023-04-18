@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="shape_fusion_exercise_operations">
+        <item>Addition</item>
+        <item>Subtraction</item>
+    </string-array>
+</resources>
