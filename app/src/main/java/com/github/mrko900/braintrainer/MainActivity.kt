@@ -114,7 +114,8 @@ class MainActivity : AppCompatActivity() {
                     ),
                     onFinishedCallback,
                     group,
-                    layoutInflater
+                    layoutInflater,
+                    currentExercise!!.config as ShapeFusionExerciseConfig
                 )
             }
             else -> {

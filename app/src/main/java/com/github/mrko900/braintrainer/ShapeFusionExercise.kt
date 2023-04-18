@@ -131,7 +131,8 @@ class ShapeFusionExercise(
     exerciseControl: ExerciseControl,
     onFinishedCallback: Consumer<ExerciseResult>,
     private val group: ViewGroup,
-    private val inflater: LayoutInflater
+    private val inflater: LayoutInflater,
+    private val config: ShapeFusionExerciseConfig
 ) : AbstractExercise(exerciseControl, onFinishedCallback) {
     private lateinit var currentQuestion: ShapeFusionExerciseQuestion
     private lateinit var currentQuestionParams: QuestionParams
@@ -146,11 +147,13 @@ class ShapeFusionExercise(
     private val operatorViews: MutableList<View> = ArrayList()
     private val choiceViews: MutableList<View> = ArrayList()
 
-    private val shapeSide = 4
-    private val nChoices = 4
-    private val nOperands = 3
-    private val secondsPerQuestion = 8
-    private val totalRounds = 3
+    private lateinit var logic: ShapeFusionExerciseLogic
+
+//    private var shapeSide = 4
+//    private var nChoices = 4
+//    private var nOperands = 3
+//    private var secondsPerQuestion = 8
+//    private var totalRounds = 3
 
     private var targetNextTimerUpd: Long = 0
 
@@ -175,10 +178,20 @@ class ShapeFusionExercise(
         frame = inflater.inflate(R.layout.shape_fusion_exercise_frame, rootFrame, true) as ViewGroup
         choiceListView = frame.findViewById(R.id.choices)
         exprFrameView = frame.findViewById(R.id.exprFrame)
+        logic = ShapeFusionExerciseLogic(
+            initialSecondsPerQuestion = 8,
+            initialNTerms = config.nTermsInitial,
+            initialNChoices = config.nChoicesInitial,
+            hasAdditionOperation = config.additionOperation,
+            hasSubtractionOperation = config.subtractionOperation,
+            dynamic = config.dynamic,
+            totalRounds = 3,
+            shapeSide = 4
+        )
     }
 
     override fun start() {
-        exerciseControl.totalRounds = totalRounds
+        exerciseControl.totalRounds = logic.totalRounds
         exerciseControl.round = 0
         exerciseControl.score = 0
         initViews()
@@ -201,7 +214,7 @@ class ShapeFusionExercise(
 
     private fun initViews() {
         // init operands and operators
-        for (i in 0 until nOperands) {
+        for (i in 0 until logic.nTerms) {
             val row = addOperand()
             val start: FrameLayout = row.findViewById(R.id.start)
             // operator
@@ -218,7 +231,7 @@ class ShapeFusionExercise(
         var space = Space(choiceListView.context)
         choiceListView.addView(space)
         (space.layoutParams as LinearLayout.LayoutParams).weight = 1F
-        for (i in 0 until nChoices) {
+        for (i in 0 until logic.nChoices) {
             val view = inflater.inflate(R.layout.choice_card, choiceListView, false)
             choiceViews.add(view)
             choiceListView.addView(view)
@@ -231,14 +244,14 @@ class ShapeFusionExercise(
 
     private fun randomShape(): Shape {
         val shapeData = ArrayList<ArrayList<Boolean>>()
-        for (y in 1..shapeSide) {
+        for (y in 1..logic.shapeSide) {
             val row = ArrayList<Boolean>()
             shapeData.add(row)
-            for (x in 1..shapeSide) {
+            for (x in 1..logic.shapeSide) {
                 row.add(random.nextInt(2) == 1)
             }
         }
-        return Shape(shapeData, shapeSide, shapeSide)
+        return Shape(shapeData, logic.shapeSide, logic.shapeSide)
     }
 
     private fun randomOperator(): ShapeFusionExerciseQuestion.Operator {
@@ -250,8 +263,8 @@ class ShapeFusionExercise(
 
     private fun genChoices(expr: FullExpr): Choices {
         val choices = ArrayList<Shape>()
-        val ansPos = random.nextInt(nChoices)
-        for (i in 0 until nChoices) {
+        val ansPos = random.nextInt(logic.nChoices)
+        for (i in 0 until logic.nChoices) {
             if (i == ansPos)
                 choices.add(expr.answer)
             else
@@ -275,12 +288,12 @@ class ShapeFusionExercise(
     private fun genExpression(): FullExpr {
         val operands = ArrayList<Shape>()
         val operators = ArrayList<ShapeFusionExerciseQuestion.Operator>()
-        for (i in 1..nOperands) {
+        for (i in 1..logic.nTerms) {
             operands.add(randomShape())
             operators.add(randomOperator())
         }
         val answ = Shape(operands[0])
-        for (i in 2..nOperands) {
+        for (i in 2..logic.nTerms) {
             performOperation(answ, operands[i - 1], operators[i - 2])
         }
         return FullExpr(ShapeFusionExerciseQuestion.Expression(operands, operators), answ)
@@ -316,7 +329,7 @@ class ShapeFusionExercise(
         for (operatorView in operatorViews) {
             operatorView.visibility = View.INVISIBLE
         }
-        for (operandView in operandViews.subList(0, nOperands - 1)) {
+        for (operandView in operandViews.subList(0, logic.nTerms - 1)) {
             operandView.visibility = View.INVISIBLE
         }
     }
@@ -331,12 +344,12 @@ class ShapeFusionExercise(
     }
 
     private fun nextQuestion() {
-        if (exerciseControl.round == totalRounds) {
+        if (exerciseControl.round == logic.totalRounds) {
             endExercise()
             return
         }
         exerciseControl.round++
-        exerciseControl.timer = secondsPerQuestion
+        exerciseControl.timer = logic.secondsPerQuestion
         exerciseControl.progress = 1f
         if (firstQuestion) {
             exprFrameView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -437,7 +450,7 @@ class ShapeFusionExercise(
             res.getInteger(R.integer.status_fade_out).toLong(),
             res.getInteger(R.integer.status_duration_default).toLong()
         )
-        exerciseControl.score -= secondsPerQuestion / 2
+        exerciseControl.score -= logic.secondsPerQuestion / 2
         exerciseControl.score = exerciseControl.score.coerceAtLeast(0)
     }
 
@@ -494,7 +507,7 @@ class ShapeFusionExercise(
             val operandImg: ImageView = operandViews[i].findViewById(R.id.imageView2)
             operandImg.setImageBitmap(getImage(currentQuestion.expression.operands[i]))
             operandImg.visibility = View.VISIBLE
-            if (i == nOperands - 1) {
+            if (i == logic.nTerms - 1) {
                 val fadeIn = AlphaAnimation(0f, 1f)
                 fadeIn.duration = res.getInteger(R.integer.shape_fusion_exercise_first_bitmap_fade_in_duration).toLong()
                 operandImg.startAnimation(fadeIn)
@@ -543,7 +556,7 @@ class ShapeFusionExercise(
             res.getInteger(R.integer.status_fade_out).toLong(),
             res.getInteger(R.integer.status_duration_default).toLong()
         )
-        exerciseControl.score -= secondsPerQuestion / 5
+        exerciseControl.score -= logic.secondsPerQuestion / 5
         exerciseControl.score = exerciseControl.score.coerceAtLeast(0)
     }
 
@@ -570,7 +583,7 @@ class ShapeFusionExercise(
         handler.postDelayed(runnable, 1000L)
 
         progressAnim.addUpdateListener { anim -> exerciseControl.progress = anim.animatedValue as Float }
-        progressAnim.duration = secondsPerQuestion * 1000L
+        progressAnim.duration = logic.secondsPerQuestion * 1000L
         progressAnim.interpolator = LinearInterpolator()
         progressAnim.start()
     }
@@ -647,7 +660,7 @@ class ShapeFusionExercise(
             })
             animQueue.add(anim)
         }
-        for (v in operandViews.subList(1, nOperands - 1)) {
+        for (v in operandViews.subList(1, logic.nTerms - 1)) {
             v.visibility = View.INVISIBLE
         }
         for (v in operatorViews) {
@@ -664,7 +677,7 @@ class ShapeFusionExercise(
         val finalLocation = IntArray(2)
         operandViews.last().getLocationOnScreen(finalLocation)
 
-        var operi = nOperands - 2
+        var operi = logic.nTerms - 2
 
         val alphaAnim = AlphaAnimation(1f, 0f)
         alphaAnim.duration = res.getInteger(R.integer.shape_fusion_exercise_fade_out_duration_operator).toLong()
@@ -709,7 +722,7 @@ class ShapeFusionExercise(
             anim.duration = res.getInteger(R.integer.shape_fusion_exercise_fade_out_duration_operand).toLong()
             anim.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationEnd(animator: Animator?) {
-                    operandViews[nOperands - curi - 2].visibility = View.INVISIBLE
+                    operandViews[logic.nTerms - curi - 2].visibility = View.INVISIBLE
                     ++curi
                     if (it!!.hasNext()) {
                         current = it!!.next()
@@ -720,7 +733,7 @@ class ShapeFusionExercise(
                 }
 
                 override fun onAnimationStart(animator: Animator?) {
-                    operatorViews[nOperands - curi - 2].startAnimation(alphaAnim)
+                    operatorViews[logic.nTerms - curi - 2].startAnimation(alphaAnim)
                 }
 
                 override fun onAnimationRepeat(animator: Animator?) {
