@@ -41,11 +41,10 @@
                 app:boxStrokeWidth="2dp"
                 app:boxStrokeWidthFocused="2dp"
                 app:expandedHintEnabled="false"
-                app:hintTextColor="#555555"
+                app:hintTextColor="#000000"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/button3">
-
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/config"
                     android:layout_width="match_parent"

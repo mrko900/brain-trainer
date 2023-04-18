@@ -39,10 +39,17 @@ class ExerciseDetailsFragment : Fragment() {
             )
         }
 
-        binding.config.setAdapter(ArrayAdapter.createFromResource(
+        val adapter = ArrayAdapter.createFromResource(
             mainActivity,
             R.array.exercise_configs,
             android.R.layout.simple_spinner_dropdown_item
-        ))
+        )
+
+        binding.config.setAdapter(adapter)
+        binding.config.setText(adapter.getItem(0), false)
+        binding.config.setOnItemClickListener { parent, view, position, id -> // a
+            Log.d(LOGGING_TAG, "pos $position")
+            Log.d(LOGGING_TAG, "pos 2 $position")
+        }
     }
 }
