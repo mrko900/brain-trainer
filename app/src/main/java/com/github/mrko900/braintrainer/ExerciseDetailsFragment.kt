@@ -14,6 +14,9 @@ class ExerciseDetailsFragment : Fragment() {
     private lateinit var binding: ExerciseDetailsBinding
     private lateinit var mainActivity: MainActivity
 
+    private var currentConfigSelection = 0
+    private lateinit var configFragment: Fragment
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (activity == null) {
             Log.e(LOGGING_TAG, "activity must be non-null")
@@ -29,6 +32,7 @@ class ExerciseDetailsFragment : Fragment() {
 
         binding.button9.setOnClickListener {
             Log.d(LOGGING_TAG, "Begin exercise: " + mainActivity.currentExercise!!.mode)
+            setConfig()
             mainActivity.navigation.navigate(
                 R.id.fragment_exercise,
                 navOptions = NavOptions.Builder()
@@ -47,33 +51,70 @@ class ExerciseDetailsFragment : Fragment() {
 
         binding.config.setAdapter(adapter)
         binding.config.setOnItemClickListener { parent, view, position, id ->
-            changeConfigFragment(when (position) {
-                0 -> ConfigFragment.DEFAULT
-                1 -> ConfigFragment.CUSTOM
-                else -> throw IllegalArgumentException()
-            })
+            changeConfigFragment(idToConfigFragment(position))
+            currentConfigSelection = position
         }
 
-        binding.config.setText(adapter.getItem(0), false)
-        changeConfigFragment(ConfigFragment.DEFAULT)
+        binding.config.setText(adapter.getItem(currentConfigSelection), false)
+        changeConfigFragment(idToConfigFragment(currentConfigSelection))
     }
 
     enum class ConfigFragment {
         DEFAULT, CUSTOM
     }
 
+    private fun idToConfigFragment(id: Int): ConfigFragment = when (id) {
+        0 -> ConfigFragment.DEFAULT
+        1 -> ConfigFragment.CUSTOM
+        else -> throw java.lang.IllegalArgumentException()
+    }
+
     private fun getCustomConfigFragment(): Fragment = when (mainActivity.currentExercise!!.mode) {
-        ExerciseMode.SHAPE_FUSION -> CustomShapeFusionExerciseConfig()
+        ExerciseMode.SHAPE_FUSION -> CustomShapeFusionExerciseConfigFragment()
         else -> throw UnsupportedOperationException()
     }
 
     private fun changeConfigFragment(configFragment: ConfigFragment) {
-        val fragment = when (configFragment) {
+        this.configFragment = when (configFragment) {
             ConfigFragment.DEFAULT -> DefaultExerciseConfigFragment()
             ConfigFragment.CUSTOM -> getCustomConfigFragment()
         }
         val transaction = mainActivity.supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.config_fragment_container, fragment)
+        transaction.replace(R.id.config_fragment_container, this.configFragment)
         transaction.commit()
+    }
+
+    private fun getDefaultShapeFusionExerciseConfig(): ShapeFusionExerciseConfig {
+        // todo difficulty
+        return ShapeFusionExerciseConfig(
+            nTermsInitial = 3,
+            nChoicesInitial = 4,
+            dynamic = true,
+            additionOperation = true,
+            subtractionOperation = true
+        )
+    }
+
+    private fun getCustomShapeFusionExerciseConfig(): ShapeFusionExerciseConfig {
+        val shapeFusionConfigFragment = configFragment as CustomShapeFusionExerciseConfigFragment
+        return ShapeFusionExerciseConfig(
+            nTermsInitial = shapeFusionConfigFragment.getNTerms(),
+            nChoicesInitial = shapeFusionConfigFragment.getNChoices(),
+            dynamic = shapeFusionConfigFragment.isDynamic(),
+            additionOperation = shapeFusionConfigFragment.hasAdditionOperation(),
+            subtractionOperation = shapeFusionConfigFragment.hasSubtractionOperation()
+        )
+    }
+
+    private fun setShapeFusionExerciseConfig() {
+        mainActivity.currentExercise!!.config = when (idToConfigFragment(currentConfigSelection)) {
+            ConfigFragment.DEFAULT -> getDefaultShapeFusionExerciseConfig()
+            ConfigFragment.CUSTOM -> getCustomShapeFusionExerciseConfig()
+        }
+    }
+
+    private fun setConfig() = when (mainActivity.currentExercise!!.mode) {
+        ExerciseMode.SHAPE_FUSION -> setShapeFusionExerciseConfig()
+        else -> throw UnsupportedOperationException()
     }
 }

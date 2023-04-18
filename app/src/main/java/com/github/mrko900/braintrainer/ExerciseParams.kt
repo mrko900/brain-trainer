@@ -4,4 +4,4 @@ enum class ExerciseMode {
     MATH, SHAPE_FUSION
 }
 
-data class ExerciseParams(val mode: ExerciseMode)
+data class ExerciseParams(var mode: ExerciseMode, var config: Any?)

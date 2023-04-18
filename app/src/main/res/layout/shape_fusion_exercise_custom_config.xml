@@ -97,6 +97,7 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
             <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/dynamicCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layoutDirection="rtl"

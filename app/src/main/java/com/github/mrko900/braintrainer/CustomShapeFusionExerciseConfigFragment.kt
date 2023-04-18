@@ -9,9 +9,11 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import com.github.mrko900.braintrainer.databinding.ShapeFusionExerciseCustomConfigBinding
 
-class CustomShapeFusionExerciseConfig : Fragment() {
+class CustomShapeFusionExerciseConfigFragment : Fragment() {
     private lateinit var binding: ShapeFusionExerciseCustomConfigBinding
     private lateinit var mainActivity: MainActivity
+
+    private var currentOperationsSelection = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (activity == null) {
@@ -33,7 +35,10 @@ class CustomShapeFusionExerciseConfig : Fragment() {
         )
 
         binding.operations.setAdapter(adapter)
-        binding.operations.setText(adapter.getItem(0), false)
+        binding.operations.setText(adapter.getItem(currentOperationsSelection), false)
+        binding.operations.setOnItemClickListener { parent, view, position, id ->
+            currentOperationsSelection = position
+        }
 
         binding.nTermsSlider.value = 3f
         binding.nTermsSlider.valueFrom = 2f
@@ -44,5 +49,25 @@ class CustomShapeFusionExerciseConfig : Fragment() {
         binding.nChoicesSlider.valueFrom = 2f
         binding.nChoicesSlider.valueTo = 5f
         binding.nChoicesSlider.stepSize = 1f
+    }
+
+    fun getNTerms(): Int {
+        return binding.nTermsSlider.value.toInt()
+    }
+
+    fun getNChoices(): Int {
+        return binding.nChoicesSlider.value.toInt()
+    }
+
+    fun isDynamic(): Boolean {
+        return binding.dynamicCheckBox.isChecked
+    }
+
+    fun hasAdditionOperation(): Boolean {
+        return currentOperationsSelection != 2
+    }
+
+    fun hasSubtractionOperation(): Boolean {
+        return currentOperationsSelection != 1
     }
 }

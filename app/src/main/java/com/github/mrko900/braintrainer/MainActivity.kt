@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: MainBinding
     lateinit var navigation: NavController
 
-    var currentExercise: ExerciseParams? = ExerciseParams(ExerciseMode.SHAPE_FUSION)
+    var currentExercise: ExerciseParams? = ExerciseParams(ExerciseMode.SHAPE_FUSION, null)
 
     var currentExerciseResult: ExerciseResult? = null
     var currentExerciseResultManager: ExerciseResultManager? = null
