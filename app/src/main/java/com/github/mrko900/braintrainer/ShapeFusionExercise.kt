@@ -150,7 +150,7 @@ class ShapeFusionExercise(
     private val nChoices = 4
     private val nOperands = 3
     private val secondsPerQuestion = 8
-    private val totalRounds = 1
+    private val totalRounds = 3
 
     private var targetNextTimerUpd: Long = 0
 
