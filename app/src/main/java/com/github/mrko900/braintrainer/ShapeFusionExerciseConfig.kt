@@ -5,5 +5,6 @@ data class ShapeFusionExerciseConfig(
     val nChoicesInitial: Int,
     val dynamic: Boolean,
     val additionOperation: Boolean,
-    val subtractionOperation: Boolean
+    val subtractionOperation: Boolean,
+    val shapeSide: Int
 )

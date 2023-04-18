@@ -91,7 +91,8 @@ class ExerciseDetailsFragment : Fragment() {
             nChoicesInitial = 4,
             dynamic = true,
             additionOperation = true,
-            subtractionOperation = true
+            subtractionOperation = true,
+            shapeSide = 4
         )
     }
 
@@ -102,7 +103,8 @@ class ExerciseDetailsFragment : Fragment() {
             nChoicesInitial = shapeFusionConfigFragment.getNChoices(),
             dynamic = shapeFusionConfigFragment.isDynamic(),
             additionOperation = shapeFusionConfigFragment.hasAdditionOperation(),
-            subtractionOperation = shapeFusionConfigFragment.hasSubtractionOperation()
+            subtractionOperation = shapeFusionConfigFragment.hasSubtractionOperation(),
+            shapeSide = shapeFusionConfigFragment.shapeSide()
         )
     }
 

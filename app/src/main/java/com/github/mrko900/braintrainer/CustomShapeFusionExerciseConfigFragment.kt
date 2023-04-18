@@ -47,8 +47,13 @@ class CustomShapeFusionExerciseConfigFragment : Fragment() {
 
         binding.nChoicesSlider.value = 4f
         binding.nChoicesSlider.valueFrom = 2f
-        binding.nChoicesSlider.valueTo = 5f
+        binding.nChoicesSlider.valueTo = 4f
         binding.nChoicesSlider.stepSize = 1f
+
+        binding.shapeSizeSlider.value = 4f
+        binding.shapeSizeSlider.valueFrom = 1f
+        binding.shapeSizeSlider.valueTo = 6f
+        binding.shapeSizeSlider.stepSize = 1f
     }
 
     fun getNTerms(): Int {
@@ -69,5 +74,9 @@ class CustomShapeFusionExerciseConfigFragment : Fragment() {
 
     fun hasSubtractionOperation(): Boolean {
         return currentOperationsSelection != 1
+    }
+
+    fun shapeSide(): Int {
+        return binding.shapeSizeSlider.value.toInt()
     }
 }
