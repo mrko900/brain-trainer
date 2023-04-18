@@ -41,8 +41,8 @@ class CustomShapeFusionExerciseConfig : Fragment() {
         binding.nTermsSlider.stepSize = 1f
 
         binding.nChoicesSlider.value = 4f
-        binding.nTermsSlider.valueFrom = 2f
-        binding.nTermsSlider.valueTo = 5f
-        binding.nTermsSlider.stepSize = 1f
+        binding.nChoicesSlider.valueFrom = 2f
+        binding.nChoicesSlider.valueTo = 5f
+        binding.nChoicesSlider.stepSize = 1f
     }
 }
