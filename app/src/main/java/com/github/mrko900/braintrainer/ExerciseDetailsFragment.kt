@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import com.github.mrko900.braintrainer.databinding.ExerciseDetailsBinding
@@ -37,5 +38,11 @@ class ExerciseDetailsFragment : Fragment() {
                 args = null
             )
         }
+
+        binding.config.setAdapter(ArrayAdapter.createFromResource(
+            mainActivity,
+            R.array.exercise_configs,
+            android.R.layout.simple_spinner_dropdown_item
+        ))
     }
 }
