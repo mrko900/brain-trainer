@@ -34,5 +34,15 @@ class CustomShapeFusionExerciseConfig : Fragment() {
 
         binding.operations.setAdapter(adapter)
         binding.operations.setText(adapter.getItem(0), false)
+
+        binding.nTermsSlider.value = 3f
+        binding.nTermsSlider.valueFrom = 2f
+        binding.nTermsSlider.valueTo = 4f
+        binding.nTermsSlider.stepSize = 1f
+
+        binding.nChoicesSlider.value = 4f
+        binding.nTermsSlider.valueFrom = 2f
+        binding.nTermsSlider.valueTo = 5f
+        binding.nTermsSlider.stepSize = 1f
     }
 }
