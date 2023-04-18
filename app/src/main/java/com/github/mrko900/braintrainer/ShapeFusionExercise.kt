@@ -130,10 +130,11 @@ class ShapeFusionExerciseStats {
 class ShapeFusionExercise(
     exerciseControl: ExerciseControl,
     onFinishedCallback: Consumer<ExerciseResult>,
-    private val group: ViewGroup,
-    private val inflater: LayoutInflater,
+    group: ViewGroup,
+    inflater: LayoutInflater,
+    activity: MainActivity,
     private val config: ShapeFusionExerciseConfig
-) : AbstractExercise(exerciseControl, onFinishedCallback) {
+) : AbstractExercise(exerciseControl, onFinishedCallback, group, inflater, activity) {
     private lateinit var currentQuestion: ShapeFusionExerciseQuestion
     private lateinit var currentQuestionParams: QuestionParams
     private lateinit var rootFrame: FrameLayout
@@ -148,12 +149,6 @@ class ShapeFusionExercise(
     private val choiceViews: MutableList<View> = ArrayList()
 
     private lateinit var logic: ShapeFusionExerciseLogic
-
-//    private var shapeSide = 4
-//    private var nChoices = 4
-//    private var nOperands = 3
-//    private var secondsPerQuestion = 8
-//    private var totalRounds = 3
 
     private var targetNextTimerUpd: Long = 0
 
@@ -191,6 +186,7 @@ class ShapeFusionExercise(
     }
 
     override fun start() {
+        super.start()
         exerciseControl.totalRounds = logic.totalRounds
         exerciseControl.round = 0
         exerciseControl.score = 0
@@ -200,8 +196,13 @@ class ShapeFusionExercise(
 
     private fun endExercise() {
         Log.d(LOGGING_TAG, "Exercise completed")
+        finish(ExerciseResult(ExerciseMode.SHAPE_FUSION, exerciseControl.score, stats))
+    }
+
+    override fun finish(result: ExerciseResult) {
+        super.finish(result)
         exerciseControl.endExercise(
-            ExerciseResult(ExerciseMode.SHAPE_FUSION, exerciseControl.score, stats),
+            result,
             ShapeFusionExerciseResultManager()
         )
     }

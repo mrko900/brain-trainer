@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Menu
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
@@ -115,6 +116,7 @@ class MainActivity : AppCompatActivity() {
                     onFinishedCallback,
                     group,
                     layoutInflater,
+                    this,
                     currentExercise!!.config as ShapeFusionExerciseConfig
                 )
             }
@@ -122,5 +124,9 @@ class MainActivity : AppCompatActivity() {
                 throw AssertionError()
             }
         }
+    }
+
+    fun setNavPaneVisible(visible: Boolean) {
+        binding.navView.visibility = if (visible) View.VISIBLE else View.GONE
     }
 }

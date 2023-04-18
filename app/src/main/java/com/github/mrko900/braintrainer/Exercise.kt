@@ -1,5 +1,7 @@
 package com.github.mrko900.braintrainer
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.core.util.Consumer
 
 interface Exercise {
@@ -11,9 +13,17 @@ interface Exercise {
 
 abstract class AbstractExercise(
     protected val exerciseControl: ExerciseControl,
-    private val onFinishedCallback: Consumer<ExerciseResult>
+    private val onFinishedCallback: Consumer<ExerciseResult>,
+    protected val group: ViewGroup,
+    protected val inflater: LayoutInflater,
+    protected val activity: MainActivity
 ) : Exercise {
-    protected fun finish(result: ExerciseResult) {
+    override fun start() {
+        activity.setNavPaneVisible(false)
+    }
+
+    protected open fun finish(result: ExerciseResult) {
         onFinishedCallback.accept(result)
+        activity.setNavPaneVisible(true)
     }
 }
