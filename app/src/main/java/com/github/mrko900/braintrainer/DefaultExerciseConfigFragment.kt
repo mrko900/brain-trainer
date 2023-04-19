@@ -27,9 +27,16 @@ class DefaultExerciseConfigFragment : Fragment() {
 
         when (mainActivity.currentExercise!!.mode) {
             ExerciseMode.SHAPE_FUSION -> {
-                CustomShapeFusionExerciseConfigFragment.configureDurationSlider(binding.include.durationSlider)
+                CustomShapeFusionExerciseConfigFragment.configureDurationSlider(
+                    binding.include.textView14,
+                    binding.include.durationSlider
+                )
             }
             else -> throw UnsupportedOperationException()
         }
+    }
+
+    fun getDuration(): Int {
+        return binding.include.durationSlider.value.toInt()
     }
 }

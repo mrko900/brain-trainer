@@ -180,7 +180,7 @@ class ShapeFusionExercise(
             hasAdditionOperation = config.additionOperation,
             hasSubtractionOperation = config.subtractionOperation,
             dynamic = config.dynamic,
-            totalRounds = 3,
+            totalRounds = config.nRounds,
             shapeSide = config.shapeSide
         )
     }

@@ -85,6 +85,7 @@ class ExerciseDetailsFragment : Fragment() {
     }
 
     private fun getDefaultShapeFusionExerciseConfig(): ShapeFusionExerciseConfig {
+        val defaultConfigFragment = configFragment as DefaultExerciseConfigFragment
         // todo difficulty
         return ShapeFusionExerciseConfig(
             nTermsInitial = 3,
@@ -92,7 +93,8 @@ class ExerciseDetailsFragment : Fragment() {
             dynamic = true,
             additionOperation = true,
             subtractionOperation = true,
-            shapeSide = 4
+            shapeSide = 4,
+            nRounds = defaultConfigFragment.getDuration()
         )
     }
 
@@ -104,7 +106,8 @@ class ExerciseDetailsFragment : Fragment() {
             dynamic = shapeFusionConfigFragment.isDynamic(),
             additionOperation = shapeFusionConfigFragment.hasAdditionOperation(),
             subtractionOperation = shapeFusionConfigFragment.hasSubtractionOperation(),
-            shapeSide = shapeFusionConfigFragment.shapeSide()
+            shapeSide = shapeFusionConfigFragment.getShapeSide(),
+            nRounds = shapeFusionConfigFragment.getNumberOfRounds()
         )
     }
 

@@ -30,4 +30,6 @@
     <string name="correct_choices">Correct choices:</string>
     <string name="wrong_choices">Wrong choices:</string>
     <string name="timeouts">Timeouts:</string>
+
+    <string name="number_of_rounds">Number of rounds</string>
 </resources>

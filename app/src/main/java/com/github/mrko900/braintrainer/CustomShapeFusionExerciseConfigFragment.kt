@@ -6,17 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.github.mrko900.braintrainer.databinding.ShapeFusionExerciseCustomConfigBinding
 import com.google.android.material.slider.Slider
 
 class CustomShapeFusionExerciseConfigFragment : Fragment() {
     companion object {
-        fun configureDurationSlider(slider: Slider) {
+        fun configureDurationSlider(textView: TextView, slider: Slider) {
             slider.value = 11f
             slider.valueFrom = 1f
             slider.valueTo = 35f
             slider.stepSize = 1f
+            textView.setText(R.string.number_of_rounds)
         }
     }
 
@@ -65,7 +67,7 @@ class CustomShapeFusionExerciseConfigFragment : Fragment() {
         binding.shapeSizeSlider.valueTo = 6f
         binding.shapeSizeSlider.stepSize = 1f
 
-        configureDurationSlider(binding.include.durationSlider)
+        configureDurationSlider(binding.include.textView14, binding.include.durationSlider)
     }
 
     fun getNTerms(): Int {
@@ -88,7 +90,11 @@ class CustomShapeFusionExerciseConfigFragment : Fragment() {
         return currentOperationsSelection != 1
     }
 
-    fun shapeSide(): Int {
+    fun getShapeSide(): Int {
         return binding.shapeSizeSlider.value.toInt()
+    }
+
+    fun getNumberOfRounds(): Int {
+        return binding.include.durationSlider.value.toInt()
     }
 }
