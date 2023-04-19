@@ -14,12 +14,14 @@ import kotlin.math.roundToInt
 
 class ExerciseListFragment : Fragment() {
     private lateinit var binding: ExerciseListBinding
+    private lateinit var mainActivity: MainActivity
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (activity == null) {
             Log.e(LOGGING_TAG, "activity must be non-null")
             throw IllegalStateException("activity must be non-null")
         }
+        mainActivity = activity as MainActivity
         binding = ExerciseListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -35,9 +37,10 @@ class ExerciseListFragment : Fragment() {
         listView.layoutManager = GridLayoutManager(context, spanCount)
         val nav = (activity!!.supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
             .navController
-        val adapter = ExerciseListViewAdapter(listView, layoutInflater, resources, nav, 12, {
+        val exerciseListItems = exerciseListItems()
+        val adapter = ExerciseListViewAdapter(listView, layoutInflater, resources, nav, exerciseListItems, {
             startPostponedEnterTransition()
-        }, 6) // todo calc maxItemsVisibleAtFirst and preCreateViews
+        }, 6, mainActivity) // todo calc maxItemsVisibleAtFirst and preCreateViews
         adapter.preCreateViewHolders()
         listView.adapter = adapter
         listView.addItemDecoration(
@@ -45,7 +48,7 @@ class ExerciseListFragment : Fragment() {
                 resources.getDimension(R.dimen.exercise_list_spacing).roundToInt(), spanCount
             )
         )
-        for (item in exerciseListItems())
-            adapter.addItem(item)
+//        for (item in exerciseListItems)
+//            adapter.addItem(item)
     }
 }

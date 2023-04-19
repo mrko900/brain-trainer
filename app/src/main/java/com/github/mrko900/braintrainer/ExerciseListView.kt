@@ -21,25 +21,23 @@ class ExerciseListViewAdapter(
     private val layoutInflater: LayoutInflater,
     private val res: Resources,
     private val nav: NavController,
-    private val preCreateViews: Int,
+    private val items: MutableList<ExerciseListViewItemParams>,
     private var onInitCallback: Runnable? = null,
-    private val maxItemsVisibleAtFirst: Int = -1
+    private val maxItemsVisibleAtFirst: Int = -1,
+    private val activity: MainActivity
 ) : RecyclerView.Adapter<ExerciseListViewAdapterViewHolder>() {
-    private val items: MutableList<ExerciseListViewItemParams> = ArrayList()
     private var createdCnt = 0
     private var initCnt = 0
     private val viewHolders: MutableList<VH> = ArrayList()
 
     init {
-        if (preCreateViews <= 0)
-            throw IllegalArgumentException("preCreateViews must be >= 0")
         if (onInitCallback != null && maxItemsVisibleAtFirst <= 0)
             throw IllegalArgumentException("maxItemsVisibleAtFirst must be >0 when onInitCallback is specified")
     }
 
     fun preCreateViewHolders() {
-        for (i in 1..preCreateViews)
-            viewHolders.add(VH(layoutInflater, recyclerView, nav))
+        for (item in items)
+            viewHolders.add(VH(item.mode, layoutInflater, recyclerView, nav, activity))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseListViewAdapterViewHolder {
@@ -79,21 +77,35 @@ class ExerciseListViewAdapter(
 // todo don't inflate inside the constructor
 class ExerciseListViewAdapterViewHolder : RecyclerView.ViewHolder {
     val binding: ExerciseListItemBinding
-    val nav: NavController
+    private val nav: NavController
+    private val activity: MainActivity
+    private val mode: ExerciseMode
 
-    constructor(layoutInflater: LayoutInflater, parent: ViewGroup?, nav: NavController) :
-            this(ExerciseListItemBinding.inflate(layoutInflater, parent, false), nav)
+    constructor(
+        mode: ExerciseMode,
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup?,
+        nav: NavController,
+        activity: MainActivity
+    ) : this(mode, ExerciseListItemBinding.inflate(layoutInflater, parent, false), nav, activity)
 
-    private constructor(binding: ExerciseListItemBinding, nav: NavController) :
-            super(binding.root) {
+    private constructor(
+        mode: ExerciseMode,
+        binding: ExerciseListItemBinding,
+        nav: NavController,
+        activity: MainActivity
+    ) : super(binding.root) {
         this.binding = binding
         this.nav = nav
+        this.activity = activity
+        this.mode = mode
         initListItem(binding)
     }
 
     private fun initListItem(binding: ExerciseListItemBinding) {
         binding.playButton.setOnClickListener {
             Log.d(LOGGING_TAG, "Exercise selected")
+            activity.currentExercise = ExerciseParams(mode, null)
             nav.navigate(
                 R.id.fragment_exercise_details,
                 navOptions = NavOptions.Builder()
@@ -117,4 +129,9 @@ class ExerciseListViewItemDecoration(private val space: Int, private val columns
     }
 }
 
-data class ExerciseListViewItemParams(val titleResId: Int, val primaryColor: Int, val secondaryColor: Int)
+data class ExerciseListViewItemParams(
+    val titleResId: Int,
+    val primaryColor: Int,
+    val secondaryColor: Int,
+    val mode: ExerciseMode
+)

@@ -100,9 +100,6 @@ class MainActivity : AppCompatActivity() {
             throw IllegalStateException("can't create exercise")
         }
         when (currentExercise!!.mode) {
-            ExerciseMode.MATH -> {
-                throw UnsupportedOperationException()
-            }
             ExerciseMode.SHAPE_FUSION -> {
                 return ShapeFusionExercise(
                     ExerciseControl(
@@ -120,9 +117,7 @@ class MainActivity : AppCompatActivity() {
                     currentExercise!!.config as ShapeFusionExerciseConfig
                 )
             }
-            else -> {
-                throw AssertionError()
-            }
+            else -> throw UnsupportedOperationException()
         }
     }
 

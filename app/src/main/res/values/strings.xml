@@ -7,6 +7,7 @@
 
     <string name="exercise_title_math">MATH</string>
     <string name="exercise_title_shape_fusion">Shape fusion</string>
+    <string name="exercise_title_trails">Trails</string>
 
     <string name="status_correct_guess">Correct</string>
     <string name="status_wrong_guess">Wrong</string>
