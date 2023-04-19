@@ -8,8 +8,18 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import com.github.mrko900.braintrainer.databinding.ShapeFusionExerciseCustomConfigBinding
+import com.google.android.material.slider.Slider
 
 class CustomShapeFusionExerciseConfigFragment : Fragment() {
+    companion object {
+        fun configureDurationSlider(slider: Slider) {
+            slider.value = 11f
+            slider.valueFrom = 1f
+            slider.valueTo = 35f
+            slider.stepSize = 1f
+        }
+    }
+
     private lateinit var binding: ShapeFusionExerciseCustomConfigBinding
     private lateinit var mainActivity: MainActivity
 
@@ -54,6 +64,8 @@ class CustomShapeFusionExerciseConfigFragment : Fragment() {
         binding.shapeSizeSlider.valueFrom = 1f
         binding.shapeSizeSlider.valueTo = 6f
         binding.shapeSizeSlider.stepSize = 1f
+
+        configureDurationSlider(binding.include.durationSlider)
     }
 
     fun getNTerms(): Int {

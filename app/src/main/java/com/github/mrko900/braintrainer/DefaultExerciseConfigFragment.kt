@@ -24,5 +24,12 @@ class DefaultExerciseConfigFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        when (mainActivity.currentExercise!!.mode) {
+            ExerciseMode.SHAPE_FUSION -> {
+                CustomShapeFusionExerciseConfigFragment.configureDurationSlider(binding.include.durationSlider)
+            }
+            else -> throw UnsupportedOperationException()
+        }
     }
 }
