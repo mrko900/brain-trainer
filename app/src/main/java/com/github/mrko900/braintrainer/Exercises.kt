@@ -30,7 +30,8 @@ fun exerciseListItemTrails(): ExerciseListViewItemParams {
 
 fun getExerciseName(mode: ExerciseMode, res: Resources): String {
     return res.getString(when (mode) {
-        ExerciseMode.SHAPE_FUSION -> R.string.exercise_shape_fusion
+        ExerciseMode.SHAPE_FUSION -> R.string.exercise_title_shape_fusion
+        ExerciseMode.TRAILS -> R.string.exercise_title_trails
         else -> throw UnsupportedOperationException()
     })
 }

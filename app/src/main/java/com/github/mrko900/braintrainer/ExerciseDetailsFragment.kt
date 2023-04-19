@@ -57,6 +57,8 @@ class ExerciseDetailsFragment : Fragment() {
 
         binding.config.setText(adapter.getItem(currentConfigSelection), false)
         changeConfigFragment(idToConfigFragment(currentConfigSelection))
+
+        binding.title.text = getExerciseName(mainActivity.currentExercise!!.mode, mainActivity.resources)
     }
 
     enum class ConfigFragment {

@@ -40,6 +40,7 @@ class ExerciseCompletedFragment : Fragment() {
         binding.score.text = mainActivity.currentExerciseResult!!.score.toString()
 
         binding.mode.text = getExerciseName(mainActivity.currentExerciseResult!!.mode, mainActivity.resources)
+            .lowercase()
         mainActivity.currentExerciseResultManager!!.out(mainActivity, binding, mainActivity.currentExerciseResult!!)
     }
 }
