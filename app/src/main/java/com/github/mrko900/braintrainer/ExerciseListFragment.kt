@@ -38,7 +38,7 @@ class ExerciseListFragment : Fragment() {
         val nav = (activity!!.supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
             .navController
         val exerciseListItems = exerciseListItems()
-        val adapter = ExerciseListViewAdapter(listView, layoutInflater, resources, nav, exerciseListItems, {
+        val adapter = ExerciseListViewAdapter(listView, layoutInflater, resources, nav, exerciseListItems.size, {
             startPostponedEnterTransition()
         }, 6, mainActivity) // todo calc maxItemsVisibleAtFirst and preCreateViews
         adapter.preCreateViewHolders()
@@ -48,7 +48,7 @@ class ExerciseListFragment : Fragment() {
                 resources.getDimension(R.dimen.exercise_list_spacing).roundToInt(), spanCount
             )
         )
-//        for (item in exerciseListItems)
-//            adapter.addItem(item)
+        for (item in exerciseListItems)
+            adapter.addItem(item)
     }
 }

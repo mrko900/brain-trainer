@@ -32,7 +32,7 @@ class DefaultExerciseConfigFragment : Fragment() {
                     binding.include.durationSlider
                 )
             }
-            else -> throw UnsupportedOperationException()
+            else -> {}
         }
     }
 

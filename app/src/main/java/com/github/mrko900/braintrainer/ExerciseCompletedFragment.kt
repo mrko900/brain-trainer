@@ -31,10 +31,8 @@ class ExerciseCompletedFragment : Fragment() {
         binding.circularProgressBar.filledColor = binding.circularProgressBar.blankColor
         binding.circularProgressBar.blankColor = tmp
         anim.addUpdateListener { v ->
-            run {
-                binding.circularProgressBar.percentage = v.animatedValue as Float
-                binding.circularProgressBar.invalidate()
-            }
+            binding.circularProgressBar.percentage = v.animatedValue as Float
+            binding.circularProgressBar.invalidate()
         }
         anim.duration = mainActivity.resources.getInteger(R.integer.exercise_completed_progress_anim_duration).toLong()
         anim.start()

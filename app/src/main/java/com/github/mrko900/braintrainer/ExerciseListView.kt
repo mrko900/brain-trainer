@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mrko900.braintrainer.databinding.ExerciseListItemBinding
+import java.lang.Integer.min
 import kotlin.math.roundToInt
 
 typealias VH = ExerciseListViewAdapterViewHolder
@@ -21,23 +22,26 @@ class ExerciseListViewAdapter(
     private val layoutInflater: LayoutInflater,
     private val res: Resources,
     private val nav: NavController,
-    private val items: MutableList<ExerciseListViewItemParams>,
+    private val preCreateViews: Int,
     private var onInitCallback: Runnable? = null,
     private val maxItemsVisibleAtFirst: Int = -1,
     private val activity: MainActivity
 ) : RecyclerView.Adapter<ExerciseListViewAdapterViewHolder>() {
+    private val items: MutableList<ExerciseListViewItemParams> = ArrayList()
     private var createdCnt = 0
     private var initCnt = 0
     private val viewHolders: MutableList<VH> = ArrayList()
 
     init {
+        if (preCreateViews <= 0)
+            throw IllegalArgumentException("preCreateViews must be >= 0")
         if (onInitCallback != null && maxItemsVisibleAtFirst <= 0)
             throw IllegalArgumentException("maxItemsVisibleAtFirst must be >0 when onInitCallback is specified")
     }
 
     fun preCreateViewHolders() {
-        for (item in items)
-            viewHolders.add(VH(item.mode, layoutInflater, recyclerView, nav, activity))
+        for (item in 1..preCreateViews)
+            viewHolders.add(VH(layoutInflater, recyclerView, nav, activity))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseListViewAdapterViewHolder {
@@ -49,6 +53,7 @@ class ExerciseListViewAdapter(
 
     override fun onBindViewHolder(holder: ExerciseListViewAdapterViewHolder, position: Int) {
         val item = items[position]
+        holder.mode = item.mode
         holder.binding.title.setText(item.titleResId)
         holder.binding.cardViewRoot.background = ColorDrawable(item.primaryColor)
         holder.binding.cardViewBottom.background = ColorDrawable(item.secondaryColor)
@@ -56,7 +61,7 @@ class ExerciseListViewAdapter(
 
         if (onInitCallback != null) {
             ++initCnt
-            if (initCnt == maxItemsVisibleAtFirst) {
+            if (initCnt == min(preCreateViews, maxItemsVisibleAtFirst)) {
                 onInitCallback!!.run()
                 onInitCallback = null
             }
@@ -79,26 +84,16 @@ class ExerciseListViewAdapterViewHolder : RecyclerView.ViewHolder {
     val binding: ExerciseListItemBinding
     private val nav: NavController
     private val activity: MainActivity
-    private val mode: ExerciseMode
+    lateinit var mode: ExerciseMode
 
-    constructor(
-        mode: ExerciseMode,
-        layoutInflater: LayoutInflater,
-        parent: ViewGroup?,
-        nav: NavController,
-        activity: MainActivity
-    ) : this(mode, ExerciseListItemBinding.inflate(layoutInflater, parent, false), nav, activity)
+    constructor(layoutInflater: LayoutInflater, parent: ViewGroup?, nav: NavController, activity: MainActivity) :
+            this(ExerciseListItemBinding.inflate(layoutInflater, parent, false), nav, activity)
 
-    private constructor(
-        mode: ExerciseMode,
-        binding: ExerciseListItemBinding,
-        nav: NavController,
-        activity: MainActivity
-    ) : super(binding.root) {
+    private constructor(binding: ExerciseListItemBinding, nav: NavController, activity: MainActivity) :
+            super(binding.root) {
         this.binding = binding
         this.nav = nav
         this.activity = activity
-        this.mode = mode
         initListItem(binding)
     }
 
