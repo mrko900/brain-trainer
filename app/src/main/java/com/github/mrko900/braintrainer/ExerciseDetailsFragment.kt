@@ -124,6 +124,7 @@ class ExerciseDetailsFragment : Fragment() {
 
     private fun setConfig() = when (mainActivity.currentExercise!!.mode) {
         ExerciseMode.SHAPE_FUSION -> setShapeFusionExerciseConfig()
+        ExerciseMode.TRAILS -> {}
         else -> throw UnsupportedOperationException()
     }
 }

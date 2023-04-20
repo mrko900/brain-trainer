@@ -99,22 +99,24 @@ class MainActivity : AppCompatActivity() {
         if (currentExercise == null) {
             throw IllegalStateException("can't create exercise")
         }
-        when (currentExercise!!.mode) {
+        val exerciseControl = ExerciseControl(
+            this,
+            group.findViewById(R.id.timer),
+            group.findViewById(R.id.timerProgressBar),
+            group.findViewById(R.id.scoreStatus),
+            group.findViewById(R.id.roundStatus),
+            group.findViewById(R.id.status)
+        )
+        return when (currentExercise!!.mode) {
             ExerciseMode.SHAPE_FUSION -> {
-                return ShapeFusionExercise(
-                    ExerciseControl(
-                        this,
-                        group.findViewById(R.id.timer),
-                        group.findViewById(R.id.timerProgressBar),
-                        group.findViewById(R.id.scoreStatus),
-                        group.findViewById(R.id.roundStatus),
-                        group.findViewById(R.id.status)
-                    ),
-                    onFinishedCallback,
-                    group,
-                    layoutInflater,
-                    this,
+                ShapeFusionExercise(
+                    exerciseControl, onFinishedCallback, group, layoutInflater, this,
                     currentExercise!!.config as ShapeFusionExerciseConfig
+                )
+            }
+            ExerciseMode.TRAILS -> {
+                TrailsExercise(
+                    exerciseControl,onFinishedCallback, group, layoutInflater, this
                 )
             }
             else -> throw UnsupportedOperationException()
