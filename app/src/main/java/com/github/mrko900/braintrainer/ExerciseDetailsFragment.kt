@@ -96,6 +96,7 @@ class ExerciseDetailsFragment : Fragment() {
             additionOperation = true,
             subtractionOperation = true,
             shapeSide = 4,
+            secondsPerQuestion = 8,
             nRounds = defaultConfigFragment.getDuration()
         )
     }
@@ -109,6 +110,7 @@ class ExerciseDetailsFragment : Fragment() {
             additionOperation = shapeFusionConfigFragment.hasAdditionOperation(),
             subtractionOperation = shapeFusionConfigFragment.hasSubtractionOperation(),
             shapeSide = shapeFusionConfigFragment.getShapeSide(),
+            secondsPerQuestion = shapeFusionConfigFragment.getSecondsPerQuestion(),
             nRounds = shapeFusionConfigFragment.getNumberOfRounds()
         )
     }

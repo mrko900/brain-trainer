@@ -7,5 +7,6 @@ data class ShapeFusionExerciseConfig(
     val additionOperation: Boolean,
     val subtractionOperation: Boolean,
     val shapeSide: Int,
+    val secondsPerQuestion: Int,
     val nRounds: Int
 )

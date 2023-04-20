@@ -174,7 +174,7 @@ class ShapeFusionExercise(
         choiceListView = frame.findViewById(R.id.choices)
         exprFrameView = frame.findViewById(R.id.exprFrame)
         logic = ShapeFusionExerciseLogic(
-            initialSecondsPerQuestion = 8,
+            initialSecondsPerQuestion = config.secondsPerQuestion,
             initialNTerms = config.nTermsInitial,
             initialNChoices = config.nChoicesInitial,
             hasAdditionOperation = config.additionOperation,

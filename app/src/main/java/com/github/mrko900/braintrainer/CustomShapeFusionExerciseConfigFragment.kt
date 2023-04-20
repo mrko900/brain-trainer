@@ -67,6 +67,11 @@ class CustomShapeFusionExerciseConfigFragment : Fragment() {
         binding.shapeSizeSlider.valueTo = 6f
         binding.shapeSizeSlider.stepSize = 1f
 
+        binding.secondsPerQuestionSlider.value = 8f
+        binding.secondsPerQuestionSlider.valueFrom = 1f
+        binding.secondsPerQuestionSlider.valueTo = 20f
+        binding.secondsPerQuestionSlider.stepSize = 1f
+
         configureDurationSlider(binding.include.textView14, binding.include.durationSlider)
     }
 
@@ -96,5 +101,9 @@ class CustomShapeFusionExerciseConfigFragment : Fragment() {
 
     fun getNumberOfRounds(): Int {
         return binding.include.durationSlider.value.toInt()
+    }
+
+    fun getSecondsPerQuestion(): Int {
+        return binding.secondsPerQuestionSlider.value.toInt()
     }
 }
