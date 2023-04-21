@@ -2,6 +2,8 @@ package com.github.mrko900.braintrainer
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -87,6 +89,9 @@ class TrailsExercise(
                 fieldView.addView(innerView, createFieldSubViewLayoutParams(i, j, false))
                 outerViews[i].add(outerView)
                 innerViews[i].add(innerView)
+                outerView.setOnClickListener {
+                    handleChoice(j, i)
+                }
             }
         }
     }
@@ -146,12 +151,8 @@ class TrailsExercise(
             if (y == fieldSize - 1)
                 set.remove(Direction.UP)
             val current = set.random()
-            when (current) {
-                Direction.RIGHT -> x += 1
-                Direction.LEFT -> x -= 1
-                Direction.UP -> y += 1
-                Direction.DOWN -> y -= 1
-            }
+            x = updX(x, current)
+            y = updY(y, current)
             instruction.add(current)
         }
         lastToX = x
@@ -189,6 +190,56 @@ class TrailsExercise(
         view.layoutParams = LinearLayout.LayoutParams(size, size)
 
         return view
+    }
+
+    private fun handleChoice(x: Int, y: Int) {
+        if (x == currentQuestion.toX && y == currentQuestion.toY) {
+            handleCorrectChoice()
+        } else {
+            handleIncorrectChoice()
+        }
+    }
+
+    private fun handleCorrectChoice() {
+        Log.d(LOGGING_TAG, "Correct choice")
+        var x = currentQuestion.fromX
+        var y = currentQuestion.fromY
+        val handler = Handler(Looper.getMainLooper())
+        val iterator = currentQuestion.instruction.iterator()
+        val runnable = object : Runnable {
+            override fun run() {
+                innerViews[y][x].imageTintList = ColorStateList.valueOf(Color.LTGRAY)
+                val dir = iterator.next()
+                x = updX(x, dir)
+                y = updY(y, dir)
+                innerViews[y][x].imageTintList = ColorStateList.valueOf(Color.GREEN)
+                if (iterator.hasNext()) {
+                    handler.postDelayed(
+                        this, activity.resources.getInteger(R.integer.trails_exercise_movement_anim_delay).toLong()
+                    )
+                }
+            }
+        }
+        runnable.run()
+    }
+
+    private fun updX(x: Int, dir: Direction): Int = when (dir) {
+        Direction.RIGHT -> x + 1
+        Direction.LEFT -> x - 1
+        else -> x
+    }
+
+    private fun updY(y: Int, dir: Direction): Int = when (dir) {
+        Direction.UP -> y + 1
+        Direction.DOWN -> y - 1
+        else -> y
+    }
+
+    private fun handleIncorrectChoice() {
+        Log.d(LOGGING_TAG, "Incorrect choice")
+    }
+
+    private fun timedOut() {
     }
 
     private fun endExercise() {
