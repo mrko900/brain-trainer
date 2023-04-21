@@ -28,7 +28,6 @@ import android.widget.Space
 import android.widget.TableLayout
 import androidx.annotation.ColorInt
 import androidx.core.util.Consumer
-import java.util.Collections
 import java.util.Random
 
 data class Shape(private val matrix: List<MutableList<Boolean>>, private val width: Int, private val height: Int) {
@@ -96,7 +95,7 @@ data class Shape(private val matrix: List<MutableList<Boolean>>, private val wid
     }
 }
 
-class ShapeFusionExerciseQuestion(val expression: Expression, choices: List<Shape>, val answerIndex: Int) {
+data class ShapeFusionExerciseQuestion(val expression: Expression, val choices: List<Shape>, val answerIndex: Int) {
     val answer = choices[answerIndex]
 
     data class Expression(val operands: List<Shape>, val operators: List<Operator>)
@@ -104,11 +103,6 @@ class ShapeFusionExerciseQuestion(val expression: Expression, choices: List<Shap
     enum class Operator {
         ADDITION, SUBTRACTION
     }
-
-    val choices: List<Shape> = choices
-        get() {
-            return Collections.unmodifiableList(field)
-        }
 
     init {
         if (!(answerIndex >= 0 && answerIndex < choices.size))
