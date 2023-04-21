@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.util.Consumer
 import androidx.gridlayout.widget.GridLayout
+import java.util.Random
 
 enum class Direction {
     UP, DOWN, RIGHT, LEFT
@@ -42,6 +43,15 @@ class TrailsExercise(
     // todo logic
     private var totalRounds = 6
     private var secondsPerQuestion = 6
+    private var instructionLength = 6
+
+    private val random = Random()
+
+    private lateinit var currentQuestion: TrailsExerciseQuestion
+    private var newQuestion = false
+
+    private val innerViews = ArrayList<ArrayList<ImageView>>()
+    private val outerViews = ArrayList<ArrayList<ImageView>>()
 
     override fun init() {
         rootFrame = group.findViewById(R.id.frame)
@@ -63,9 +73,15 @@ class TrailsExercise(
         fieldView.rowCount = fieldSize
         fieldView.columnCount = fieldSize
         for (i in 0 until fieldSize) { // i - row
+            outerViews.add(ArrayList())
+            innerViews.add(ArrayList())
             for (j in 0 until fieldSize) { // j - column
-                fieldView.addView(createFieldSubView(true), createFieldSubViewLayoutParams(i, j, true))
-                fieldView.addView(createFieldSubView(false), createFieldSubViewLayoutParams(i, j, false))
+                val outerView = createFieldSubView(true)
+                val innerView = createFieldSubView(false)
+                fieldView.addView(outerView, createFieldSubViewLayoutParams(i, j, true))
+                fieldView.addView(innerView, createFieldSubViewLayoutParams(i, j, false))
+                outerViews[i].add(outerView)
+                innerViews[i].add(innerView)
             }
         }
     }
@@ -74,16 +90,18 @@ class TrailsExercise(
         val view = ImageView(activity)
         view.setImageResource(R.drawable.ic_baseline_circle_24)
         view.imageTintList = ColorStateList.valueOf(if (outline) Color.BLACK else Color.RED)
+        // todo add elevation
         return view
     }
 
     private fun createFieldSubViewLayoutParams(row: Int, column: Int, outline: Boolean): GridLayout.LayoutParams {
         val lp = GridLayout.LayoutParams(
-            GridLayout.spec(row, GridLayout.CENTER),
+            GridLayout.spec(fieldSize - row - 1, GridLayout.CENTER),
             GridLayout.spec(column, GridLayout.CENTER)
         )
         var size = activity.resources.displayMetrics.widthPixels / fieldSize - TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, 8f, activity.resources.displayMetrics)
+            TypedValue.COMPLEX_UNIT_DIP, 8f, activity.resources.displayMetrics
+        )
         if (!outline) {
             size *= 0.8f
         }
@@ -100,7 +118,46 @@ class TrailsExercise(
         exerciseControl.round++
         exerciseControl.timer = secondsPerQuestion
         exerciseControl.progress = 1f
+        setupNextQuestion()
+    }
 
+    private fun setupNextQuestion() {
+        val fromX = random.nextInt(fieldSize)
+        val fromY = random.nextInt(fieldSize)
+        var x = fromX
+        var y = fromY
+        val instruction = ArrayList<Direction>()
+        for (i in 1..instructionLength) {
+            val set = HashSet<Direction>()
+            for (dir in Direction.values()) {
+                set.add(dir)
+            }
+            if (x == 0)
+                set.remove(Direction.LEFT)
+            if (x == fieldSize - 1)
+                set.remove(Direction.RIGHT)
+            if (y == 0)
+                set.remove(Direction.DOWN)
+            if (y == fieldSize - 1)
+                set.remove(Direction.UP)
+            val current = set.random()
+            when (current) {
+                Direction.RIGHT -> x += 1
+                Direction.LEFT -> y -= 1
+                Direction.UP -> x += 1
+                Direction.DOWN -> y -= 1
+            }
+            instruction.add(current)
+        }
+        currentQuestion = TrailsExerciseQuestion(instruction, fromX, fromY, x, y)
+        newQuestion = true
+        render()
+    }
+
+    private fun render() {
+        if (newQuestion) newQuestion = false
+        else return
+        innerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList = ColorStateList.valueOf(Color.GREEN)
     }
 
     private fun endExercise() {
