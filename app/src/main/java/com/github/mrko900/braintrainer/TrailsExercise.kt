@@ -53,6 +53,9 @@ class TrailsExercise(
     private val innerViews = ArrayList<ArrayList<ImageView>>()
     private val outerViews = ArrayList<ArrayList<ImageView>>()
 
+    private var lastToX = random.nextInt(fieldSize)
+    private var lastToY = random.nextInt(fieldSize)
+
     override fun init() {
         rootFrame = group.findViewById(R.id.frame)
         frame = inflater.inflate(R.layout.trails_exercise_frame, rootFrame, true) as ViewGroup
@@ -89,7 +92,7 @@ class TrailsExercise(
     private fun createFieldSubView(outline: Boolean): ImageView {
         val view = ImageView(activity)
         view.setImageResource(R.drawable.ic_baseline_circle_24)
-        view.imageTintList = ColorStateList.valueOf(if (outline) Color.BLACK else Color.RED)
+        view.imageTintList = ColorStateList.valueOf(if (outline) Color.BLACK else Color.LTGRAY)
         // todo add elevation
         return view
     }
@@ -103,7 +106,7 @@ class TrailsExercise(
             TypedValue.COMPLEX_UNIT_DIP, 8f, activity.resources.displayMetrics
         )
         if (!outline) {
-            size *= 0.8f
+            size *= 0.85f
         }
         lp.width = size.toInt()
         lp.height = size.toInt()
@@ -122,8 +125,8 @@ class TrailsExercise(
     }
 
     private fun setupNextQuestion() {
-        val fromX = random.nextInt(fieldSize)
-        val fromY = random.nextInt(fieldSize)
+        val fromX = lastToX
+        val fromY = lastToY
         var x = fromX
         var y = fromY
         val instruction = ArrayList<Direction>()
@@ -149,6 +152,8 @@ class TrailsExercise(
             }
             instruction.add(current)
         }
+        lastToX = x
+        lastToY = y
         currentQuestion = TrailsExerciseQuestion(instruction, fromX, fromY, x, y)
         newQuestion = true
         render()
@@ -157,7 +162,11 @@ class TrailsExercise(
     private fun render() {
         if (newQuestion) newQuestion = false
         else return
+
+        // update field
         innerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList = ColorStateList.valueOf(Color.GREEN)
+
+        
     }
 
     private fun endExercise() {
