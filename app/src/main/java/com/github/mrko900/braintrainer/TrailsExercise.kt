@@ -148,8 +148,8 @@ class TrailsExercise(
             val current = set.random()
             when (current) {
                 Direction.RIGHT -> x += 1
-                Direction.LEFT -> y -= 1
-                Direction.UP -> x += 1
+                Direction.LEFT -> x -= 1
+                Direction.UP -> y += 1
                 Direction.DOWN -> y -= 1
             }
             instruction.add(current)
@@ -170,13 +170,19 @@ class TrailsExercise(
 
         // show instruction
         for (dir in currentQuestion.instruction) {
-            instructionView.addView(createDirectionView())
+            instructionView.addView(createDirectionView(dir))
         }
     }
 
-    private fun createDirectionView(): View {
+    private fun createDirectionView(dir: Direction): View {
         val view = ImageView(activity)
-        view.setImageResource(R.drawable.ic_baseline_psychology_alt_24)
+        view.setImageResource(R.drawable.ic_baseline_arrow_forward_24)
+        view.rotation = when (dir) {
+            Direction.RIGHT -> 0f
+            Direction.DOWN -> 90f
+            Direction.LEFT -> 180f
+            Direction.UP -> 270f
+        }
 
         val size = ((0.8f * activity.resources.displayMetrics.widthPixels) / currentQuestion.instruction.size
                 - TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, activity.resources.displayMetrics)).toInt()
