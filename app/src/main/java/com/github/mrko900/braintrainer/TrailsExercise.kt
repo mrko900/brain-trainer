@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -36,7 +37,7 @@ class TrailsExercise(
     private lateinit var frame: ViewGroup
 
     private lateinit var fieldView: GridLayout
-    private lateinit var instruction: LinearLayout
+    private lateinit var instructionView: LinearLayout
 
     private var fieldSize = 6
 
@@ -60,7 +61,7 @@ class TrailsExercise(
         rootFrame = group.findViewById(R.id.frame)
         frame = inflater.inflate(R.layout.trails_exercise_frame, rootFrame, true) as ViewGroup
         fieldView = frame.findViewById(R.id.field)
-        instruction = frame.findViewById(R.id.instruction)
+        instructionView = frame.findViewById(R.id.instruction)
     }
 
     override fun start() {
@@ -72,6 +73,7 @@ class TrailsExercise(
         nextQuestion()
     }
 
+    // todo postpone enter transition
     private fun initField() {
         fieldView.rowCount = fieldSize
         fieldView.columnCount = fieldSize
@@ -166,7 +168,21 @@ class TrailsExercise(
         // update field
         innerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList = ColorStateList.valueOf(Color.GREEN)
 
-        
+        // show instruction
+        for (dir in currentQuestion.instruction) {
+            instructionView.addView(createDirectionView())
+        }
+    }
+
+    private fun createDirectionView(): View {
+        val view = ImageView(activity)
+        view.setImageResource(R.drawable.ic_baseline_psychology_alt_24)
+
+        val size = ((0.8f * activity.resources.displayMetrics.widthPixels) / currentQuestion.instruction.size
+                - TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, activity.resources.displayMetrics)).toInt()
+        view.layoutParams = LinearLayout.LayoutParams(size, size)
+
+        return view
     }
 
     private fun endExercise() {
