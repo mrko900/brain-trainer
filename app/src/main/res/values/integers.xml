@@ -18,7 +18,7 @@
     <integer name="shape_fusion_exercise_first_bitmap_fade_out_duration">200</integer>
     <integer name="shape_fusion_exercise_first_bitmap_fade_in_duration">400</integer>
 
-    <integer name="trails_exercise_movement_anim_delay">150</integer>
+    <integer name="trails_exercise_movement_anim_delay">5150</integer>
 
     <integer name="status_fade_in">200</integer>
     <integer name="status_fade_out">200</integer>

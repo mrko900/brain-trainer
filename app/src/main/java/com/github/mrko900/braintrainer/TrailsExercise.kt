@@ -64,6 +64,12 @@ class TrailsExercise(
     private var lastToX = random.nextInt(fieldSize)
     private var lastToY = random.nextInt(fieldSize)
 
+    private var state = State.TRANSITION
+
+    enum class State {
+        QUESTION_ACTIVE, TRANSITION
+    }
+
     override fun init() {
         rootFrame = group.findViewById(R.id.frame)
         frame = inflater.inflate(R.layout.trails_exercise_frame, rootFrame, true) as ViewGroup
@@ -179,6 +185,16 @@ class TrailsExercise(
         for (dir in currentQuestion.instruction) {
             instructionView.addView(createDirectionView(dir))
         }
+
+        questionLoaded()
+    }
+
+    private fun questionLoaded() {
+        state = State.QUESTION_ACTIVE
+    }
+
+    private fun questionUnloaded() {
+        nextQuestion()
     }
 
     private fun createDirectionView(dir: Direction): View {
@@ -255,6 +271,7 @@ class TrailsExercise(
         var y = currentQuestion.fromY
         val handler = Handler(Looper.getMainLooper())
         val iterator = currentQuestion.instruction.iterator()
+        colorPoint(4, x, y, handler)
         val runnable = object : Runnable {
             override fun run() {
                 val dir = iterator.next()
@@ -271,6 +288,7 @@ class TrailsExercise(
             }
         }
         runnable.run()
+        endQuestion()
     }
 
     private fun updX(x: Int, dir: Direction): Int = when (dir) {
@@ -287,14 +305,22 @@ class TrailsExercise(
 
     private fun handleIncorrectChoice() {
         Log.d(LOGGING_TAG, "Incorrect choice")
+        endQuestion()
     }
 
     private fun timedOut() {
+        endQuestion()
+    }
+
+    private fun endQuestion() {
+        state = State.TRANSITION
+//        questionUnloaded()
     }
 
     private fun endExercise() {
         Log.d(LOGGING_TAG, "Exercise completed")
         finish(ExerciseResult(ExerciseMode.SHAPE_FUSION, exerciseControl.score, Any()))
+
     }
 
     override fun pause() {
