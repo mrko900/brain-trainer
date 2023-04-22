@@ -220,13 +220,24 @@ class TrailsExercise(
         return rgb(r1 + (k * (r2 - r1)).toInt(), g1 + (k * (g2 - g1)).toInt(), b1 + (k * (b2 - b1)).toInt())
     }
 
-    val colorPaintDegreeMap: MutableMap<Pair<Int, Int>, Int> = HashMap()
+    private fun getDegreeColor(degree: Int): Int = when (degree) {
+        5 -> Color.GREEN
+        4 -> rgb(107, 255, 107)
+        3 -> rgb(140, 255, 140)
+        2 -> rgb(177, 255, 177)
+        1 -> rgb(205, 255, 205)
+        0 -> parseColor("#e3e3e3")
+        else -> throw IllegalArgumentException()
+    }
+
+    private val colorPaintDegreeMap: MutableMap<Pair<Int, Int>, Int> = HashMap()
 
     private fun colorPoint(degree: Int, x: Int, y: Int, handler: Handler) {
         if (colorPaintDegreeMap.contains(Pair(x, y)) && colorPaintDegreeMap[Pair(x, y)]!! > degree) {
             return
         }
-        innerViews[y][x].imageTintList = ColorStateList.valueOf(averageColor(Color.WHITE, Color.GREEN, degree / 3.0f))
+        innerViews[y][x].imageTintList = ColorStateList.valueOf(getDegreeColor(degree))
+//        innerViews[y][x].imageTintList = ColorStateList.valueOf(averageColor(Color.WHITE, Color.GREEN, degree / 3.0f))
         if (degree != 0) {
             colorPaintDegreeMap[Pair(x, y)] = degree - 1
             handler.postDelayed(
@@ -250,7 +261,7 @@ class TrailsExercise(
                 outerViews[y][x].imageTintList = ColorStateList.valueOf(parseColor("#a3a3a3"))
                 x = updX(x, dir)
                 y = updY(y, dir)
-                colorPoint(3, x, y, handler)
+                colorPoint(5, x, y, handler)
                 outerViews[y][x].imageTintList = ColorStateList.valueOf(Color.DKGRAY)
                 if (iterator.hasNext()) {
                     handler.postDelayed(
