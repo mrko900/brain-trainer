@@ -2,6 +2,7 @@ package com.github.mrko900.braintrainer
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Color.parseColor
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -103,7 +104,7 @@ class TrailsExercise(
     private fun createFieldSubView(outline: Boolean): ImageView {
         val view = ImageView(activity)
         view.setImageResource(R.drawable.ic_baseline_circle_24)
-        view.imageTintList = ColorStateList.valueOf(if (outline) Color.BLACK else Color.LTGRAY)
+        view.imageTintList = ColorStateList.valueOf(if (outline) parseColor("#a3a3a3") else parseColor("#e3e3e3"))
         // todo add elevation
         return view
     }
@@ -172,6 +173,7 @@ class TrailsExercise(
 
         // update field
         innerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList = ColorStateList.valueOf(Color.GREEN)
+        outerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList = ColorStateList.valueOf(Color.DKGRAY)
 
         // show instruction
         for (dir in currentQuestion.instruction) {
@@ -245,9 +247,11 @@ class TrailsExercise(
         val runnable = object : Runnable {
             override fun run() {
                 val dir = iterator.next()
+                outerViews[y][x].imageTintList = ColorStateList.valueOf(parseColor("#a3a3a3"))
                 x = updX(x, dir)
                 y = updY(y, dir)
                 colorPoint(3, x, y, handler)
+                outerViews[y][x].imageTintList = ColorStateList.valueOf(Color.DKGRAY)
                 if (iterator.hasNext()) {
                     handler.postDelayed(
                         this, activity.resources.getInteger(R.integer.trails_exercise_movement_anim_delay).toLong()
