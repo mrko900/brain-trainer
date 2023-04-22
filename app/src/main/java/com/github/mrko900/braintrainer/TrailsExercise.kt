@@ -12,6 +12,10 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.annotation.ColorInt
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import androidx.core.util.Consumer
 import androidx.gridlayout.widget.GridLayout
 import java.util.Random
@@ -200,13 +204,35 @@ class TrailsExercise(
         }
     }
 
+    private fun rgb(red: Int, green: Int, blue: Int): Int {
+        return -0x1000000 or (red shl 16) or (green shl 8) or blue
+    }
+
+    private fun averageColor(@ColorInt a: Int, @ColorInt b: Int, k: Float): Int {
+        val r1 = a.red
+        val g1 = a.green
+        val b1 = a.blue
+        val r2 = b.red
+        val g2 = b.green
+        val b2 = b.blue
+        return rgb(r1 + (k * (r2 - r1)).toInt(), g1 + (k * (g2 - g1)).toInt(), b1 + (k * (b2 - b1)).toInt())
+    }
+
+    val colorPaintDegreeMap: MutableMap<Pair<Int, Int>, Int> = HashMap()
+
     private fun colorPoint(degree: Int, x: Int, y: Int, handler: Handler) {
-        innerViews[y][x].imageTintList = ColorStateList.valueOf(Color.rgb(0, 0, 84 * degree))
+        if (colorPaintDegreeMap.contains(Pair(x, y)) && colorPaintDegreeMap[Pair(x, y)]!! > degree) {
+            return
+        }
+        innerViews[y][x].imageTintList = ColorStateList.valueOf(averageColor(Color.WHITE, Color.GREEN, degree / 3.0f))
         if (degree != 0) {
+            colorPaintDegreeMap[Pair(x, y)] = degree - 1
             handler.postDelayed(
                 { colorPoint(degree - 1, x, y, handler) },
                 activity.resources.getInteger(R.integer.trails_exercise_movement_anim_delay).toLong()
             )
+        } else {
+            colorPaintDegreeMap.remove(Pair(x, y))
         }
     }
 
