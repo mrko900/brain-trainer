@@ -134,6 +134,10 @@ class TrailsExercise(
         return lp
     }
 
+    private fun clear() {
+        instructionView.removeAllViews()
+    }
+
     private fun nextQuestion() {
         if (exerciseControl.round == totalRounds) {
             endExercise()
@@ -142,6 +146,7 @@ class TrailsExercise(
         exerciseControl.round++
         exerciseControl.timer = secondsPerQuestion
         exerciseControl.progress = 1f
+        clear()
         setupNextQuestion()
     }
 
@@ -197,8 +202,12 @@ class TrailsExercise(
     }
 
     private fun questionUnloaded() {
-        nextQuestion()
+        Log.d(LOGGING_TAG, "${ExerciseMode.TRAILS} question unloaded.")
+
+        // reset data
         animPathCompleted = false
+
+        nextQuestion()
     }
 
     private fun createDirectionView(dir: Direction): View {
@@ -271,6 +280,9 @@ class TrailsExercise(
         } else {
             colorPaintDegreeMap.remove(Pair(x, y))
         }
+        if (colorPaintDegreeMap.isEmpty()) {
+            questionUnloaded()
+        }
     }
 
     private fun handleCorrectChoice() {
@@ -315,8 +327,9 @@ class TrailsExercise(
     }
 
     private fun handleIncorrectChoice() {
+        // todo
         Log.d(LOGGING_TAG, "Incorrect choice")
-        endQuestion()
+//        endQuestion()
     }
 
     private fun timedOut() {
@@ -325,13 +338,11 @@ class TrailsExercise(
 
     private fun endQuestion() {
         state = State.TRANSITION
-//        questionUnloaded()
     }
 
     private fun endExercise() {
         Log.d(LOGGING_TAG, "Exercise completed")
         finish(ExerciseResult(ExerciseMode.SHAPE_FUSION, exerciseControl.score, Any()))
-
     }
 
     override fun pause() {
