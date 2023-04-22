@@ -101,6 +101,9 @@ class TrailsExercise(
                 outerViews[i].add(outerView)
                 innerViews[i].add(innerView)
                 outerView.setOnClickListener {
+                    if (state != State.QUESTION_ACTIVE) {
+                        return@setOnClickListener
+                    }
                     handleChoice(j, i)
                 }
             }
@@ -195,6 +198,7 @@ class TrailsExercise(
 
     private fun questionUnloaded() {
         nextQuestion()
+        animPathCompleted = false
     }
 
     private fun createDirectionView(dir: Direction): View {
@@ -248,13 +252,17 @@ class TrailsExercise(
 
     private val colorPaintDegreeMap: MutableMap<Pair<Int, Int>, Int> = HashMap()
 
+    private var animPathCompleted = false
+
     private fun colorPoint(degree: Int, x: Int, y: Int, handler: Handler) {
-        if (colorPaintDegreeMap.contains(Pair(x, y)) && colorPaintDegreeMap[Pair(x, y)]!! > degree) {
+        if (colorPaintDegreeMap.contains(Pair(x, y)) && colorPaintDegreeMap[Pair(x, y)]!! > degree
+            || degree != 5 && x == currentQuestion.toX && y == currentQuestion.toY && animPathCompleted) {
+            colorPaintDegreeMap.remove(Pair(x, y))
             return
         }
         innerViews[y][x].imageTintList = ColorStateList.valueOf(getDegreeColor(degree))
 //        innerViews[y][x].imageTintList = ColorStateList.valueOf(averageColor(Color.WHITE, Color.GREEN, degree / 3.0f))
-        if (degree != 0) {
+        if (degree != 0 && (x != currentQuestion.toX || y != currentQuestion.toY || !animPathCompleted)) {
             colorPaintDegreeMap[Pair(x, y)] = degree - 1
             handler.postDelayed(
                 { colorPoint(degree - 1, x, y, handler) },
@@ -278,6 +286,9 @@ class TrailsExercise(
                 outerViews[y][x].imageTintList = ColorStateList.valueOf(parseColor("#a3a3a3"))
                 x = updX(x, dir)
                 y = updY(y, dir)
+                if (!iterator.hasNext()) {
+                    animPathCompleted = true
+                }
                 colorPoint(5, x, y, handler)
                 outerViews[y][x].imageTintList = ColorStateList.valueOf(Color.DKGRAY)
                 if (iterator.hasNext()) {
