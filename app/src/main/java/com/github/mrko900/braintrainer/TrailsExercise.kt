@@ -200,6 +200,16 @@ class TrailsExercise(
         }
     }
 
+    private fun colorPoint(degree: Int, x: Int, y: Int, handler: Handler) {
+        innerViews[y][x].imageTintList = ColorStateList.valueOf(Color.rgb(0, 0, 84 * degree))
+        if (degree != 0) {
+            handler.postDelayed(
+                { colorPoint(degree - 1, x, y, handler) },
+                activity.resources.getInteger(R.integer.trails_exercise_movement_anim_delay).toLong()
+            )
+        }
+    }
+
     private fun handleCorrectChoice() {
         Log.d(LOGGING_TAG, "Correct choice")
         var x = currentQuestion.fromX
@@ -208,11 +218,10 @@ class TrailsExercise(
         val iterator = currentQuestion.instruction.iterator()
         val runnable = object : Runnable {
             override fun run() {
-                innerViews[y][x].imageTintList = ColorStateList.valueOf(Color.LTGRAY)
                 val dir = iterator.next()
                 x = updX(x, dir)
                 y = updY(y, dir)
-                innerViews[y][x].imageTintList = ColorStateList.valueOf(Color.GREEN)
+                colorPoint(3, x, y, handler)
                 if (iterator.hasNext()) {
                     handler.postDelayed(
                         this, activity.resources.getInteger(R.integer.trails_exercise_movement_anim_delay).toLong()
