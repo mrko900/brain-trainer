@@ -2,7 +2,6 @@ package com.github.mrko900.braintrainer
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -20,7 +19,6 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -158,6 +156,8 @@ class ShapeFusionExercise(
     private val stats = ShapeFusionExerciseStats()
     private var currentQuestionTimeStarted: Long = 0
 
+    private val timer = ExerciseTimer({ timedOut() }, { state == State.QUESTION_ACTIVE }, exerciseControl, 0)
+
     enum class State {
         QUESTION_ACTIVE, TRANSITION
     }
@@ -177,6 +177,7 @@ class ShapeFusionExercise(
             totalRounds = config.nRounds,
             shapeSide = config.shapeSide
         )
+        timer.secondsPerQuestion = logic.secondsPerQuestion
     }
 
     override fun start() {
@@ -409,8 +410,8 @@ class ShapeFusionExercise(
     private fun endQuestion(result: QuestionResult) {
         state = State.TRANSITION
         expressionFadeOut()
-        val valCopy = progressAnim.animatedValue as Float
-        progressAnim.end()
+        val valCopy = timer.getProgress()
+        timer.endAnimation()
         exerciseControl.progress = valCopy
         stats.questions.add(
             ShapeFusionExerciseQuestionStats(
@@ -555,32 +556,9 @@ class ShapeFusionExercise(
         exerciseControl.score = exerciseControl.score.coerceAtLeast(0)
     }
 
-    private val progressAnim = ValueAnimator.ofFloat(1f, 0f)
-
     private fun questionLoaded() {
         state = State.QUESTION_ACTIVE
-        val handler = Handler(Looper.getMainLooper())
-        val runnable = object : Runnable {
-            override fun run() {
-                if (state != State.QUESTION_ACTIVE)
-                    return
-                exerciseControl.timer -= 1
-                if (exerciseControl.timer == 0) {
-                    timedOut()
-                    return
-                }
-                targetNextTimerUpd += 1000L
-                handler.postDelayed(this, targetNextTimerUpd - System.currentTimeMillis())
-            }
-        }
-        currentQuestionTimeStarted = System.currentTimeMillis()
-        targetNextTimerUpd = currentQuestionTimeStarted + 1000L
-        handler.postDelayed(runnable, 1000L)
-
-        progressAnim.addUpdateListener { anim -> exerciseControl.progress = anim.animatedValue as Float }
-        progressAnim.duration = logic.secondsPerQuestion * 1000L
-        progressAnim.interpolator = LinearInterpolator()
-        progressAnim.start()
+        timer.start()
     }
 
     private fun expressionFadeIn() {
