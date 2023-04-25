@@ -19,7 +19,7 @@ class ShapeFusionExerciseResultManager : ExerciseResultManager {
         val stats = result.stats as ShapeFusionExerciseStats
         var avgTime = 0f
         for (q in stats.questions) {
-            if (q.result != QuestionResult.TIMEOUT)
+            if (q.result != ShapeFusionExercise.QuestionResult.TIMEOUT)
                 avgTime += q.seconds
         }
         avgTime /= stats.questions.size
@@ -35,7 +35,7 @@ class ShapeFusionExerciseResultManager : ExerciseResultManager {
         value: TextView,
         res: Resources,
         result: ExerciseResult,
-        qr: QuestionResult,
+        qr: ShapeFusionExercise.QuestionResult,
         resId: Int
     ) {
         val stats = result.stats as ShapeFusionExerciseStats
@@ -53,13 +53,13 @@ class ShapeFusionExerciseResultManager : ExerciseResultManager {
             { a0, a1, a2, a3 -> initScoreRow(a0, a1, a2, a3) },
             { a0, a1, a2, a3 -> initAvgTimeRow(a0, a1, a2, a3) },
             { a0, a1, a2, a3 ->
-                initResultCounterRow(a0, a1, a2, a3, QuestionResult.CORRECT, R.string.correct_choices)
+                initResultCounterRow(a0, a1, a2, a3, ShapeFusionExercise.QuestionResult.CORRECT, R.string.correct_choices)
             },
             { a0, a1, a2, a3 ->
-                initResultCounterRow(a0, a1, a2, a3, QuestionResult.WRONG, R.string.wrong_choices)
+                initResultCounterRow(a0, a1, a2, a3, ShapeFusionExercise.QuestionResult.WRONG, R.string.wrong_choices)
             },
             { a0, a1, a2, a3 ->
-                initResultCounterRow(a0, a1, a2, a3, QuestionResult.TIMEOUT, R.string.timeouts)
+                initResultCounterRow(a0, a1, a2, a3, ShapeFusionExercise.QuestionResult.TIMEOUT, R.string.timeouts)
             }
         )
         for (f in rows) {

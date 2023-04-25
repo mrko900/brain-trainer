@@ -108,11 +108,7 @@ data class ShapeFusionExerciseQuestion(val expression: Expression, val choices: 
     }
 }
 
-enum class QuestionResult {
-    CORRECT, WRONG, TIMEOUT
-}
-
-data class ShapeFusionExerciseQuestionStats(val result: QuestionResult, val seconds: Float) {
+data class ShapeFusionExerciseQuestionStats(val result: ShapeFusionExercise.QuestionResult, val seconds: Float) {
 }
 
 class ShapeFusionExerciseStats {
@@ -160,6 +156,10 @@ class ShapeFusionExercise(
 
     enum class State {
         QUESTION_ACTIVE, TRANSITION
+    }
+
+    enum class QuestionResult {
+        CORRECT, WRONG, TIMEOUT
     }
 
     override fun init() {

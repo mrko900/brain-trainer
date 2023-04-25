@@ -66,11 +66,17 @@ class TrailsExercise(
 
     private var state = State.TRANSITION
 
+    private val res = activity.resources
+
     private val timer =
         ExerciseTimer({ timedOut() }, { state == State.QUESTION_ACTIVE }, exerciseControl, secondsPerQuestion)
 
     enum class State {
         QUESTION_ACTIVE, TRANSITION
+    }
+
+    enum class QuestionResult {
+        CORRECT, WRONG, TIMEOUT
     }
 
     override fun init() {
@@ -316,7 +322,14 @@ class TrailsExercise(
             }
         }
         runnable.run()
-        endQuestion()
+        endQuestion(QuestionResult.CORRECT)
+
+        exerciseControl.setStatus(
+            res.getString(R.string.status_correct_guess),
+            res.getInteger(R.integer.status_fade_in).toLong(),
+            res.getInteger(R.integer.status_fade_out).toLong(),
+            res.getInteger(R.integer.status_duration_default).toLong()
+        )
     }
 
     private fun updX(x: Int, dir: Direction): Int = when (dir) {
@@ -331,17 +344,32 @@ class TrailsExercise(
         else -> y
     }
 
+    private fun questionFailed(result: QuestionResult) {
+        Log.d(LOGGING_TAG, "Question failed")
+//        endQuestion(result)
+    }
+
     private fun handleIncorrectChoice() {
-        // todo
-        Log.d(LOGGING_TAG, "Incorrect choice")
-//        endQuestion()
+        questionFailed(QuestionResult.WRONG)
+        exerciseControl.setStatus(
+            res.getString(R.string.status_wrong_guess),
+            res.getInteger(R.integer.status_fade_in).toLong(),
+            res.getInteger(R.integer.status_fade_out).toLong(),
+            res.getInteger(R.integer.status_duration_default).toLong()
+        )
     }
 
     private fun timedOut() {
-        endQuestion()
+        questionFailed(QuestionResult.TIMEOUT)
+        exerciseControl.setStatus(
+            res.getString(R.string.status_timed_out),
+            res.getInteger(R.integer.status_fade_in).toLong(),
+            res.getInteger(R.integer.status_fade_out).toLong(),
+            res.getInteger(R.integer.status_duration_default).toLong()
+        )
     }
 
-    private fun endQuestion() {
+    private fun endQuestion(result: QuestionResult) {
         state = State.TRANSITION
 
         val valCopy = timer.getProgress()
