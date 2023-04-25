@@ -99,7 +99,7 @@ class ExerciseListViewAdapterViewHolder : RecyclerView.ViewHolder {
 
     private fun initListItem(binding: ExerciseListItemBinding) {
         binding.playButton.setOnClickListener {
-            Log.d(LOGGING_TAG, "Exercise selected")
+            Log.d(LOGGING_TAG, "Exercise selected: $mode")
             activity.currentExercise = ExerciseParams(mode, null)
             nav.navigate(
                 R.id.fragment_exercise_details,

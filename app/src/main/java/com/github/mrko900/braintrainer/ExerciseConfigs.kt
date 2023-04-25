@@ -10,3 +10,11 @@ data class ShapeFusionExerciseConfig(
     val secondsPerQuestion: Int,
     val nRounds: Int
 )
+
+data class TrailsExerciseConfig(
+    val dynamic: Boolean,
+    val fieldSize: Int,
+    val secondsPerQuestion: Int,
+    val nRounds: Int,
+    val instructionLength: Int
+)

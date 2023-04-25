@@ -38,7 +38,8 @@ class TrailsExercise(
     onFinishedCallback: Consumer<ExerciseResult>,
     group: ViewGroup,
     inflater: LayoutInflater,
-    activity: MainActivity
+    activity: MainActivity,
+    private val config: TrailsExerciseConfig
 ) : AbstractExercise(exerciseControl, onFinishedCallback, group, inflater, activity) {
     private lateinit var rootFrame: FrameLayout
     private lateinit var frame: ViewGroup
@@ -46,12 +47,7 @@ class TrailsExercise(
     private lateinit var fieldView: GridLayout
     private lateinit var instructionView: LinearLayout
 
-    private var fieldSize = 6
-
-    // todo logic
-    private var totalRounds = 6
-    private var secondsPerQuestion = 6
-    private var instructionLength = 6
+    private lateinit var logic: TrailsExerciseLogic
 
     private val random = Random()
 
@@ -61,15 +57,18 @@ class TrailsExercise(
     private val innerViews = ArrayList<ArrayList<ImageView>>()
     private val outerViews = ArrayList<ArrayList<ImageView>>()
 
-    private var lastToX = random.nextInt(fieldSize)
-    private var lastToY = random.nextInt(fieldSize)
+    private var lastToX = 0
+    private var lastToY = 0
 
     private var state = State.TRANSITION
 
     private val res = activity.resources
 
-    private val timer =
-        ExerciseTimer({ timedOut() }, { state == State.QUESTION_ACTIVE }, exerciseControl, secondsPerQuestion)
+    private var timerStarted = 0L
+    private var timerEnded = -1L
+
+    private val timer = ExerciseTimer({ t -> timedOut(); timerEnded = t }, { state == State.QUESTION_ACTIVE },
+        exerciseControl, 0)
 
     enum class State {
         QUESTION_ACTIVE, TRANSITION
@@ -84,11 +83,22 @@ class TrailsExercise(
         frame = inflater.inflate(R.layout.trails_exercise_frame, rootFrame, true) as ViewGroup
         fieldView = frame.findViewById(R.id.field)
         instructionView = frame.findViewById(R.id.instruction)
+        logic = TrailsExerciseLogic(
+            initialSecondsPerQuestion = config.secondsPerQuestion,
+            dynamic = config.dynamic,
+            totalRounds = config.nRounds,
+            fieldSize = config.fieldSize,
+            exerciseControl = exerciseControl,
+            instructionLength = config.instructionLength
+        )
+        timer.secondsPerQuestion = logic.secondsPerQuestion
+        lastToX = random.nextInt(logic.fieldSize)
+        lastToX = random.nextInt(logic.fieldSize)
     }
 
     override fun start() {
         super.start()
-        exerciseControl.totalRounds = totalRounds
+        exerciseControl.totalRounds = logic.totalRounds
         exerciseControl.round = 0
         exerciseControl.score = 0
         initField()
@@ -97,12 +107,12 @@ class TrailsExercise(
 
     // todo postpone enter transition
     private fun initField() {
-        fieldView.rowCount = fieldSize
-        fieldView.columnCount = fieldSize
-        for (i in 0 until fieldSize) { // i - row
+        fieldView.rowCount = logic.fieldSize
+        fieldView.columnCount = logic.fieldSize
+        for (i in 0 until logic.fieldSize) { // i - row
             outerViews.add(ArrayList())
             innerViews.add(ArrayList())
-            for (j in 0 until fieldSize) { // j - column
+            for (j in 0 until logic.fieldSize) { // j - column
                 val outerView = createFieldSubView(true)
                 val innerView = createFieldSubView(false)
                 fieldView.addView(outerView, createFieldSubViewLayoutParams(i, j, true))
@@ -129,10 +139,10 @@ class TrailsExercise(
 
     private fun createFieldSubViewLayoutParams(row: Int, column: Int, outline: Boolean): GridLayout.LayoutParams {
         val lp = GridLayout.LayoutParams(
-            GridLayout.spec(fieldSize - row - 1, GridLayout.CENTER),
+            GridLayout.spec(logic.fieldSize - row - 1, GridLayout.CENTER),
             GridLayout.spec(column, GridLayout.CENTER)
         )
-        var size = activity.resources.displayMetrics.widthPixels / fieldSize - TypedValue.applyDimension(
+        var size = activity.resources.displayMetrics.widthPixels / logic.fieldSize - TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, 8f, activity.resources.displayMetrics
         )
         if (!outline) {
@@ -148,12 +158,12 @@ class TrailsExercise(
     }
 
     private fun nextQuestion() {
-        if (exerciseControl.round == totalRounds) {
+        if (exerciseControl.round == logic.totalRounds) {
             endExercise()
             return
         }
         exerciseControl.round++
-        exerciseControl.timer = secondsPerQuestion
+        exerciseControl.timer = logic.secondsPerQuestion
         exerciseControl.progress = 1f
         clear()
         setupNextQuestion()
@@ -165,18 +175,18 @@ class TrailsExercise(
         var x = fromX
         var y = fromY
         val instruction = ArrayList<Direction>()
-        for (i in 1..instructionLength) {
+        for (i in 1..logic.instructionLength) {
             val set = HashSet<Direction>()
             for (dir in Direction.values()) {
                 set.add(dir)
             }
             if (x == 0)
                 set.remove(Direction.LEFT)
-            if (x == fieldSize - 1)
+            if (x == logic.fieldSize - 1)
                 set.remove(Direction.RIGHT)
             if (y == 0)
                 set.remove(Direction.DOWN)
-            if (y == fieldSize - 1)
+            if (y == logic.fieldSize - 1)
                 set.remove(Direction.UP)
             val current = set.random()
             x = updX(x, current)
@@ -208,7 +218,8 @@ class TrailsExercise(
 
     private fun questionLoaded() {
         state = State.QUESTION_ACTIVE
-        timer.start()
+        timerEnded = -1L
+        timerStarted = timer.start()
     }
 
     private fun questionUnloaded() {
@@ -367,9 +378,14 @@ class TrailsExercise(
             res.getInteger(R.integer.status_fade_out).toLong(),
             res.getInteger(R.integer.status_duration_default).toLong()
         )
+        logic.timedOut((timerEnded - timerStarted) / 1000f)
     }
 
     private fun endQuestion(result: QuestionResult) {
+        if (timerEnded == -1L) {
+            timerEnded = System.currentTimeMillis()
+        }
+
         state = State.TRANSITION
 
         val valCopy = timer.getProgress()

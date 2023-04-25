@@ -175,7 +175,8 @@ class ShapeFusionExercise(
             dynamic = config.dynamic,
             totalRounds = config.nRounds,
             shapeSide = config.shapeSide,
-            exerciseControl = exerciseControl
+            exerciseControl = exerciseControl,
+            res = res
         )
         timer.secondsPerQuestion = logic.secondsPerQuestion
     }
@@ -427,13 +428,7 @@ class ShapeFusionExercise(
     private fun handleCorrectChoice() {
         Log.d(LOGGING_TAG, "Correct choice")
         endQuestion(QuestionResult.CORRECT)
-        exerciseControl.score += exerciseControl.timer
-        exerciseControl.setStatus(
-            res.getString(R.string.status_correct_guess),
-            res.getInteger(R.integer.status_fade_in).toLong(),
-            res.getInteger(R.integer.status_fade_out).toLong(),
-            res.getInteger(R.integer.status_duration_default).toLong()
-        )
+        logic.correctChoice((timerEnded - timerStarted) / 1000f)
     }
 
     private fun questionFailed(result: QuestionResult) {
@@ -443,14 +438,7 @@ class ShapeFusionExercise(
 
     private fun handleIncorrectChoice() {
         questionFailed(QuestionResult.WRONG)
-        exerciseControl.setStatus(
-            res.getString(R.string.status_wrong_guess),
-            res.getInteger(R.integer.status_fade_in).toLong(),
-            res.getInteger(R.integer.status_fade_out).toLong(),
-            res.getInteger(R.integer.status_duration_default).toLong()
-        )
-        exerciseControl.score -= logic.secondsPerQuestion / 2
-        exerciseControl.score = exerciseControl.score.coerceAtLeast(0)
+        logic.incorrectChoice((timerEnded - timerStarted) / 1000f)
     }
 
     private inner class ChoiceListener(val correct: Boolean) : View.OnClickListener {
@@ -549,12 +537,6 @@ class ShapeFusionExercise(
 
     private fun timedOut() {
         questionFailed(QuestionResult.TIMEOUT)
-        exerciseControl.setStatus(
-            res.getString(R.string.status_timed_out),
-            res.getInteger(R.integer.status_fade_in).toLong(),
-            res.getInteger(R.integer.status_fade_out).toLong(),
-            res.getInteger(R.integer.status_duration_default).toLong()
-        )
         logic.timedOut((timerEnded - timerStarted) / 1000f)
     }
 

@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: MainBinding
     lateinit var navigation: NavController
 
-    var currentExercise: ExerciseParams? = ExerciseParams(ExerciseMode.SHAPE_FUSION, null)
+    var currentExercise: ExerciseParams? = null
 
     var currentExerciseResult: ExerciseResult? = null
     var currentExerciseResultManager: ExerciseResultManager? = null
@@ -116,7 +116,8 @@ class MainActivity : AppCompatActivity() {
             }
             ExerciseMode.TRAILS -> {
                 TrailsExercise(
-                    exerciseControl,onFinishedCallback, group, layoutInflater, this
+                    exerciseControl, onFinishedCallback, group, layoutInflater, this,
+                    currentExercise!!.config as TrailsExerciseConfig
                 )
             }
             else -> throw UnsupportedOperationException()
