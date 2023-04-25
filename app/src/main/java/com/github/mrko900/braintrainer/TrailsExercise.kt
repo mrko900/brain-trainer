@@ -210,6 +210,8 @@ class TrailsExercise(
         render()
     }
 
+    private var firstRender = true
+
     private fun render() {
         if (newQuestion) {
             newQuestion = false
@@ -217,18 +219,36 @@ class TrailsExercise(
             return
         }
 
-        // update field
-        innerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList =
-            ColorStateList.valueOf(innerColorSelected)
-        outerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList =
-            ColorStateList.valueOf(outerColorSelected)
-
         // show instruction
         for (dir in currentQuestion.instruction) {
             instructionView.addView(createDirectionView(dir))
         }
 
-        questionLoaded()
+        if (firstRender) {
+            firstRender = false
+            val anim = ValueAnimator.ofFloat(0f, 1f)
+            anim.addUpdateListener {
+                innerViews[beginY][beginX].imageTintList = ColorStateList.valueOf(
+                    averageColor(innerColor, innerColorSelected, anim.animatedValue as Float)
+                )
+                outerViews[beginY][beginX].imageTintList = ColorStateList.valueOf(
+                    averageColor(outerColor, outerColorSelected, anim.animatedValue as Float)
+                )
+            }
+            anim.duration = res.getInteger(R.integer.trails_exercise_selection_fade_in_out).toLong()
+            anim.start()
+            anim.doOnEnd {
+                questionLoaded()
+            }
+        } else {
+            // update field
+            innerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList =
+                ColorStateList.valueOf(innerColorSelected)
+            outerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList =
+                ColorStateList.valueOf(outerColorSelected)
+
+            questionLoaded()
+        }
     }
 
     private fun questionLoaded() {
