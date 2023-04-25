@@ -97,7 +97,7 @@ class TrailsExercise(
         )
         timer.secondsPerQuestion = logic.secondsPerQuestion
         beginX = random.nextInt(logic.fieldSize)
-        beginX = random.nextInt(logic.fieldSize)
+        beginY = random.nextInt(logic.fieldSize)
     }
 
     override fun start() {
@@ -228,10 +228,10 @@ class TrailsExercise(
             firstRender = false
             val anim = ValueAnimator.ofFloat(0f, 1f)
             anim.addUpdateListener {
-                innerViews[beginY][beginX].imageTintList = ColorStateList.valueOf(
+                innerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList = ColorStateList.valueOf(
                     averageColor(innerColor, innerColorSelected, anim.animatedValue as Float)
                 )
-                outerViews[beginY][beginX].imageTintList = ColorStateList.valueOf(
+                outerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList = ColorStateList.valueOf(
                     averageColor(outerColor, outerColorSelected, anim.animatedValue as Float)
                 )
             }
@@ -414,10 +414,10 @@ class TrailsExercise(
             )
         }
         anim.duration = res.getInteger(R.integer.trails_exercise_selection_fade_in_out).toLong()
-        anim.start()
         anim.doOnEnd {
             questionUnloaded()
         }
+        anim.start()
     }
 
     private fun handleIncorrectChoice() {
