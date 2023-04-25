@@ -418,7 +418,7 @@ class TrailsExercise(
         state = State.TRANSITION
 
         val valCopy = timer.getProgress()
-        timer.endAnimation()
+        timer.end()
         exerciseControl.progress = valCopy
     }
 

@@ -47,7 +47,8 @@ class ExerciseTimer(
         return progressAnim.animatedValue as Float
     }
 
-    fun endAnimation() {
+    fun end() {
         progressAnim.end()
+        handler.removeCallbacksAndMessages(null)
     }
 }

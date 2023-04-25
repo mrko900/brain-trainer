@@ -415,7 +415,7 @@ class ShapeFusionExercise(
         state = State.TRANSITION
         expressionFadeOut()
         val valCopy = timer.getProgress()
-        timer.endAnimation()
+        timer.end()
         exerciseControl.progress = valCopy
         stats.questions.add(
             ShapeFusionExerciseQuestionStats(
