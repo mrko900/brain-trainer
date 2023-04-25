@@ -121,7 +121,7 @@ class ExerciseDetailsFragment : Fragment() {
         return TrailsExerciseConfig(
             fieldSize = 6,
             dynamic = true,
-            secondsPerQuestion = 8,
+            secondsPerQuestion = 11,
 //            nRounds = defaultConfigFragment.getDuration(), todo
             nRounds = 6,
             instructionLength = 6

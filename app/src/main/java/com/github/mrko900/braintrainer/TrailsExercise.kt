@@ -15,6 +15,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
+import androidx.core.animation.doOnEnd
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
@@ -58,8 +59,8 @@ class TrailsExercise(
     private val innerViews = ArrayList<ArrayList<ImageView>>()
     private val outerViews = ArrayList<ArrayList<ImageView>>()
 
-    private var lastToX = 0
-    private var lastToY = 0
+    private var beginX = 0
+    private var beginY = 0
 
     private var state = State.TRANSITION
 
@@ -95,8 +96,8 @@ class TrailsExercise(
             res = res
         )
         timer.secondsPerQuestion = logic.secondsPerQuestion
-        lastToX = random.nextInt(logic.fieldSize)
-        lastToX = random.nextInt(logic.fieldSize)
+        beginX = random.nextInt(logic.fieldSize)
+        beginX = random.nextInt(logic.fieldSize)
     }
 
     override fun start() {
@@ -179,8 +180,8 @@ class TrailsExercise(
     }
 
     private fun setupNextQuestion() {
-        val fromX = lastToX
-        val fromY = lastToY
+        val fromX = beginX
+        val fromY = beginY
         var x = fromX
         var y = fromY
         val instruction = ArrayList<Direction>()
@@ -202,16 +203,19 @@ class TrailsExercise(
             y = updY(y, current)
             instruction.add(current)
         }
-        lastToX = x
-        lastToY = y
+        beginX = x
+        beginY = y
         currentQuestion = TrailsExerciseQuestion(instruction, fromX, fromY, x, y)
         newQuestion = true
         render()
     }
 
     private fun render() {
-        if (newQuestion) newQuestion = false
-        else return
+        if (newQuestion) {
+            newQuestion = false
+        } else {
+            return
+        }
 
         // update field
         innerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList =
@@ -366,8 +370,34 @@ class TrailsExercise(
         Log.d(LOGGING_TAG, "Question failed")
         endQuestion(result)
 
-        val anim = ValueAnimator.ofFloat(0f, 1f)
+        var nextCoords = random.nextInt(logic.fieldSize * logic.fieldSize - 1)
+        val currentCoords = currentQuestion.fromY * logic.fieldSize + currentQuestion.fromX
+        if (nextCoords >= currentCoords) {
+            ++nextCoords
+        }
+        beginX = nextCoords % logic.fieldSize
+        beginY = nextCoords / logic.fieldSize
 
+        val anim = ValueAnimator.ofFloat(0f, 1f)
+        anim.addUpdateListener {
+            innerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList = ColorStateList.valueOf(
+                averageColor(innerColorSelected, innerColor, anim.animatedValue as Float)
+            )
+            outerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList = ColorStateList.valueOf(
+                averageColor(outerColorSelected, outerColor, anim.animatedValue as Float)
+            )
+            innerViews[beginY][beginX].imageTintList = ColorStateList.valueOf(
+                averageColor(innerColor, innerColorSelected, anim.animatedValue as Float)
+            )
+            outerViews[beginY][beginX].imageTintList = ColorStateList.valueOf(
+                averageColor(outerColor, outerColorSelected, anim.animatedValue as Float)
+            )
+        }
+        anim.duration = res.getInteger(R.integer.trails_exercise_selection_fade_in_out).toLong()
+        anim.start()
+        anim.doOnEnd {
+            questionUnloaded()
+        }
     }
 
     private fun handleIncorrectChoice() {
