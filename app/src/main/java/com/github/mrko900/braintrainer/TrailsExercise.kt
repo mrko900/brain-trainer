@@ -1,5 +1,6 @@
 package com.github.mrko900.braintrainer
 
+import android.animation.ValueAnimator
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Color.parseColor
@@ -68,7 +69,8 @@ class TrailsExercise(
     private var timerEnded = -1L
 
     private val timer = ExerciseTimer({ t -> timedOut(); timerEnded = t }, { state == State.QUESTION_ACTIVE },
-        exerciseControl, 0)
+        exerciseControl, 0
+    )
 
     enum class State {
         QUESTION_ACTIVE, TRANSITION
@@ -130,10 +132,16 @@ class TrailsExercise(
         }
     }
 
+    // todo theme
+    private val innerColor = parseColor("#e3e3e3")
+    private val outerColor = parseColor("#a3a3a3")
+    private val innerColorSelected = Color.GREEN
+    private val outerColorSelected = Color.DKGRAY
+
     private fun createFieldSubView(outline: Boolean): ImageView {
         val view = ImageView(activity)
         view.setImageResource(R.drawable.ic_baseline_circle_24)
-        view.imageTintList = ColorStateList.valueOf(if (outline) parseColor("#a3a3a3") else parseColor("#e3e3e3"))
+        view.imageTintList = ColorStateList.valueOf(if (outline) outerColor else innerColor)
         // todo add elevation
         return view
     }
@@ -206,8 +214,10 @@ class TrailsExercise(
         else return
 
         // update field
-        innerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList = ColorStateList.valueOf(Color.GREEN)
-        outerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList = ColorStateList.valueOf(Color.DKGRAY)
+        innerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList =
+            ColorStateList.valueOf(innerColorSelected)
+        outerViews[currentQuestion.fromY][currentQuestion.fromX].imageTintList =
+            ColorStateList.valueOf(outerColorSelected)
 
         // show instruction
         for (dir in currentQuestion.instruction) {
@@ -272,12 +282,12 @@ class TrailsExercise(
     }
 
     private fun getDegreeColor(degree: Int): Int = when (degree) {
-        5 -> Color.GREEN
+        5 -> innerColorSelected
         4 -> rgb(107, 255, 107)
         3 -> rgb(140, 255, 140)
         2 -> rgb(177, 255, 177)
         1 -> rgb(205, 255, 205)
-        0 -> parseColor("#e3e3e3")
+        0 -> innerColor
         else -> throw IllegalArgumentException()
     }
 
@@ -322,14 +332,14 @@ class TrailsExercise(
         val runnable = object : Runnable {
             override fun run() {
                 val dir = iterator.next()
-                outerViews[y][x].imageTintList = ColorStateList.valueOf(parseColor("#a3a3a3"))
+                outerViews[y][x].imageTintList = ColorStateList.valueOf(outerColor)
                 x = updX(x, dir)
                 y = updY(y, dir)
                 if (!iterator.hasNext()) {
                     animPathCompleted = true
                 }
                 colorPoint(5, x, y, handler)
-                outerViews[y][x].imageTintList = ColorStateList.valueOf(Color.DKGRAY)
+                outerViews[y][x].imageTintList = ColorStateList.valueOf(outerColorSelected)
                 if (iterator.hasNext()) {
                     handler.postDelayed(
                         this, activity.resources.getInteger(R.integer.trails_exercise_movement_anim_delay).toLong()
@@ -355,6 +365,9 @@ class TrailsExercise(
     private fun questionFailed(result: QuestionResult) {
         Log.d(LOGGING_TAG, "Question failed")
         endQuestion(result)
+
+        val anim = ValueAnimator.ofFloat(0f, 1f)
+
     }
 
     private fun handleIncorrectChoice() {
