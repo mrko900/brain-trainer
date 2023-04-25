@@ -108,8 +108,7 @@ data class ShapeFusionExerciseQuestion(val expression: Expression, val choices: 
     }
 }
 
-data class ShapeFusionExerciseQuestionStats(val result: ShapeFusionExercise.QuestionResult, val seconds: Float) {
-}
+data class ShapeFusionExerciseQuestionStats(val result: ShapeFusionExercise.QuestionResult, val seconds: Float)
 
 class ShapeFusionExerciseStats {
     val questions = ArrayList<ShapeFusionExerciseQuestionStats>()
@@ -150,9 +149,9 @@ class ShapeFusionExercise(
     private var state = State.TRANSITION
 
     private val stats = ShapeFusionExerciseStats()
-    private var currentQuestionTimeStarted: Long = 0
 
-    private val timer = ExerciseTimer({ timedOut() }, { state == State.QUESTION_ACTIVE }, exerciseControl, 0)
+    private val timer = ExerciseTimer({ t -> timedOut(); timerEnded = t }, { state == State.QUESTION_ACTIVE },
+        exerciseControl, 0)
 
     enum class State {
         QUESTION_ACTIVE, TRANSITION
@@ -175,7 +174,8 @@ class ShapeFusionExercise(
             hasSubtractionOperation = config.subtractionOperation,
             dynamic = config.dynamic,
             totalRounds = config.nRounds,
-            shapeSide = config.shapeSide
+            shapeSide = config.shapeSide,
+            exerciseControl = exerciseControl
         )
         timer.secondsPerQuestion = logic.secondsPerQuestion
     }
@@ -408,6 +408,9 @@ class ShapeFusionExercise(
     }
 
     private fun endQuestion(result: QuestionResult) {
+        if (timerEnded == -1L) {
+            timerEnded = System.currentTimeMillis()
+        }
         state = State.TRANSITION
         expressionFadeOut()
         val valCopy = timer.getProgress()
@@ -416,7 +419,7 @@ class ShapeFusionExercise(
         stats.questions.add(
             ShapeFusionExerciseQuestionStats(
                 result,
-                (System.currentTimeMillis() - currentQuestionTimeStarted) / 1000f
+                (timerEnded - timerStarted) / 1000f
             )
         )
     }
@@ -552,13 +555,16 @@ class ShapeFusionExercise(
             res.getInteger(R.integer.status_fade_out).toLong(),
             res.getInteger(R.integer.status_duration_default).toLong()
         )
-        exerciseControl.score -= logic.secondsPerQuestion / 5
-        exerciseControl.score = exerciseControl.score.coerceAtLeast(0)
+        logic.timedOut((timerEnded - timerStarted) / 1000f)
     }
+
+    private var timerStarted = 0L
+    private var timerEnded = -1L
 
     private fun questionLoaded() {
         state = State.QUESTION_ACTIVE
-        timer.start()
+        timerEnded = -1L
+        timerStarted = timer.start()
     }
 
     private fun expressionFadeIn() {
