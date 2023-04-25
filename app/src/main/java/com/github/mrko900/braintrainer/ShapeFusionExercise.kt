@@ -535,6 +535,8 @@ class ShapeFusionExercise(
         }
     }
 
+    // note: endQuestion() should always be called the first
+
     private fun timedOut() {
         questionFailed(QuestionResult.TIMEOUT)
         logic.timedOut((timerEnded - timerStarted) / 1000f)

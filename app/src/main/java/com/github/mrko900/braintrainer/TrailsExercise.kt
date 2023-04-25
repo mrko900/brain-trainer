@@ -89,7 +89,8 @@ class TrailsExercise(
             totalRounds = config.nRounds,
             fieldSize = config.fieldSize,
             exerciseControl = exerciseControl,
-            instructionLength = config.instructionLength
+            instructionLength = config.instructionLength,
+            res = res
         )
         timer.secondsPerQuestion = logic.secondsPerQuestion
         lastToX = random.nextInt(logic.fieldSize)
@@ -309,6 +310,10 @@ class TrailsExercise(
 
     private fun handleCorrectChoice() {
         Log.d(LOGGING_TAG, "Correct choice")
+
+        endQuestion(QuestionResult.CORRECT)
+        logic.correctChoice((timerEnded - timerStarted) / 1000f)
+
         var x = currentQuestion.fromX
         var y = currentQuestion.fromY
         val handler = Handler(Looper.getMainLooper())
@@ -333,14 +338,6 @@ class TrailsExercise(
             }
         }
         runnable.run()
-        endQuestion(QuestionResult.CORRECT)
-
-        exerciseControl.setStatus(
-            res.getString(R.string.status_correct_guess),
-            res.getInteger(R.integer.status_fade_in).toLong(),
-            res.getInteger(R.integer.status_fade_out).toLong(),
-            res.getInteger(R.integer.status_duration_default).toLong()
-        )
     }
 
     private fun updX(x: Int, dir: Direction): Int = when (dir) {
@@ -362,22 +359,11 @@ class TrailsExercise(
 
     private fun handleIncorrectChoice() {
         questionFailed(QuestionResult.WRONG)
-        exerciseControl.setStatus(
-            res.getString(R.string.status_wrong_guess),
-            res.getInteger(R.integer.status_fade_in).toLong(),
-            res.getInteger(R.integer.status_fade_out).toLong(),
-            res.getInteger(R.integer.status_duration_default).toLong()
-        )
+        logic.incorrectChoice((timerEnded - timerStarted) / 1000f)
     }
 
     private fun timedOut() {
         questionFailed(QuestionResult.TIMEOUT)
-        exerciseControl.setStatus(
-            res.getString(R.string.status_timed_out),
-            res.getInteger(R.integer.status_fade_in).toLong(),
-            res.getInteger(R.integer.status_fade_out).toLong(),
-            res.getInteger(R.integer.status_duration_default).toLong()
-        )
         logic.timedOut((timerEnded - timerStarted) / 1000f)
     }
 
