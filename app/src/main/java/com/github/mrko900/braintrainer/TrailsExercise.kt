@@ -66,6 +66,9 @@ class TrailsExercise(
 
     private var state = State.TRANSITION
 
+    private val timer =
+        ExerciseTimer({ timedOut() }, { state == State.QUESTION_ACTIVE }, exerciseControl, secondsPerQuestion)
+
     enum class State {
         QUESTION_ACTIVE, TRANSITION
     }
@@ -199,6 +202,7 @@ class TrailsExercise(
 
     private fun questionLoaded() {
         state = State.QUESTION_ACTIVE
+        timer.start()
     }
 
     private fun questionUnloaded() {
@@ -265,7 +269,8 @@ class TrailsExercise(
 
     private fun colorPoint(degree: Int, x: Int, y: Int, handler: Handler) {
         if (colorPaintDegreeMap.contains(Pair(x, y)) && colorPaintDegreeMap[Pair(x, y)]!! > degree
-            || degree != 5 && x == currentQuestion.toX && y == currentQuestion.toY && animPathCompleted) {
+            || degree != 5 && x == currentQuestion.toX && y == currentQuestion.toY && animPathCompleted
+        ) {
             colorPaintDegreeMap.remove(Pair(x, y))
             return
         }
@@ -338,6 +343,10 @@ class TrailsExercise(
 
     private fun endQuestion() {
         state = State.TRANSITION
+
+        val valCopy = timer.getProgress()
+        timer.endAnimation()
+        exerciseControl.progress = valCopy
     }
 
     private fun endExercise() {
