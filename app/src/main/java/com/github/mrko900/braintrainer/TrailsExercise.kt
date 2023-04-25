@@ -346,7 +346,7 @@ class TrailsExercise(
 
     private fun questionFailed(result: QuestionResult) {
         Log.d(LOGGING_TAG, "Question failed")
-//        endQuestion(result)
+        endQuestion(result)
     }
 
     private fun handleIncorrectChoice() {
