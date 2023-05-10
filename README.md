@@ -1,6 +1,9 @@
 # brain-trainer
 
-Follow your sprints!
+Plan (2 weeks left):
+May 11: Arithmetic chains exercise full.
+May 12-14: 2 more exercises + stick everything together.
+May 15-18: 
 
 Todo:
 * Leave exercise properly
