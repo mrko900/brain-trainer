@@ -69,7 +69,7 @@ class CustomTrailsExerciseConfigFragment : Fragment() {
     }
 
     fun getInstructionLength(): Int {
-        return binding.fieldSizeSlider.value.toInt()
+        return binding.instructionLengthSlider.value.toInt()
     }
 
     fun isDynamic(): Boolean {
