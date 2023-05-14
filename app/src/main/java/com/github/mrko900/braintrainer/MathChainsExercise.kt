@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.util.Consumer
 
@@ -15,6 +16,10 @@ class MathChainsExercise(
     activity: MainActivity,
     private val config: MathChainsExerciseConfig
 ) : AbstractExercise(exerciseControl, onFinishedCallback, group, inflater, activity) {
+    enum class Operation {
+        ADD, SUBTRACT, MULTIPLY, DIVIDE
+    }
+
     private lateinit var rootFrame: FrameLayout
     private lateinit var frame: ViewGroup
 
@@ -47,6 +52,8 @@ class MathChainsExercise(
         exerciseControl.score = 0
         initViews()
         nextQuestion()
+        setOperation(0, Operation.SUBTRACT)
+        setOperation(1, Operation.DIVIDE)
     }
 
     private fun initViews() {
@@ -55,6 +62,21 @@ class MathChainsExercise(
             val lp = chainView.layoutParams as LinearLayout.LayoutParams
             lp.weight = 1f
             chainsView.addView(chainView)
+        }
+    }
+
+    private fun setOperation(chain: Int, op: Operation) {
+        val res = when (op) {
+            Operation.ADD, Operation.MULTIPLY -> R.drawable.ic_baseline_add_24
+            Operation.SUBTRACT -> R.drawable.ic_baseline_remove_24
+            Operation.DIVIDE -> R.drawable.ic_baseline_percent_24
+        }
+        val img = chainsView.getChildAt(chain).findViewById<ImageView>(R.id.operation)
+        img.setImageResource(res)
+        if (op == Operation.ADD || op == Operation.DIVIDE) {
+            img.rotation = 45f
+        } else {
+            img.rotation = 0f
         }
     }
 

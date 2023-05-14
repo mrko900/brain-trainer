@@ -34,7 +34,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5">
 
         <ImageView
-            android:id="@+id/imageView6"
+            android:id="@+id/operation"
             android:layout_width="36sp"
             android:layout_height="36sp"
             android:layout_gravity="center_vertical"
