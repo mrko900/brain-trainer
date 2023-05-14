@@ -1,5 +1,6 @@
 package com.github.mrko900.braintrainer
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -26,7 +27,8 @@ class MathChainsExercise(
         frame = inflater.inflate(R.layout.math_chains_exercise_frame, rootFrame, true) as ViewGroup
         chainsView = frame.findViewById(R.id.chains)
         logic = MathChainsExerciseLogic(
-            totalRounds = config.nRounds
+            totalRounds = config.nRounds,
+            initialNChains = config.nChains
         )
     }
 
@@ -43,5 +45,28 @@ class MathChainsExercise(
         exerciseControl.totalRounds = logic.totalRounds
         exerciseControl.round = 0
         exerciseControl.score = 0
+        initViews()
+        nextQuestion()
+    }
+
+    private fun initViews() {
+        for (i in 1..logic.nChains) {
+            val chainView = inflater.inflate(R.layout.math_chain, chainsView, false)
+            val lp = chainView.layoutParams as LinearLayout.LayoutParams
+            lp.weight = 1f
+            chainsView.addView(chainView)
+        }
+    }
+
+    private fun nextQuestion() {
+        if (exerciseControl.round == logic.totalRounds) {
+            endExercise()
+            return
+        }
+    }
+
+    private fun endExercise() {
+        Log.d(LOGGING_TAG, "Exercise completed")
+        finish(ExerciseResult(ExerciseMode.SHAPE_FUSION, exerciseControl.score, Any()))
     }
 }
