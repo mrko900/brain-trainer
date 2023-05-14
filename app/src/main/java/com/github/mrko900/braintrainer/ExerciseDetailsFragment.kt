@@ -140,6 +140,18 @@ class ExerciseDetailsFragment : Fragment() {
         )
     }
 
+    private fun getDefaultMathChainsExerciseConfig(): MathChainsExerciseConfig {
+        val defaultConfigFragment = configFragment as DefaultExerciseConfigFragment
+        // todo difficulty
+        return MathChainsExerciseConfig(
+            dynamic = true,
+            secondsPerQuestion = 11,
+            nRounds = 6,
+            extentOfNumbers = 6,
+            nChains = 2
+        )
+    }
+
     private fun setShapeFusionExerciseConfig() {
         mainActivity.currentExercise!!.config = when (idToConfigFragment(currentConfigSelection)) {
             ConfigFragment.DEFAULT -> getDefaultShapeFusionExerciseConfig()
@@ -154,9 +166,17 @@ class ExerciseDetailsFragment : Fragment() {
         }
     }
 
+    private fun setMathChainsExerciseConfig() {
+        mainActivity.currentExercise!!.config = when (idToConfigFragment(currentConfigSelection)) {
+            ConfigFragment.DEFAULT -> getDefaultMathChainsExerciseConfig()
+            ConfigFragment.CUSTOM -> TODO()
+        }
+    }
+
     private fun setConfig() = when (mainActivity.currentExercise!!.mode) {
         ExerciseMode.SHAPE_FUSION -> setShapeFusionExerciseConfig()
         ExerciseMode.TRAILS -> setTrailsExerciseConfig()
+        ExerciseMode.MATH_CHAINS -> setMathChainsExerciseConfig()
         else -> throw UnsupportedOperationException()
     }
 }

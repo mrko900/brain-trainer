@@ -18,3 +18,11 @@ data class TrailsExerciseConfig(
     val nRounds: Int,
     val instructionLength: Int
 )
+
+data class MathChainsExerciseConfig(
+    val dynamic: Boolean,
+    val nChains: Int,
+    val secondsPerQuestion: Int,
+    val nRounds: Int,
+    val extentOfNumbers: Int
+)

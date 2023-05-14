@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/chains"
         android:layout_width="409dp"
         android:layout_height="729dp"
         android:orientation="horizontal"

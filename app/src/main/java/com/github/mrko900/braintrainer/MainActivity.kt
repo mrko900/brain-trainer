@@ -120,6 +120,12 @@ class MainActivity : AppCompatActivity() {
                     currentExercise!!.config as TrailsExerciseConfig
                 )
             }
+            ExerciseMode.MATH_CHAINS -> {
+                MathChainsExercise(
+                    exerciseControl, onFinishedCallback, group, layoutInflater, this,
+                    currentExercise!!.config as MathChainsExerciseConfig
+                )
+            }
             else -> throw UnsupportedOperationException()
         }
     }
