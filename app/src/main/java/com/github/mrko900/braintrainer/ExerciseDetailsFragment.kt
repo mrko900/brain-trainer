@@ -73,6 +73,7 @@ class ExerciseDetailsFragment : Fragment() {
 
     private fun getCustomConfigFragment(): Fragment = when (mainActivity.currentExercise!!.mode) {
         ExerciseMode.SHAPE_FUSION -> CustomShapeFusionExerciseConfigFragment()
+        ExerciseMode.TRAILS -> CustomTrailsExerciseConfigFragment()
         else -> throw UnsupportedOperationException()
     }
 
@@ -129,14 +130,14 @@ class ExerciseDetailsFragment : Fragment() {
     }
 
     private fun getCustomTrailsExerciseConfig(): TrailsExerciseConfig {
-        throw UnsupportedOperationException()
-//        val trailsConfigFragment = configFragment as CustomShapeFusionExerciseConfigFragment
-//        return TrailsExerciseConfig(
-//            fieldSize = 6,
-//            dynamic = true,
-//            secondsPerQuestion = 8,
-//            nRounds = defaultConfigFragment.getDuration()
-//        )
+        val trailsConfigFragment = configFragment as CustomTrailsExerciseConfigFragment
+        return TrailsExerciseConfig(
+            dynamic = trailsConfigFragment.isDynamic(),
+            fieldSize = trailsConfigFragment.getFieldSize(),
+            instructionLength = trailsConfigFragment.getInstructionLength(),
+            secondsPerQuestion = trailsConfigFragment.getSecondsPerQuestion(),
+            nRounds = trailsConfigFragment.getNumberOfRounds()
+        )
     }
 
     private fun setShapeFusionExerciseConfig() {

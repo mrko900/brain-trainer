@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.github.mrko900.braintrainer.databinding.ShapeFusionExerciseCustomConfigBinding
+import com.github.mrko900.braintrainer.databinding.TrailsExerciseCustomConfigBinding
 import com.google.android.material.slider.Slider
 
 class CustomTrailsExerciseConfigFragment : Fragment() {
@@ -22,7 +22,7 @@ class CustomTrailsExerciseConfigFragment : Fragment() {
         }
     }
 
-    private lateinit var binding: ShapeFusionExerciseCustomConfigBinding
+    private lateinit var binding: TrailsExerciseCustomConfigBinding
     private lateinit var mainActivity: MainActivity
 
     private var currentOperationsSelection = 0
@@ -33,7 +33,7 @@ class CustomTrailsExerciseConfigFragment : Fragment() {
             throw IllegalStateException("activity must be non-null")
         }
         mainActivity = activity as MainActivity
-        binding = ShapeFusionExerciseCustomConfigBinding.inflate(inflater, container, false)
+        binding = TrailsExerciseCustomConfigBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -46,26 +46,15 @@ class CustomTrailsExerciseConfigFragment : Fragment() {
             android.R.layout.simple_spinner_dropdown_item
         )
 
-        binding.operations.setAdapter(adapter)
-        binding.operations.setText(adapter.getItem(currentOperationsSelection), false)
-        binding.operations.setOnItemClickListener { parent, view, position, id ->
-            currentOperationsSelection = position
-        }
+        binding.fieldSizeSlider.value = 3f
+        binding.fieldSizeSlider.valueFrom = 3f
+        binding.fieldSizeSlider.valueTo = 12f
+        binding.fieldSizeSlider.stepSize = 1f
 
-        binding.nTermsSlider.value = 3f
-        binding.nTermsSlider.valueFrom = 2f
-        binding.nTermsSlider.valueTo = 4f
-        binding.nTermsSlider.stepSize = 1f
-
-        binding.nChoicesSlider.value = 4f
-        binding.nChoicesSlider.valueFrom = 2f
-        binding.nChoicesSlider.valueTo = 4f
-        binding.nChoicesSlider.stepSize = 1f
-
-        binding.shapeSizeSlider.value = 4f
-        binding.shapeSizeSlider.valueFrom = 1f
-        binding.shapeSizeSlider.valueTo = 6f
-        binding.shapeSizeSlider.stepSize = 1f
+        binding.instructionLengthSlider.value = 6f
+        binding.instructionLengthSlider.valueFrom = 2f
+        binding.instructionLengthSlider.valueTo = 10f
+        binding.instructionLengthSlider.stepSize = 1f
 
         binding.secondsPerQuestionSlider.value = 8f
         binding.secondsPerQuestionSlider.valueFrom = 1f
@@ -75,28 +64,16 @@ class CustomTrailsExerciseConfigFragment : Fragment() {
         configureDurationSlider(binding.include.textView14, binding.include.durationSlider)
     }
 
-    fun getNTerms(): Int {
-        return binding.nTermsSlider.value.toInt()
+    fun getFieldSize(): Int {
+        return binding.fieldSizeSlider.value.toInt()
     }
 
-    fun getNChoices(): Int {
-        return binding.nChoicesSlider.value.toInt()
+    fun getInstructionLength(): Int {
+        return binding.fieldSizeSlider.value.toInt()
     }
 
     fun isDynamic(): Boolean {
         return binding.dynamicCheckBox.isChecked
-    }
-
-    fun hasAdditionOperation(): Boolean {
-        return currentOperationsSelection != 2
-    }
-
-    fun hasSubtractionOperation(): Boolean {
-        return currentOperationsSelection != 1
-    }
-
-    fun getShapeSide(): Int {
-        return binding.shapeSizeSlider.value.toInt()
     }
 
     fun getNumberOfRounds(): Int {
