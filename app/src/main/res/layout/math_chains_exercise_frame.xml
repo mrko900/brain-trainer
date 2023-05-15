@@ -22,8 +22,14 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.4" />
 
-    <Button
+    <EditText
         android:id="@+id/kbhost"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:background="@null"
+        android:cursorVisible="false"
+        android:inputType="number"
+        android:textColor="@android:color/transparent"
+        tools:layout_editor_absoluteX="410dp"
+        tools:layout_editor_absoluteY="730dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

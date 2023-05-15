@@ -74,7 +74,7 @@ class MathChainsExercise(
                 view.requestFocus()
                 view.requestFocusFromTouch()
                 val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(view, InputMethodManager.SHOW_FORCED)
+                imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
             },
             1200L
         )
@@ -115,6 +115,7 @@ class MathChainsExercise(
         val op = Operation.values()[random.nextInt(Operation.values().size)]
         val num: Int
         if (op == Operation.DIVIDE) {
+            Log.d(LOGGING_TAG, "divide")
             val divisors = ArrayList<Int>()
             var i = 2
             while (i * i <= logic.chainVals[chain]) {
@@ -123,24 +124,29 @@ class MathChainsExercise(
                     if (i * i != logic.chainVals[chain]) {
                         divisors.add(logic.chainVals[chain] / i)
                     }
-                    ++i
                 }
+                ++i
             }
             num = divisors[random.nextInt(divisors.size)]
         } else {
+            Log.d(LOGGING_TAG, "else")
             num = random.nextInt(20) // TODO difficulty
         }
         return Question(chain, op, num)
     }
 
     private fun nextQuestion() {
+        Log.d(LOGGING_TAG, "next question test")
         if (exerciseControl.round == logic.totalRounds) {
             endExercise()
             return
         }
+        Log.d(LOGGING_TAG, "success 1 debug")
         currentQuestion = genQuestion()
+        Log.d(LOGGING_TAG, "success 1/2 debug")
         setOperation(currentQuestion.chain, currentQuestion.op)
         setValue(currentQuestion.chain, currentQuestion.operand)
+        Log.d(LOGGING_TAG, "success 2 debug")
     }
 
     private fun endExercise() {
