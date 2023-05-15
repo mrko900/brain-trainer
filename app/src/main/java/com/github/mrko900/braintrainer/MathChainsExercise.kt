@@ -1,8 +1,6 @@
 package com.github.mrko900.braintrainer
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -68,16 +66,11 @@ class MathChainsExercise(
     }
 
     private fun showKeyboard() {
-        Handler(Looper.getMainLooper()).postDelayed(
-            {
-                val view = frame.findViewById<View>(R.id.kbhost)
-                view.requestFocus()
-                view.requestFocusFromTouch()
-                val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
-            },
-            1200L
-        )
+        val view = frame.findViewById<View>(R.id.kbhost)
+        view.requestFocus()
+        view.requestFocusFromTouch()
+        val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun initViews() {
