@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.util.Consumer
+import java.util.Random
 
 class MathChainsExercise(
     exerciseControl: ExerciseControl,
@@ -26,6 +28,10 @@ class MathChainsExercise(
     private lateinit var chainsView: LinearLayout
 
     private lateinit var logic: MathChainsExerciseLogic
+
+    private val random = Random()
+
+    private lateinit var currentQuestion: Question
 
     override fun init() {
         rootFrame = group.findViewById(R.id.frame)
@@ -52,8 +58,6 @@ class MathChainsExercise(
         exerciseControl.score = 0
         initViews()
         nextQuestion()
-        setOperation(0, Operation.SUBTRACT)
-        setOperation(1, Operation.DIVIDE)
     }
 
     private fun initViews() {
@@ -80,11 +84,42 @@ class MathChainsExercise(
         }
     }
 
+    private fun setValue(chain: Int, value: Int) {
+        chainsView.getChildAt(chain).findViewById<TextView>(R.id.value).text = value.toString()
+    }
+
+    private data class Question(val chain: Int, val op: Operation, val operand: Int)
+
+    private fun genQuestion(): Question {
+        val chain = random.nextInt(logic.nChains)
+        val op = Operation.values()[random.nextInt(Operation.values().size)]
+        val num: Int
+        if (op == Operation.DIVIDE) {
+            val divisors = ArrayList<Int>()
+            var i = 2
+            while (i * i <= logic.chainVals[chain]) {
+                if (logic.chainVals[chain] % i == 0) {
+                    divisors.add(i)
+                    if (i * i != logic.chainVals[chain]) {
+                        divisors.add(logic.chainVals[chain] / i)
+                    }
+                }
+            }
+            num = divisors[random.nextInt(divisors.size)]
+        } else {
+            num = random.nextInt(20) // TODO difficulty
+        }
+        return Question(chain, op, num)
+    }
+
     private fun nextQuestion() {
         if (exerciseControl.round == logic.totalRounds) {
             endExercise()
             return
         }
+        currentQuestion = genQuestion()
+        setOperation(currentQuestion.chain, currentQuestion.op)
+        setValue(currentQuestion.chain, currentQuestion.operand)
     }
 
     private fun endExercise() {
