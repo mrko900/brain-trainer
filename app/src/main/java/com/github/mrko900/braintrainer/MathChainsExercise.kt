@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -63,6 +64,7 @@ class MathChainsExercise(
         initViews()
         nextQuestion()
         showKeyboard()
+        initKeyboard()
     }
 
     private fun showKeyboard() {
@@ -71,6 +73,14 @@ class MathChainsExercise(
         view.requestFocusFromTouch()
         val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    private fun initKeyboard() {
+        val view = frame.findViewById<EditText>(R.id.kbhost)
+        view.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+            Log.d(LOGGING_TAG, "EVENT")
+            return@OnEditorActionListener true
+        })
     }
 
     private fun initViews() {
