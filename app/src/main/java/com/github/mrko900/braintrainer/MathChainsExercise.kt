@@ -103,6 +103,7 @@ class MathChainsExercise(
                     if (i * i != logic.chainVals[chain]) {
                         divisors.add(logic.chainVals[chain] / i)
                     }
+                    ++i
                 }
             }
             num = divisors[random.nextInt(divisors.size)]
