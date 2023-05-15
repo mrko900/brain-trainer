@@ -5,13 +5,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <com.github.mrko900.braintrainer.CircularProgressBar
-        android:id="@+id/circle"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:background="@android:color/holo_red_dark"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/button7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        tools:layout_editor_absoluteX="176dp"
+        tools:layout_editor_absoluteY="239dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

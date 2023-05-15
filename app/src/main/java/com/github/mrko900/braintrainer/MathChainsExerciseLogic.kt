@@ -1,7 +1,5 @@
 package com.github.mrko900.braintrainer
 
-import java.util.Collections
-
 class MathChainsExerciseLogic(
     val totalRounds: Int,
     initialNChains: Int
@@ -9,8 +7,14 @@ class MathChainsExerciseLogic(
     var nChains = initialNChains
         private set
 
-    val chainVals: MutableList<Int> = ArrayList()
-        get() = Collections.unmodifiableList(field)
+    private val chainVals0 = ArrayList<Int>()
 
-    
+    val chainVals: List<Int>
+        get() = chainVals0
+
+    init {
+        for (i in 1..initialNChains) {
+            chainVals0.add(34) // TODO
+        }
+    }
 }

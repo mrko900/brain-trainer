@@ -1,6 +1,5 @@
 package com.github.mrko900.braintrainer
 
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -48,19 +47,6 @@ class MainActivity : AppCompatActivity() {
 
         binding = MainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // todo remove
-        val test: CircularProgressBar = binding.root.findViewById(R.id.circle)
-        test.percentage = 0.7f
-        val animator = ValueAnimator.ofFloat(0f, 1f)
-        animator.duration = 4000
-        animator.addUpdateListener { anim ->
-            run {
-                test.percentage = anim.animatedValue as Float
-                test.invalidate()
-            }
-        }
-        animator.start()
 
         navigation = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
 

@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.core.util.Consumer
 import java.util.Random
 
+
 class MathChainsExercise(
     exerciseControl: ExerciseControl,
     onFinishedCallback: Consumer<ExerciseResult>,
@@ -58,6 +59,10 @@ class MathChainsExercise(
         exerciseControl.score = 0
         initViews()
         nextQuestion()
+        showKeyboard()
+    }
+
+    private fun showKeyboard() {
     }
 
     private fun initViews() {
