@@ -79,7 +79,7 @@ class MathChainsExercise(
 
     private fun initKeyboard() {
         val view = frame.findViewById<EditText>(R.id.kbhost)
-        view.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+        view.setOnEditorActionListener(TextView.OnEditorActionListener { _, _, _ ->
             Log.d(LOGGING_TAG, "EVENT")
             return@OnEditorActionListener true
         })
@@ -152,17 +152,16 @@ class MathChainsExercise(
     }
 
     private fun nextQuestion() {
-        Log.d(LOGGING_TAG, "next question test")
         if (exerciseControl.round == logic.totalRounds) {
             endExercise()
             return
         }
-        Log.d(LOGGING_TAG, "success 1 debug")
         currentQuestion = genQuestion()
-        Log.d(LOGGING_TAG, "success 1/2 debug")
         setOperation(currentQuestion.chain, currentQuestion.op)
         setValue(currentQuestion.chain, currentQuestion.operand)
-        Log.d(LOGGING_TAG, "success 2 debug")
+        for (i in 0 until logic.nChains) {
+            chainsView.getChildAt(i).visibility = if (i == currentQuestion.chain) View.VISIBLE else View.INVISIBLE
+        }
     }
 
     private fun endExercise() {
