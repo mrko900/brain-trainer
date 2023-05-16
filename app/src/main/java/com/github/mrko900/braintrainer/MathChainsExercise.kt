@@ -29,6 +29,10 @@ class MathChainsExercise(
         ADD, SUBTRACT, MULTIPLY, DIVIDE
     }
 
+    enum class State {
+        QUESTION_ACTIVE, TRANSITION
+    }
+
     private lateinit var rootFrame: FrameLayout
     private lateinit var frame: ViewGroup
 
@@ -40,11 +44,25 @@ class MathChainsExercise(
 
     private lateinit var currentQuestion: Question
 
+    private var state = State.TRANSITION
+
+    private var timerStarted = 0L
+    private var timerEnded = -1L
+
+    private val timer = ExerciseTimer({ t -> timedOut(); timerEnded = t }, { state == State.QUESTION_ACTIVE },
+        exerciseControl, 0
+    )
+
+    private val res = activity.resources
+
     override fun init() {
         rootFrame = group.findViewById(R.id.frame)
         frame = inflater.inflate(R.layout.math_chains_exercise_frame, rootFrame, true) as ViewGroup
         chainsView = frame.findViewById(R.id.chains)
         logic = MathChainsExerciseLogic(
+            exerciseControl = exerciseControl,
+            res = res,
+            initialSecondsPerQuestion = config.secondsPerQuestion,
             totalRounds = config.nRounds,
             initialNChains = config.nChains
         )
@@ -89,11 +107,57 @@ class MathChainsExercise(
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 frame.findViewById<TextView>(R.id.input).text = s
+                attempt()
             }
 
             override fun afterTextChanged(s: Editable?) {
             }
         })
+    }
+
+    private fun attempt() {
+        val ans = frame.findViewById<TextView>(R.id.input).text.toString().toInt()
+        if (ans == currentQuestion.eval) {
+            handleSuccess()
+        }
+    }
+
+    private fun handleSuccess() {
+        Log.d(LOGGING_TAG, "Success")
+        endQuestion()
+        logic.success((timerEnded - timerStarted) / 1000f)
+    }
+
+    private fun endQuestion() {
+        if (timerEnded == -1L) {
+            timerEnded = System.currentTimeMillis()
+        }
+        state = State.TRANSITION
+        val valCopy = timer.getProgress()
+        timer.end()
+        exerciseControl.progress = valCopy
+        questionUnloaded()
+    }
+
+    private fun timedOut() {
+        questionFailed()
+        logic.timedOut((timerEnded - timerStarted) / 1000f)
+    }
+
+    private fun questionFailed() {
+        Log.d(LOGGING_TAG, "Question failed")
+        endQuestion()
+    }
+
+    private fun questionLoaded() {
+        state = State.QUESTION_ACTIVE
+        timerEnded = -1L
+        timerStarted = timer.start()
+    }
+
+    private fun questionUnloaded() {
+        Log.d(LOGGING_TAG, "${ExerciseMode.TRAILS} question unloaded.")
+        nextQuestion()
     }
 
     private fun initViews() {
@@ -124,14 +188,28 @@ class MathChainsExercise(
         chainsView.getChildAt(chain).findViewById<TextView>(R.id.value).text = value.toString()
     }
 
-    private data class Question(val chain: Int, val op: Operation, val operand: Int)
+    private inner class Question(val chain: Int, val op: Operation, val operand: Int) {
+        val eval: Int = when (op) {
+            Operation.ADD -> {
+                logic.chainVals[chain] + operand
+            }
+            Operation.SUBTRACT -> {
+                logic.chainVals[chain] - operand
+            }
+            Operation.MULTIPLY -> {
+                logic.chainVals[chain] * operand
+            }
+            Operation.DIVIDE -> {
+                logic.chainVals[chain] / operand
+            }
+        }
+    }
 
     private fun genQuestion(): Question {
         val chain = random.nextInt(logic.nChains)
         val op = Operation.values()[random.nextInt(Operation.values().size)]
         val num: Int
         if (op == Operation.DIVIDE) {
-            Log.d(LOGGING_TAG, "divide")
             val divisors = ArrayList<Int>()
             var i = 2
             while (i * i <= logic.chainVals[chain]) {
@@ -144,9 +222,12 @@ class MathChainsExercise(
                 ++i
             }
             num = divisors[random.nextInt(divisors.size)]
-        } else {
-            Log.d(LOGGING_TAG, "else")
+        } else if (op == Operation.SUBTRACT) {
+            num = random.nextInt(logic.chainVals[chain])
+        } else if (op == Operation.ADD) {
             num = random.nextInt(20) // TODO difficulty
+        } else {
+            num = random.nextInt(15)
         }
         return Question(chain, op, num)
     }
@@ -162,6 +243,7 @@ class MathChainsExercise(
         for (i in 0 until logic.nChains) {
             chainsView.getChildAt(i).visibility = if (i == currentQuestion.chain) View.VISIBLE else View.INVISIBLE
         }
+        questionLoaded()
     }
 
     private fun endExercise() {
