@@ -28,7 +28,7 @@ class MathChainsExerciseLogic(
 
     init {
         for (i in 1..initialNChains) {
-            chainVals0.add(random.nextInt(35)) // TODO difficulty
+            chainVals0.add(-1)
         }
     }
 
@@ -57,5 +57,9 @@ class MathChainsExerciseLogic(
 
     private fun updateScore() {
         exerciseControl.score = score
+    }
+
+    fun setChainVal(chain: Int, newVal: Int) {
+        chainVals0[chain] = newVal
     }
 }

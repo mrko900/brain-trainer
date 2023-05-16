@@ -81,10 +81,19 @@ class MathChainsExercise(
         exerciseControl.totalRounds = logic.totalRounds
         exerciseControl.round = 0
         exerciseControl.score = 0
+
         initViews()
-        nextQuestion()
         showKeyboard()
         initKeyboard()
+        initData()
+
+        nextQuestion()
+    }
+
+    private fun initData() {
+        for (i in 0 until logic.nChains) {
+            setChainVal(i, random.nextInt(30) + 1) // todo difficulty
+        }
     }
 
     private fun showKeyboard() {
@@ -106,8 +115,14 @@ class MathChainsExercise(
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                frame.findViewById<TextView>(R.id.input).text = s
-                attempt()
+                if (s!!.length > 4) {
+                    view.setText(s.subSequence(0, 4))
+                    view.setSelection(4)
+                }
+                frame.findViewById<TextView>(R.id.input).text = view.text
+                if (view.text.isNotEmpty()) {
+                    attempt()
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -117,6 +132,7 @@ class MathChainsExercise(
 
     private fun attempt() {
         val ans = frame.findViewById<TextView>(R.id.input).text.toString().toInt()
+        Log.d(LOGGING_TAG, "ans, eval, op = " + ans + " " + currentQuestion.eval + " " + currentQuestion.op)
         if (ans == currentQuestion.eval) {
             handleSuccess()
         }
@@ -136,6 +152,8 @@ class MathChainsExercise(
         val valCopy = timer.getProgress()
         timer.end()
         exerciseControl.progress = valCopy
+
+        setChainVal(currentQuestion.chain, currentQuestion.eval)
         questionUnloaded()
     }
 
@@ -177,11 +195,16 @@ class MathChainsExercise(
         }
         val img = chainsView.getChildAt(chain).findViewById<ImageView>(R.id.operation)
         img.setImageResource(res)
-        if (op == Operation.ADD || op == Operation.DIVIDE) {
+        if (op == Operation.MULTIPLY || op == Operation.DIVIDE) {
             img.rotation = 45f
         } else {
             img.rotation = 0f
         }
+    }
+
+    private fun setChainVal(chain: Int, newVal: Int) {
+        logic.setChainVal(chain, newVal)
+        chainsView.getChildAt(chain).findViewById<TextView>(R.id.chainVal).text = newVal.toString()
     }
 
     private fun setValue(chain: Int, value: Int) {
@@ -211,7 +234,7 @@ class MathChainsExercise(
         val num: Int
         if (op == Operation.DIVIDE) {
             val divisors = ArrayList<Int>()
-            var i = 2
+            var i = 1
             while (i * i <= logic.chainVals[chain]) {
                 if (logic.chainVals[chain] % i == 0) {
                     divisors.add(i)
