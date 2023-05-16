@@ -49,6 +49,8 @@ class MathChainsExercise(
     private var timerStarted = 0L
     private var timerEnded = -1L
 
+    private val lastResult = ArrayList<Boolean>() // true = success
+
     private val timer = ExerciseTimer({ t -> timedOut(); timerEnded = t }, { state == State.QUESTION_ACTIVE },
         exerciseControl, 0
     )
@@ -66,6 +68,9 @@ class MathChainsExercise(
             totalRounds = config.nRounds,
             initialNChains = config.nChains
         )
+        for (i in 1..logic.nChains) {
+            lastResult.add(false)
+        }
     }
 
     override fun pause() {
@@ -140,6 +145,7 @@ class MathChainsExercise(
 
     private fun handleSuccess() {
         Log.d(LOGGING_TAG, "Success")
+        lastResult[currentQuestion.chain] = true
         endQuestion()
         logic.success((timerEnded - timerStarted) / 1000f)
     }
@@ -164,6 +170,7 @@ class MathChainsExercise(
 
     private fun questionFailed() {
         Log.d(LOGGING_TAG, "Question failed")
+        lastResult[currentQuestion.chain] = false
         endQuestion()
     }
 
@@ -229,6 +236,7 @@ class MathChainsExercise(
     }
 
     private fun genQuestion(): Question {
+        // TODO pick the operation with current value in mind (e.g. avoid multiplying large numbers)
         val chain = random.nextInt(logic.nChains)
         val op = Operation.values()[random.nextInt(Operation.values().size)]
         val num: Int
@@ -255,12 +263,19 @@ class MathChainsExercise(
         return Question(chain, op, num)
     }
 
+    private fun showOrHideChainVal() {
+        chainsView.findViewById<TextView>(R.id.chainVal).visibility =
+            if (!lastResult[currentQuestion.chain]) View.VISIBLE else View.INVISIBLE
+        Log.d(LOGGING_TAG, "hmm current " + lastResult[currentQuestion.chain])
+    }
+
     private fun nextQuestion() {
         if (exerciseControl.round == logic.totalRounds) {
             endExercise()
             return
         }
         currentQuestion = genQuestion()
+        showOrHideChainVal()
         setOperation(currentQuestion.chain, currentQuestion.op)
         setValue(currentQuestion.chain, currentQuestion.operand)
         for (i in 0 until logic.nChains) {
