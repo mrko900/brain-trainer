@@ -148,6 +148,7 @@ class MathChainsExercise(
         lastResult[currentQuestion.chain] = true
         endQuestion()
         logic.success((timerEnded - timerStarted) / 1000f)
+        questionUnloaded() // todo anim
     }
 
     private fun endQuestion() {
@@ -160,12 +161,12 @@ class MathChainsExercise(
         exerciseControl.progress = valCopy
 
         setChainVal(currentQuestion.chain, currentQuestion.eval)
-        questionUnloaded()
     }
 
     private fun timedOut() {
         questionFailed()
         logic.timedOut((timerEnded - timerStarted) / 1000f)
+        questionUnloaded() // todo anim
     }
 
     private fun questionFailed() {

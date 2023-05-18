@@ -1,6 +1,7 @@
 package com.github.mrko900.braintrainer
 
 import android.content.res.Resources
+import android.util.Log
 import java.util.Random
 
 class MathChainsExerciseLogic(
@@ -33,6 +34,7 @@ class MathChainsExerciseLogic(
     }
 
     fun success(secondsElapsed: Float) {
+        Log.d(LOGGING_TAG, "ELAPSED $secondsElapsed")
         exerciseControl.setStatus(
             res.getString(R.string.status_correct_guess),
             res.getInteger(R.integer.status_fade_in).toLong(),
