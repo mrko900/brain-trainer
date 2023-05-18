@@ -182,6 +182,8 @@ class MathChainsExercise(
 
     private fun questionUnloaded() {
         Log.d(LOGGING_TAG, "${ExerciseMode.TRAILS} question unloaded.")
+        frame.findViewById<TextView>(R.id.input).text = ""
+        frame.findViewById<EditText>(R.id.kbhost).setText("")
         nextQuestion()
     }
 
@@ -274,6 +276,10 @@ class MathChainsExercise(
             endExercise()
             return
         }
+        exerciseControl.round++
+        exerciseControl.timer = logic.secondsPerQuestion
+        exerciseControl.progress = 1f
+
         currentQuestion = genQuestion()
         showOrHideChainVal()
         setOperation(currentQuestion.chain, currentQuestion.op)
