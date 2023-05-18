@@ -267,9 +267,9 @@ class MathChainsExercise(
     }
 
     private fun showOrHideChainVal() {
-        chainsView.findViewById<TextView>(R.id.chainVal).visibility =
+        Log.d(LOGGING_TAG, "chain val test ? ${currentQuestion.chain} ${lastResult[currentQuestion.chain]}")
+        chainsView.getChildAt(currentQuestion.chain).findViewById<TextView>(R.id.chainVal).visibility =
             if (!lastResult[currentQuestion.chain]) View.VISIBLE else View.INVISIBLE
-        Log.d(LOGGING_TAG, "hmm current " + lastResult[currentQuestion.chain])
     }
 
     private fun nextQuestion() {
