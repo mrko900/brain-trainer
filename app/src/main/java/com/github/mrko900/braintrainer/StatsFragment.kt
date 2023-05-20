@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mrko900.braintrainer.databinding.MenuItemBinding
 import com.github.mrko900.braintrainer.databinding.StatsMenuBinding
@@ -27,6 +28,7 @@ class StatsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val list = binding.menu
+        list.layoutManager = LinearLayoutManager(mainActivity)
         list.adapter = Adapter(mainActivity.layoutInflater)
     }
 
@@ -42,7 +44,7 @@ class StatsFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-            return VH(MenuItemBinding.inflate(inflater))
+            return VH(MenuItemBinding.inflate(inflater, parent, false))
         }
 
         override fun onBindViewHolder(holder: VH, position: Int) {
