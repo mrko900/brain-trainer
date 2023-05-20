@@ -15,7 +15,7 @@ import com.github.mrko900.braintrainer.databinding.ExerciseListItemBinding
 import java.lang.Integer.min
 import kotlin.math.roundToInt
 
-typealias VH = ExerciseListViewAdapterViewHolder
+private typealias VH = ExerciseListViewAdapterViewHolder
 
 class ExerciseListViewAdapter(
     private val recyclerView: RecyclerView,
