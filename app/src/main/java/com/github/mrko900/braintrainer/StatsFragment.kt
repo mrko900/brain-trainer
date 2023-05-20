@@ -37,9 +37,19 @@ class StatsFragment : Fragment() {
     private class Adapter(private val inflater: LayoutInflater) : RecyclerView.Adapter<VH>() {
         companion object {
             private val items = listOf(
-                ListItem("Testtest 1"),
-                ListItem("Testtest 2"),
-                ListItem("Testtest 3")
+                ListItem("General stats"),
+                ListItem("Progress"),
+                ListItem("Performance factors"),
+                ListItem("Activity"),
+                ListItem("Testtest 3"),
+                ListItem("Testtest 3"),
+                ListItem("Testtest 3"),
+                ListItem("Testtest 3"),
+                ListItem("Testtest 3"),
+                ListItem("Testtest 3"),
+                ListItem("Testtest 3"),
+                ListItem("Testtest 3"),
+                ListItem("Testtest 3"),
             )
         }
 
