@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -118,5 +119,12 @@ class MainActivity : AppCompatActivity() {
 
     fun setNavPaneVisible(visible: Boolean) {
         binding.navView.visibility = if (visible) View.VISIBLE else View.GONE
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            logd("testtest")
+        }
+        return false
     }
 }

@@ -24,4 +24,7 @@
     <fragment
         android:id="@+id/fragment_exercise_completed"
         android:name="com.github.mrko900.braintrainer.ExerciseCompletedFragment" />
+    <fragment
+        android:id="@+id/fragment_stats_general"
+        android:name="com.github.mrko900.braintrainer.StatsGeneralFragment" />
 </navigation>

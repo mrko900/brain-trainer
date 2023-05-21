@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mrko900.braintrainer.databinding.MenuItemBinding
@@ -29,36 +30,37 @@ class StatsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val list = binding.menu
         list.layoutManager = LinearLayoutManager(mainActivity)
-        list.adapter = Adapter(mainActivity.layoutInflater)
+        list.adapter = Adapter(mainActivity)
     }
 
-    private data class ListItem(val title: String)
+    private data class ListItem(val title: String, val fragmentId: Int)
 
-    private class Adapter(private val inflater: LayoutInflater) : RecyclerView.Adapter<VH>() {
+    private class Adapter(private val activity: MainActivity) : RecyclerView.Adapter<VH>() {
         companion object {
             private val items = listOf(
-                ListItem("General stats"),
-                ListItem("Progress"),
-                ListItem("Performance factors"),
-                ListItem("Activity"),
-                ListItem("Testtest 3"),
-                ListItem("Testtest 3"),
-                ListItem("Testtest 3"),
-                ListItem("Testtest 3"),
-                ListItem("Testtest 3"),
-                ListItem("Testtest 3"),
-                ListItem("Testtest 3"),
-                ListItem("Testtest 3"),
-                ListItem("Testtest 3"),
+                ListItem("General stats", R.id.fragment_stats_general),
+                ListItem("Progress", R.id.fragment_stats_general),
+                ListItem("Performance factors", R.id.fragment_stats_general),
+                ListItem("Activity", R.id.fragment_stats_general)
             )
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-            return VH(MenuItemBinding.inflate(inflater, parent, false))
+            return VH(MenuItemBinding.inflate(activity.layoutInflater, parent, false))
         }
 
         override fun onBindViewHolder(holder: VH, position: Int) {
             holder.binding.textView5.text = items[position].title
+            holder.binding.item.setOnClickListener {
+                activity.navigation.navigate(
+                    items[position].fragmentId,
+                    navOptions = NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in_left_fade_in)
+                        .setExitAnim(R.anim.slide_out_left_fade_out)
+                        .build(),
+                    args = null
+                )
+            }
         }
 
         override fun getItemCount(): Int {
