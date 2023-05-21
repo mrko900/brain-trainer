@@ -39,6 +39,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/lbl_exercises_completed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -76,6 +77,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/lbl_total_questions"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -113,6 +115,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/lbl_correct_answers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -150,6 +153,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/lbl_wrong_answers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -187,6 +191,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/lbl_timeouts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -224,6 +229,83 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/lbl_avg_time_per_question"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="105"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:scaleType="fitEnd"
+                    app:srcCompat="@drawable/ic_baseline_help_outline_24" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/avg_time_for_correct_answ"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/lbl_avg_time_for_correct_answer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="105"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:scaleType="fitEnd"
+                    app:srcCompat="@drawable/ic_baseline_help_outline_24" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/avg_time_for_wrong_answ"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/lbl_avg_time_for_wrong_answer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -261,6 +343,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/lbl_total_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -298,6 +381,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/lbl_avg_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -335,6 +419,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/lbl_avg_improvement_per_exercise"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -372,6 +457,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/lbl_avg_improvement_per_hour"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -409,6 +495,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/lbl_total_time_spent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"

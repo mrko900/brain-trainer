@@ -37,12 +37,12 @@
     <string name="total_questions">Total questions:</string>
     <string name="correct_answers">Correct answers:</string>
     <string name="wrong_answers">Wrong answers:</string>
-    <string name="avg_time_for_correct_answ">Avg. time for correct answer:</string>
-    <string name="avg_time_for_wrong_answ">Avg. time for wrong answer:</string>
+    <string name="avg_time_for_correct_answ">Avg. time for correct ans.:</string>
+    <string name="avg_time_for_wrong_answ">Avg. time for wrong ans.:</string>
     <string name="total_score">Aggregate score:</string>
     <string name="avg_score">Average score:</string>
-    <string name="avg_improvement_per_exercise">Avg. improvement per exercise:</string>
-    <string name="avg_improvement_per_hour">Avg. improvement per hour:</string>
+    <string name="avg_improvement_per_exercise">Avg. improvement per ex.:</string>
+    <string name="avg_improvement_per_hour">Avg. improvement per hr:</string>
     <string name="total_time_spent">Total time spent:</string>
 
     <string name="stats_general">General stats</string>
