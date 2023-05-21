@@ -121,10 +121,14 @@ class MainActivity : AppCompatActivity() {
         binding.navView.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
+    var onBackPressedCallback: Runnable? = null
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            logd("testtest")
+        return if (item.itemId == android.R.id.home) {
+            onBackPressedCallback?.run()
+            true
+        } else {
+            false
         }
-        return false
     }
 }
