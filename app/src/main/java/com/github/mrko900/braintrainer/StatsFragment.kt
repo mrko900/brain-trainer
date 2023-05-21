@@ -33,15 +33,15 @@ class StatsFragment : Fragment() {
         list.adapter = Adapter(mainActivity)
     }
 
-    private data class ListItem(val title: String, val fragmentId: Int)
+    private data class ListItem(val title: Int, val fragmentId: Int)
 
     private class Adapter(private val activity: MainActivity) : RecyclerView.Adapter<VH>() {
         companion object {
             private val items = listOf(
-                ListItem("General stats", R.id.fragment_stats_general),
-                ListItem("Progress", R.id.fragment_stats_general),
-                ListItem("Performance factors", R.id.fragment_stats_general),
-                ListItem("Activity", R.id.fragment_stats_general)
+                ListItem(R.string.stats_general, R.id.fragment_stats_general),
+                ListItem(R.string.stats_progress, R.id.fragment_stats_general),
+                ListItem(R.string.stats_perf_factors, R.id.fragment_stats_general),
+                ListItem(R.string.stats_activity, R.id.fragment_stats_general)
             )
         }
 
@@ -50,7 +50,7 @@ class StatsFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: VH, position: Int) {
-            holder.binding.textView5.text = items[position].title
+            holder.binding.textView5.text = activity.getString(items[position].title)
             holder.binding.item.setOnClickListener {
                 activity.navigation.navigate(
                     items[position].fragmentId,

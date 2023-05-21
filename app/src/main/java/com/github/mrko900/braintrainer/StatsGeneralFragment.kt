@@ -39,5 +39,6 @@ class StatsGeneralFragment : Fragment() {
                 args = null
             )
         }
+        mainActivity.supportActionBar!!.title = mainActivity.getString(R.string.stats_general)
     }
 }
