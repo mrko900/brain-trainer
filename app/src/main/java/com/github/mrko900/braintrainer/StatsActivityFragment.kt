@@ -15,6 +15,8 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mrko900.braintrainer.databinding.StatsActivityBinding
+import java.util.Calendar
+import java.util.Date
 
 class StatsActivityFragment : Fragment() {
     private lateinit var binding: StatsActivityBinding
@@ -51,7 +53,7 @@ class StatsActivityFragment : Fragment() {
 
         val adapter = ArrayAdapter.createFromResource(
             mainActivity,
-            R.array.stats_exercise_selection_ind,
+            R.array.stats_exercise_selection,
             android.R.layout.simple_spinner_dropdown_item
         )
         binding.config.setAdapter(adapter)
@@ -66,21 +68,22 @@ class StatsActivityFragment : Fragment() {
 
     private fun render() {
         render(when (currentConfigSelection) {
-            0 -> ExerciseMode.SHAPE_FUSION
-            1 -> ExerciseMode.TRAILS
-            2 -> ExerciseMode.MATH_CHAINS
+            0 -> null
+            1 -> ExerciseMode.SHAPE_FUSION
+            2 -> ExerciseMode.TRAILS
+            3 -> ExerciseMode.MATH_CHAINS
             else -> throw IllegalArgumentException()
         })
     }
 
-    private fun render(mode: ExerciseMode) {
+    private fun render(mode: ExerciseMode?) {
         renderActivity(mode)
     }
 
-    private fun renderActivity(exerciseMode: ExerciseMode) {
+    private fun renderActivity(exerciseMode: ExerciseMode?) {
         val data = ArrayList<BarEntry>()
-        for (e in mainActivity.statsManager.getPerfByTimeOfDay(exerciseMode)) {
-            data.add(BarEntry(e.first.toFloat(), e.second))
+        for (e in mainActivity.statsManager.getActivity(exerciseMode)) {
+            data.add(BarEntry((e.first.time.time / 86400000L).toFloat(), e.second.toFloat()))
         }
         val chart = binding.chart2
         val dataSet = BarDataSet(data, "Test")
@@ -94,7 +97,13 @@ class StatsActivityFragment : Fragment() {
         xAxis.granularity = 1f
         xAxis.valueFormatter = object : ValueFormatter() {
             override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-                return "${value.toInt() % 12 + 1} ${if (value >= 12) "PM" else "AM"}"
+                val date = Calendar.getInstance()
+                date.time = Date(86400000L * value.toLong())
+                val month = date.get(Calendar.MONTH)
+                val months = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+                val monthName = months[month]
+                val dayOfMonth = date.get(Calendar.DAY_OF_MONTH).toString()
+                return "$monthName $dayOfMonth"
             }
         }
         xAxis.position = XAxis.XAxisPosition.BOTTOM

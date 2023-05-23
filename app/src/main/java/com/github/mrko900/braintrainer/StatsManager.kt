@@ -120,6 +120,24 @@ class StatsManager {
         }
         return res
     }
+
+    fun getActivity(exercise: ExerciseMode?): List<Pair<GregorianCalendar, Int>> {
+        val res = ArrayList<Pair<GregorianCalendar, Int>>()
+        val random = Random()
+        for (i in 1..103) {
+            if (random.nextInt(10) == 0) {
+                continue
+            }
+            val gc = GregorianCalendar(2022, 11, 27)
+            val date = gc.time.time + (i - 1) * 86400000L
+            val cal = Calendar.getInstance()
+            cal.time = Date(date)
+            val r = random.nextInt(if (exercise != null) 12 else 26)
+            res.add(Pair(GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)), r))
+        }
+        return res
+    }
 }
 
 data class GeneralStats(
