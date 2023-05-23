@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -59,6 +60,7 @@ class StatsProgressFragment : Fragment() {
         dataSet.circleRadius = 4f
         dataSet.circleHoleRadius = 2.5f
         dataSet.lineWidth = 2f
+        dataSet.setDrawValues(false)
         chart.legend.isEnabled = false
         chart.description.isEnabled = false
         chart.data = LineData(dataSet)
@@ -76,6 +78,8 @@ class StatsProgressFragment : Fragment() {
                 return "$monthName $dayOfMonth"
             }
         }
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+
         chart.invalidate()
     }
 }
