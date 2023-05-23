@@ -95,7 +95,7 @@
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/exercise_list_item_half_play_btn_size"
@@ -105,38 +105,38 @@
                 android:textSize="@dimen/exercise_list_item_rating_text_size"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/button6"
-                app:layout_constraintEnd_toStartOf="@+id/imageView"
+                app:layout_constraintEnd_toStartOf="@+id/ratingProgressIcon"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/ratingProgressIcon"
                 android:layout_width="12dp"
                 android:layout_height="wrap_content"
                 android:scaleType="center"
                 android:tint="#FF3C960B"
-                app:layout_constraintBottom_toBottomOf="@+id/textView2"
-                app:layout_constraintEnd_toStartOf="@+id/textView3"
+                app:layout_constraintBottom_toBottomOf="@+id/rating"
+                app:layout_constraintEnd_toStartOf="@+id/ratingProgress"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/textView2"
-                app:layout_constraintTop_toTopOf="@+id/textView2"
+                app:layout_constraintStart_toEndOf="@+id/rating"
+                app:layout_constraintTop_toTopOf="@+id/rating"
                 app:srcCompat="@drawable/ic_baseline_arrow_drop_up_24" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/ratingProgress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="12"
                 android:textColor="#3C960B"
                 android:textSize="@dimen/exercise_list_item_rating_text_size"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/textView2"
+                app:layout_constraintBottom_toBottomOf="@+id/rating"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toTopOf="@+id/textView2" />
+                app:layout_constraintStart_toEndOf="@+id/ratingProgressIcon"
+                app:layout_constraintTop_toTopOf="@+id/rating" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

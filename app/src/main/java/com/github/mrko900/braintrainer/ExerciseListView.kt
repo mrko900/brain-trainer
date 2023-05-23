@@ -2,6 +2,7 @@ package com.github.mrko900.braintrainer
 
 import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.util.Log
@@ -13,6 +14,7 @@ import androidx.navigation.NavOptions
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mrko900.braintrainer.databinding.ExerciseListItemBinding
 import java.lang.Integer.min
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 private typealias VH = ExerciseListViewAdapterViewHolder
@@ -58,6 +60,17 @@ class ExerciseListViewAdapter(
         holder.binding.cardViewRoot.background = ColorDrawable(item.primaryColor)
         holder.binding.cardViewBottom.background = ColorDrawable(item.secondaryColor)
         holder.binding.playButton.backgroundTintList = ColorStateList.valueOf(item.secondaryColor)
+        holder.binding.rating.text = item.testRating.toString()
+        holder.binding.ratingProgress.text = abs(item.testRatingProgress).toString()
+        if (item.testRatingProgress >= 0) {
+            holder.binding.ratingProgressIcon.setImageResource(R.drawable.ic_baseline_arrow_drop_up_24)
+            holder.binding.ratingProgressIcon.imageTintList = ColorStateList.valueOf(Color.parseColor("#3C960B"))
+            holder.binding.ratingProgress.setTextColor(Color.parseColor("#3C960B"))
+        } else {
+            holder.binding.ratingProgressIcon.setImageResource(R.drawable.ic_baseline_arrow_drop_down_24)
+            holder.binding.ratingProgressIcon.imageTintList = ColorStateList.valueOf(Color.parseColor("#940000"))
+            holder.binding.ratingProgress.setTextColor(Color.parseColor("#940000"))
+        }
 
         if (onInitCallback != null) {
             ++initCnt
@@ -128,5 +141,7 @@ data class ExerciseListViewItemParams(
     val titleResId: Int,
     val primaryColor: Int,
     val secondaryColor: Int,
-    val mode: ExerciseMode
+    val mode: ExerciseMode,
+    val testRating: Int,
+    val testRatingProgress: Int
 )
