@@ -59,6 +59,8 @@ class ExerciseDetailsFragment : Fragment() {
         changeConfigFragment(idToConfigFragment(currentConfigSelection))
 
         binding.title.text = getExerciseName(mainActivity.currentExercise!!.mode, mainActivity.resources)
+
+        binding.rating.text = "Your rating: " + mainActivity.testCurrentRating
     }
 
     enum class ConfigFragment {

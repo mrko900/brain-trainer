@@ -36,6 +36,8 @@ class MainActivity : AppCompatActivity() {
 
     val statsManager = StatsManager()
 
+    var testCurrentRating = 0
+
     private fun getMenuIndices(menu: Menu): Map<Int, Int> {
         val res = HashMap<Int, Int>()
         var i = 0

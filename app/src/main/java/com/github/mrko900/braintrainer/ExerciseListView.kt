@@ -62,6 +62,7 @@ class ExerciseListViewAdapter(
         holder.binding.playButton.backgroundTintList = ColorStateList.valueOf(item.secondaryColor)
         holder.binding.rating.text = item.testRating.toString()
         holder.binding.ratingProgress.text = abs(item.testRatingProgress).toString()
+        holder.item = item
         if (item.testRatingProgress >= 0) {
             holder.binding.ratingProgressIcon.setImageResource(R.drawable.ic_baseline_arrow_drop_up_24)
             holder.binding.ratingProgressIcon.imageTintList = ColorStateList.valueOf(Color.parseColor("#3C960B"))
@@ -98,6 +99,7 @@ class ExerciseListViewAdapterViewHolder : RecyclerView.ViewHolder {
     private val nav: NavController
     private val activity: MainActivity
     lateinit var mode: ExerciseMode
+    lateinit var item: ExerciseListViewItemParams
 
     constructor(layoutInflater: LayoutInflater, parent: ViewGroup?, nav: NavController, activity: MainActivity) :
             this(ExerciseListItemBinding.inflate(layoutInflater, parent, false), nav, activity)
@@ -114,6 +116,7 @@ class ExerciseListViewAdapterViewHolder : RecyclerView.ViewHolder {
         binding.playButton.setOnClickListener {
             Log.d(LOGGING_TAG, "Exercise selected: $mode")
             activity.currentExercise = ExerciseParams(mode, null)
+            activity.testCurrentRating = item.testRating
             nav.navigate(
                 R.id.fragment_exercise_details,
                 navOptions = NavOptions.Builder()
