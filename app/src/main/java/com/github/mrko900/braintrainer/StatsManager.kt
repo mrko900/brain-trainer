@@ -8,9 +8,39 @@ import java.util.Random
 class StatsManager {
     // null = all exercises
     fun getGeneralStats(exercise: ExerciseMode?): GeneralStats {
-        return GeneralStats(
-            3, 4, 5, 6, 7, 8.910f, 11f, 8f, 11, 12.13f, -14.15f, 16.17f, 181.9202122f
-        )
+        if (exercise != null) {
+            return GeneralStats(
+                exercisesCompleted = 312,
+                totalQuestions = 1864,
+                correctAnswers = 1051,
+                wrongAnswers = 323,
+                timeouts = 490,
+                avgTimePerQuestion = 8.44f,
+                avgTimeForCorrectAnswer = 7.99f,
+                avgTimeForWrongAnswer = 6.13f,
+                aggregateScore = 15615,
+                avgScore = 50.0048f,
+                avgImprovementPerExercise = 0.51f,
+                avgImprovementPerHour = 1.1f,
+                totalTimeSpent = 10.46f
+            )
+        } else {
+            return GeneralStats(
+                exercisesCompleted = 99,
+                totalQuestions = 693,
+                correctAnswers = 378,
+                wrongAnswers = 114,
+                timeouts = 201,
+                avgTimePerQuestion = 5.19f,
+                avgTimeForCorrectAnswer = 4.76f,
+                avgTimeForWrongAnswer = 4.31f,
+                aggregateScore = 6373,
+                avgScore = 64.37f,
+                avgImprovementPerExercise = 0.80f,
+                avgImprovementPerHour = 1.67f,
+                totalTimeSpent = 2.85f
+            )
+        }
     }
 
     fun getRatingHistory(exercise: ExerciseMode): List<Pair<GregorianCalendar, Float>> {
