@@ -8,7 +8,7 @@ import java.util.Random
 class StatsManager {
     // null = all exercises
     fun getGeneralStats(exercise: ExerciseMode?): GeneralStats {
-        if (exercise != null) {
+        if (exercise == null) {
             return GeneralStats(
                 exercisesCompleted = 312,
                 totalQuestions = 1864,

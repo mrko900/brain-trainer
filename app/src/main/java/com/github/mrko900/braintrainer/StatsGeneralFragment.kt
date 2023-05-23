@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import com.github.mrko900.braintrainer.databinding.StatsGeneralBinding
@@ -13,6 +14,7 @@ import kotlin.math.abs
 class StatsGeneralFragment : Fragment() {
     private lateinit var binding: StatsGeneralBinding
     private lateinit var mainActivity: MainActivity
+    private var currentConfigSelection = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (activity == null) {
@@ -42,7 +44,32 @@ class StatsGeneralFragment : Fragment() {
         }
         mainActivity.supportActionBar!!.title = mainActivity.getString(R.string.stats_general)
 
-        val stats = mainActivity.statsManager.getGeneralStats(null)
+        val adapter = ArrayAdapter.createFromResource(
+            mainActivity,
+            R.array.stats_exercise_selection,
+            android.R.layout.simple_spinner_dropdown_item
+        )
+        binding.config.setAdapter(adapter)
+        binding.config.setOnItemClickListener { parent, view, position, id ->
+            currentConfigSelection = position
+            render()
+        }
+        binding.config.setText(adapter.getItem(currentConfigSelection), false)
+
+        render()
+    }
+
+    private fun render() {
+        render(mainActivity.statsManager.getGeneralStats(when (currentConfigSelection) {
+            0 -> null
+            1 -> ExerciseMode.SHAPE_FUSION
+            2 -> ExerciseMode.TRAILS
+            3 -> ExerciseMode.MATH_CHAINS
+            else -> throw IllegalArgumentException()
+        }))
+    }
+
+    private fun render(stats: GeneralStats) {
         binding.lblExercisesCompleted.text = stats.exercisesCompleted.toString()
         binding.lblTotalQuestions.text = stats.totalQuestions.toString()
         binding.lblCorrectAnswers.text = stats.correctAnswers.toString()
