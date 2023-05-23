@@ -32,8 +32,8 @@ fun exerciseListItemShapeFusion(): ExerciseListViewItemParams {
 fun exerciseListItemTrails(): ExerciseListViewItemParams {
     return ExerciseListViewItemParams(
         R.string.exercise_title_trails,
-        Color.parseColor("#FF8A65"),
-        Color.parseColor("#FBE9E7"),
+        Color.parseColor("#81C784"),
+        Color.parseColor("#E8F5E9"),
         ExerciseMode.TRAILS,
         Random().nextInt(1000) + 900,
         Random().nextInt(101) - 50,
@@ -43,8 +43,8 @@ fun exerciseListItemTrails(): ExerciseListViewItemParams {
 fun exerciseListItemMathChains(): ExerciseListViewItemParams {
     return ExerciseListViewItemParams(
         R.string.exercise_title_math_chains,
-        Color.parseColor("#FF8A65"),
-        Color.parseColor("#FBE9E7"),
+        Color.parseColor("#BA68C8"),
+        Color.parseColor("#F3E5F5"),
         ExerciseMode.MATH_CHAINS,
         Random().nextInt(1000) + 900,
         Random().nextInt(101) - 50,
