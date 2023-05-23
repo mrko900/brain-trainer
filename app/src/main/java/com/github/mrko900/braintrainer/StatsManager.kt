@@ -21,7 +21,7 @@ class StatsManager {
             if (random.nextInt(10) == 0) {
                 continue
             }
-            val gc = GregorianCalendar(2023, 1, 29)
+            val gc = GregorianCalendar(2022, 11, 27)
             val date = gc.time.time + (i - 1) * 86400000L
             val cal = Calendar.getInstance()
             cal.time = Date(date)
@@ -29,6 +29,24 @@ class StatsManager {
             res.add(Pair(GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
                 cal.get(Calendar.DAY_OF_MONTH)), r.toFloat()))
             prev = r
+        }
+        return res
+    }
+
+    fun getPerfHistory(exercise: ExerciseMode): List<Pair<GregorianCalendar, Float>> {
+        val res = ArrayList<Pair<GregorianCalendar, Float>>()
+        val random = Random()
+        for (i in 1..103) {
+            if (random.nextInt(10) == 0) {
+                continue
+            }
+            val gc = GregorianCalendar(2022, 11, 27)
+            val date = gc.time.time + (i - 1) * 86400000L
+            val cal = Calendar.getInstance()
+            cal.time = Date(date)
+            val r = random.nextInt(30 + i / 3) + 10
+            res.add(Pair(GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)), r.toFloat()))
         }
         return res
     }

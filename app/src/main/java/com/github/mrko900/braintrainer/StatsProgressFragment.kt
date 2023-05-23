@@ -49,8 +49,17 @@ class StatsProgressFragment : Fragment() {
         }
         mainActivity.supportActionBar!!.title = mainActivity.getString(R.string.stats_progress)
 
+        render(ExerciseMode.SHAPE_FUSION)
+    }
+
+    private fun render(mode: ExerciseMode) {
+        renderRatingChart(mode)
+        renderPerfChart(mode)
+    }
+
+    private fun renderRatingChart(exerciseMode: ExerciseMode) {
         val data = ArrayList<Entry>()
-        for (e in mainActivity.statsManager.getRatingHistory(ExerciseMode.SHAPE_FUSION)) {
+        for (e in mainActivity.statsManager.getRatingHistory(exerciseMode)) {
             data.add(Entry((e.first.time.time / 86400000L).toFloat(), e.second))
         }
         val chart = binding.chart
@@ -77,7 +86,38 @@ class StatsProgressFragment : Fragment() {
             }
         }
         xAxis.position = XAxis.XAxisPosition.BOTTOM
+        chart.invalidate()
+    }
 
+    private fun renderPerfChart(exerciseMode: ExerciseMode) {
+        val data = ArrayList<Entry>()
+        for (e in mainActivity.statsManager.getPerfHistory(exerciseMode)) {
+            data.add(Entry((e.first.time.time / 86400000L).toFloat(), e.second))
+        }
+        val chart = binding.chart2
+        val dataSet = LineDataSet(data, "Test")
+        dataSet.circleRadius = 4f
+        dataSet.circleHoleRadius = 2.5f
+        dataSet.lineWidth = 2f
+        dataSet.setDrawValues(false)
+        chart.legend.isEnabled = false
+        chart.description.isEnabled = false
+        chart.data = LineData(dataSet)
+        chart.xAxis.setDrawGridLines(false)
+        val xAxis = binding.chart2.xAxis
+        xAxis.granularity = 1f
+        xAxis.valueFormatter = object : ValueFormatter() {
+            override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+                val date = Calendar.getInstance()
+                date.time = Date(86400000L * value.toLong())
+                val month = date.get(Calendar.MONTH)
+                val months = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+                val monthName = months[month]
+                val dayOfMonth = date.get(Calendar.DAY_OF_MONTH).toString()
+                return "$monthName $dayOfMonth"
+            }
+        }
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
         chart.invalidate()
     }
 }
