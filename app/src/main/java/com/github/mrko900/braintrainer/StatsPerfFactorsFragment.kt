@@ -13,6 +13,9 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mrko900.braintrainer.databinding.StatsPerfFactorsBinding
 
@@ -47,7 +50,7 @@ class StatsPerfFactorsFragment : Fragment() {
                 args = null
             )
         }
-        mainActivity.supportActionBar!!.title = mainActivity.getString(R.string.stats_progress)
+        mainActivity.supportActionBar!!.title = mainActivity.getString(R.string.stats_perf_factors)
 
         val adapter = ArrayAdapter.createFromResource(
             mainActivity,
@@ -75,6 +78,7 @@ class StatsPerfFactorsFragment : Fragment() {
 
     private fun render(mode: ExerciseMode) {
         renderPerfByTimeOfDayChart(mode)
+        renderPerfByExPlayed(mode)
     }
 
     private fun renderPerfByTimeOfDayChart(exerciseMode: ExerciseMode) {
@@ -82,7 +86,7 @@ class StatsPerfFactorsFragment : Fragment() {
         for (e in mainActivity.statsManager.getPerfByTimeOfDay(exerciseMode)) {
             data.add(BarEntry(e.first.toFloat(), e.second))
         }
-        val chart = binding.chart
+        val chart = binding.chart2
         val dataSet = BarDataSet(data, "Test")
 
         dataSet.setDrawValues(false)
@@ -90,7 +94,7 @@ class StatsPerfFactorsFragment : Fragment() {
         chart.description.isEnabled = false
         chart.data = BarData(dataSet)
         chart.xAxis.setDrawGridLines(false)
-        val xAxis = binding.chart.xAxis
+        val xAxis = binding.chart2.xAxis
         xAxis.granularity = 1f
         xAxis.valueFormatter = object : ValueFormatter() {
             override fun getAxisLabel(value: Float, axis: AxisBase?): String {
@@ -99,6 +103,27 @@ class StatsPerfFactorsFragment : Fragment() {
         }
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         chart.isScaleYEnabled = false
+        chart.invalidate()
+    }
+
+    private fun renderPerfByExPlayed(exerciseMode: ExerciseMode) {
+        val data = ArrayList<Entry>()
+        for (e in mainActivity.statsManager.getPerfByExPlayed(exerciseMode)) {
+            data.add(Entry(e.first.toFloat(), e.second))
+        }
+        val chart = binding.chart
+        val dataSet = LineDataSet(data, "Test")
+        dataSet.circleRadius = 4f
+        dataSet.circleHoleRadius = 2.5f
+        dataSet.lineWidth = 2f
+        dataSet.setDrawValues(false)
+        chart.legend.isEnabled = false
+        chart.description.isEnabled = false
+        chart.data = LineData(dataSet)
+        chart.xAxis.setDrawGridLines(false)
+        val xAxis = binding.chart.xAxis
+        xAxis.granularity = 1f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
         chart.invalidate()
     }
 }

@@ -4,6 +4,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 import java.util.Random
+import kotlin.math.sqrt
 
 class StatsManager {
     // null = all exercises
@@ -105,6 +106,17 @@ class StatsManager {
                 else -> v = 0
             }
             res.add(Pair(i, v.toFloat()))
+        }
+        return res
+    }
+
+    fun getPerfByExPlayed(mode: ExerciseMode): List<Pair<Int, Float>> {
+        val random = Random()
+        val res = ArrayList<Pair<Int, Float>>()
+        for (i in 0..12) {
+            if (random.nextInt(i + 1) <= sqrt(i.toDouble())) {
+                res.add(Pair(i, (30 + (12 - i) * 2 + random.nextInt(6).toFloat())))
+            }
         }
         return res
     }
