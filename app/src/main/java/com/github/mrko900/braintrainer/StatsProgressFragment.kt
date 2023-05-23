@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import com.github.mikephil.charting.components.AxisBase
@@ -20,6 +21,7 @@ import java.util.Date
 class StatsProgressFragment : Fragment() {
     private lateinit var binding: StatsProgressBinding
     private lateinit var mainActivity: MainActivity
+    private var currentConfigSelection = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (activity == null) {
@@ -49,7 +51,28 @@ class StatsProgressFragment : Fragment() {
         }
         mainActivity.supportActionBar!!.title = mainActivity.getString(R.string.stats_progress)
 
-        render(ExerciseMode.SHAPE_FUSION)
+        val adapter = ArrayAdapter.createFromResource(
+            mainActivity,
+            R.array.stats_exercise_selection_ind,
+            android.R.layout.simple_spinner_dropdown_item
+        )
+        binding.config.setAdapter(adapter)
+        binding.config.setOnItemClickListener { parent, view, position, id ->
+            currentConfigSelection = position
+            render()
+        }
+        binding.config.setText(adapter.getItem(currentConfigSelection), false)
+
+        render()
+    }
+
+    private fun render() {
+        render(when (currentConfigSelection) {
+            0 -> ExerciseMode.SHAPE_FUSION
+            1 -> ExerciseMode.TRAILS
+            2 -> ExerciseMode.MATH_CHAINS
+            else -> throw IllegalArgumentException()
+        })
     }
 
     private fun render(mode: ExerciseMode) {
