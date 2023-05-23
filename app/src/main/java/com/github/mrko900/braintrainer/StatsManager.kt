@@ -1,6 +1,9 @@
 package com.github.mrko900.braintrainer
 
+import java.util.Calendar
 import java.util.Date
+import java.util.GregorianCalendar
+import java.util.Random
 
 class StatsManager {
     // null = all exercises
@@ -10,12 +13,24 @@ class StatsManager {
         )
     }
 
-    fun getRatingHistory(exercise: ExerciseMode): History {
-        return object : History {
-            override fun valueAt(date: Date): Int? {
-                return 25
+    fun getRatingHistory(exercise: ExerciseMode): List<Pair<GregorianCalendar, Float>> {
+        val res = ArrayList<Pair<GregorianCalendar, Float>>()
+        val random = Random()
+        var prev = random.nextInt(704) + 999
+        for (i in 1..103) {
+            if (random.nextInt(10) == 0) {
+                continue
             }
+            val gc = GregorianCalendar(2023, 1, 29)
+            val date = gc.time.time + (i - 1) * 86400000L
+            val cal = Calendar.getInstance()
+            cal.time = Date(date)
+            val r = prev + random.nextInt(25) - 10
+            res.add(Pair(GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)), r.toFloat()))
+            prev = r
         }
+        return res
     }
 }
 
@@ -34,7 +49,3 @@ data class GeneralStats(
     val avgImprovementPerHour: Float,
     val totalTimeSpent: Float
 )
-
-interface History {
-    fun valueAt(date: Date): Int?
-}

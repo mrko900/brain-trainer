@@ -16,7 +16,6 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mrko900.braintrainer.databinding.StatsProgressBinding
 import java.util.Calendar
 import java.util.Date
-import java.util.GregorianCalendar
 
 class StatsProgressFragment : Fragment() {
     private lateinit var binding: StatsProgressBinding
@@ -51,10 +50,9 @@ class StatsProgressFragment : Fragment() {
         mainActivity.supportActionBar!!.title = mainActivity.getString(R.string.stats_progress)
 
         val data = ArrayList<Entry>()
-        data.add(Entry((GregorianCalendar(2023, 3, 3).time.time / 86400000L).toFloat(), 1f))
-        data.add(Entry((GregorianCalendar(2023, 3, 4).time.time / 86400000L).toFloat(), 2f))
-        data.add(Entry((GregorianCalendar(2023, 3, 5).time.time / 86400000L).toFloat(), -1f))
-        data.add(Entry((GregorianCalendar(2023, 3, 6).time.time / 86400000L).toFloat(), 7f))
+        for (e in mainActivity.statsManager.getRatingHistory(ExerciseMode.SHAPE_FUSION)) {
+            data.add(Entry((e.first.time.time / 86400000L).toFloat(), e.second))
+        }
         val chart = binding.chart
         val dataSet = LineDataSet(data, "Test")
         dataSet.circleRadius = 4f
