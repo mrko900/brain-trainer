@@ -40,7 +40,7 @@ class StatsFragment : Fragment() {
             private val items = listOf(
                 ListItem(R.string.stats_general, R.id.fragment_stats_general),
                 ListItem(R.string.stats_progress, R.id.fragment_stats_progress),
-                ListItem(R.string.stats_perf_factors, R.id.fragment_stats_general),
+                ListItem(R.string.stats_perf_factors, R.id.fragment_stats_perf_factors),
                 ListItem(R.string.stats_activity, R.id.fragment_stats_general)
             )
         }

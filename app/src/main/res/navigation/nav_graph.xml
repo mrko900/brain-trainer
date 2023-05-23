@@ -30,4 +30,7 @@
     <fragment
         android:id="@+id/fragment_stats_progress"
         android:name="com.github.mrko900.braintrainer.StatsProgressFragment" />
+    <fragment
+        android:id="@+id/fragment_stats_perf_factors"
+        android:name="com.github.mrko900.braintrainer.StatsPerfFactorsFragment" />
 </navigation>

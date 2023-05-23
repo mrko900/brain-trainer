@@ -80,6 +80,34 @@ class StatsManager {
         }
         return res
     }
+
+    fun getPerfByTimeOfDay(mode: ExerciseMode): List<Pair<Int, Float>> {
+        val random = Random()
+        val res = ArrayList<Pair<Int, Float>>()
+        for (i in 0..23) {
+            val v: Int
+            when (i) {
+                7 -> v = random.nextInt(5) + 40
+                8 -> v = random.nextInt(5) + 40
+                9 -> v = random.nextInt(5) + 45
+                10 -> v = random.nextInt(5) + 50
+                12 -> v = random.nextInt(5) + 55
+                13 -> v = random.nextInt(5) + 60
+                14 -> v = random.nextInt(5) + 55
+                15 -> v = random.nextInt(5) + 55
+                16 -> v = random.nextInt(5) + 55
+                17 -> v = random.nextInt(5) + 50
+                18 -> v = random.nextInt(5) + 50
+                19 -> v = random.nextInt(5) + 45
+                20 -> v = random.nextInt(5) + 40
+                22 -> v = random.nextInt(5) + 35
+                23 -> v = random.nextInt(5) + 30
+                else -> v = 0
+            }
+            res.add(Pair(i, v.toFloat()))
+        }
+        return res
+    }
 }
 
 data class GeneralStats(
