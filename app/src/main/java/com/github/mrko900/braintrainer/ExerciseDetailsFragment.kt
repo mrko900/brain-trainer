@@ -61,6 +61,22 @@ class ExerciseDetailsFragment : Fragment() {
         binding.title.text = getExerciseName(mainActivity.currentExercise!!.mode, mainActivity.resources)
 
         binding.rating.text = "Your rating: " + mainActivity.testCurrentRating
+
+        mainActivity.setSupportActionBar(binding.toolbar)
+        mainActivity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        mainActivity.supportActionBar!!.setDisplayShowHomeEnabled(true)
+        mainActivity.onBackPressedCallback = Runnable {
+            mainActivity.navigation.navigate(
+                R.id.fragment_exercise_list,
+                navOptions = NavOptions.Builder()
+                    .setEnterAnim(R.anim.slide_in_right_fade_in)
+                    .setExitAnim(R.anim.slide_out_right_fade_out)
+                    .build(),
+                args = null
+            )
+        }
+        mainActivity.supportActionBar!!.title = getExerciseName(mainActivity.currentExercise!!.mode,
+            mainActivity.resources)
     }
 
     enum class ConfigFragment {
